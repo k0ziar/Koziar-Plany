@@ -119,7 +119,6 @@
             border: 1px solid #444; color: #fff; border-radius: 4px; cursor: pointer; 
         }
 
-        /* ANIMACJA PRZESUWANIA */
         @keyframes highlight {
             0% { background: var(--gold); }
             100% { background: transparent; }
@@ -164,7 +163,7 @@
     <div id="week"></div>
 </main>
 
-<div class="floating-logo" onclick="alert('Koziar Plany v1.6')">
+<div class="floating-logo" onclick="alert('Koziar Plany v1.7')">
     <img src="logo.png" alt="K" onerror="this.style.display='none'">
 </div>
 
@@ -176,7 +175,7 @@ let plans = JSON.parse(localStorage.getItem("plans")) || {};
 let checks = JSON.parse(localStorage.getItem("checks")) || {};
 let currentPlan = localStorage.getItem("currentPlanName") || null;
 let editStates = {};
-let lastMovedRow = null; // Do podświetlania
+let lastMovedRow = null;
 
 function save() {
     localStorage.setItem("plans", JSON.stringify(plans));
@@ -214,13 +213,14 @@ function render() {
         
         let rowsHtml = day.rows.map((r, ri) => {
             const isMoved = (lastMovedRow && lastMovedRow.di === di && lastMovedRow.ri === ri);
+            // ZMIANA: type="text" + inputmode="decimal" pozwala na znaki specjalne przy zachowaniu numerycznej klawiatury
             return `
                 <tr class="${dayChecks[ri] ? 'done' : ''} ${isMoved ? 'moved-row' : ''}">
                     <td class="col-check"><input type="checkbox" ${dayChecks[ri] ? 'checked' : ''} onchange="toggleCheck(${di},${ri},this.checked)"></td>
-                    <td class="ex-name"><input value="${r[0]||''}" oninput="updRow(${di},${ri},0,this.value)" placeholder="..."></td>
-                    <td class="col-s"><input type="number" inputmode="decimal" value="${r[1]||''}" oninput="updRow(${di},${ri},1,this.value)"></td>
-                    <td class="col-p"><input type="number" inputmode="decimal" value="${r[2]||''}" oninput="updRow(${di},${ri},2,this.value)"></td>
-                    <td class="col-kg"><input type="number" inputmode="decimal" value="${r[3]||''}" oninput="updRow(${di},${ri},3,this.value)"></td>
+                    <td class="ex-name"><input type="text" value="${r[0]||''}" oninput="updRow(${di},${ri},0,this.value)" placeholder="..."></td>
+                    <td class="col-s"><input type="text" inputmode="decimal" value="${r[1]||''}" oninput="updRow(${di},${ri},1,this.value)"></td>
+                    <td class="col-p"><input type="text" inputmode="decimal" value="${r[2]||''}" oninput="updRow(${di},${ri},2,this.value)"></td>
+                    <td class="col-kg"><input type="text" inputmode="decimal" value="${r[3]||''}" oninput="updRow(${di},${ri},3,this.value)"></td>
                     <td class="edit-ui">
                         <div class="row-ops">
                             <div class="move-up-down">
@@ -252,7 +252,7 @@ function render() {
     });
     lucide.createIcons();
     window.scrollTo(0, scrollPos);
-    lastMovedRow = null; // Reset po renderowaniu
+    lastMovedRow = null;
 }
 
 function toggleEdit(di) { editStates[di] = !editStates[di]; render(); }
@@ -264,7 +264,7 @@ function moveRow(di, ri, dir) {
     const t = ri + dir;
     if(t >= 0 && t < r.length) { 
         [r[ri], r[t]] = [r[t], r[ri]]; 
-        lastMovedRow = { di: di, ri: t }; // Zapamiętaj nową pozycję do podświetlenia
+        lastMovedRow = { di: di, ri: t }; 
         save(); render(); 
     }
 }
@@ -341,7 +341,6 @@ function applyImport() {
 
 function closeModals() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
 
-// Start
 if(Object.keys(plans).length === 0) {
     const dni = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"];
     plans["Mój Trening"] = { notes: "", days: dni.map(d => ({ name: d, active: true, rows: [] })) };
