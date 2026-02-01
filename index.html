@@ -163,7 +163,7 @@
     <div id="week"></div>
 </main>
 
-<div class="floating-logo" onclick="alert('Koziar Plany v1.7')">
+<div class="floating-logo" onclick="alert('Koziar Plany v1.9')">
     <img src="logo.png" alt="K" onerror="this.style.display='none'">
 </div>
 
@@ -171,9 +171,49 @@
 <div class="modal" id="importModal"><div class="modal-box"><h3 style="color:var(--gold);margin-top:0">Importuj</h3><input type="file" id="importFile" accept=".tsv,.csv" onchange="handleFileSelect(event)" style="margin-bottom:10px;font-size:12px;"><textarea id="importText" style="height:150px;width:100%;background:#000;color:#fff;"></textarea><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px"><button class="icon-btn gold" style="width:100%" onclick="applyImport()">IMPORTUJ</button><button class="icon-btn" style="width:100%" onclick="closeModals()">ANULUJ</button></div></div></div>
 
 <script>
+// --- KONFIGURACJA WERSJI I PLANÓW ---
+const GLOBAL_PLAN_VERSION = "1.1"; 
+const DEFAULT_PLAN_NAME = "Basic 3-dniowe FBW - by Koziar";
+
+function getDefaultPlans() {
+    return {
+        [DEFAULT_PLAN_NAME]: {
+            version: GLOBAL_PLAN_VERSION,
+            notes: "Zasady: Przykładowy 3 dniowy plan na przetrenowanie wszystkich partii. Rób ćwiczenia do upadku, notuj ciężary, jeśli robisz więcej powtórzeń tym samym ciężarem co tydzień temu - Dołóż sobie. Baw się dobrze",
+            days: [
+                { name: "Poniedziałek - Upper A", active: true, rows: [["Przysiady","4","6-10",""],["Wyciskanie ławka płaska","4","6-10",""],["Wiosłowanie","4","8-12",""],["OHP","4","8-12",""],["Biceps","3","8-12",""],["Triceps","3","8-12",""],["Brzuch","4","8-12",""]] },
+                { name: "Wtorek", active: false, rows: [] },
+                { name: "Środa - FBW B", active: true, rows: [["Wyciskanie ławka płaska","4","6-10",""],["Suwnica/Przysiad wąsko","4","8-12",""],["Podciąganie neutralny chwyt","4","8-12",""],["Wznosy","3","8-12",""],["Triceps","3","8-12",""],["Biceps","3","8-12",""],["Łydki","4","15+",""]] },
+                { name: "Czwartek", active: false, rows: [] },
+                { name: "Piątek - FBW C", active: true, rows: [["Przysiad","4","6-10",""],["Martwy ciąg","4","6-10",""],["Wiosłowanie szeroko","4","8-12",""],["Wyciskanie skos","3","8-12",""],["Dipy","3","8-12",""],["Biceps","4","8-12",""],["Brzuch","4","8-12",""]] },
+                { name: "Sobota", active: false, rows: [] },
+                { name: "Niedziela", active: false, rows: [] }
+            ]
+        }
+    };
+}
+
+// --- LOGIKA DANYCH ---
 let plans = JSON.parse(localStorage.getItem("plans")) || {};
 let checks = JSON.parse(localStorage.getItem("checks")) || {};
-let currentPlan = localStorage.getItem("currentPlanName") || null;
+let currentPlan = localStorage.getItem("currentPlanName");
+
+const defaultPlans = getDefaultPlans();
+
+// Aktualizacja wersji planu domyślnego
+if (!plans[DEFAULT_PLAN_NAME] || plans[DEFAULT_PLAN_NAME].version !== GLOBAL_PLAN_VERSION) {
+    plans[DEFAULT_PLAN_NAME] = defaultPlans[DEFAULT_PLAN_NAME];
+}
+
+if (!currentPlan || !plans[currentPlan]) {
+    currentPlan = DEFAULT_PLAN_NAME;
+}
+
+// Migracja starych formatów
+Object.keys(plans).forEach(key => { 
+    if (Array.isArray(plans[key])) plans[key] = { notes: "", days: plans[key] }; 
+});
+
 let editStates = {};
 let lastMovedRow = null;
 
@@ -183,14 +223,11 @@ function save() {
     localStorage.setItem("currentPlanName", currentPlan);
 }
 
+// --- UI I RENDEROWANIE ---
 function autoHeight(el) { el.style.height = "auto"; el.style.height = (el.scrollHeight) + "px"; }
 function saveNotes() { if (currentPlan) { plans[currentPlan].notes = document.getElementById("planNotes").value; save(); } }
 function updDayName(di, val) { getDays()[di].name = val; save(); }
-
-function getDays() {
-    if (!currentPlan || !plans[currentPlan]) return [];
-    return Array.isArray(plans[currentPlan]) ? plans[currentPlan] : plans[currentPlan].days;
-}
+function getDays() { return (currentPlan && plans[currentPlan]) ? plans[currentPlan].days : []; }
 
 function render() {
     const scrollPos = window.scrollY;
@@ -213,7 +250,6 @@ function render() {
         
         let rowsHtml = day.rows.map((r, ri) => {
             const isMoved = (lastMovedRow && lastMovedRow.di === di && lastMovedRow.ri === ri);
-            // ZMIANA: type="text" + inputmode="decimal" pozwala na znaki specjalne przy zachowaniu numerycznej klawiatury
             return `
                 <tr class="${dayChecks[ri] ? 'done' : ''} ${isMoved ? 'moved-row' : ''}">
                     <td class="col-check"><input type="checkbox" ${dayChecks[ri] ? 'checked' : ''} onchange="toggleCheck(${di},${ri},this.checked)"></td>
@@ -255,10 +291,10 @@ function render() {
     lastMovedRow = null;
 }
 
+// --- FUNKCJE OPERACYJNE ---
 function toggleEdit(di) { editStates[di] = !editStates[di]; render(); }
 function addRow(di) { getDays()[di].rows.push(["", "", "", ""]); save(); render(); }
 function delRow(di, ri) { if(confirm("Usunąć?")) { getDays()[di].rows.splice(ri, 1); save(); render(); } }
-
 function moveRow(di, ri, dir) {
     const r = getDays()[di].rows;
     const t = ri + dir;
@@ -268,7 +304,6 @@ function moveRow(di, ri, dir) {
         save(); render(); 
     }
 }
-
 function updRow(di, ri, ci, v) { getDays()[di].rows[ri][ci] = v; save(); }
 function toggleCheck(di, ri, v) {
     if(!checks[currentPlan]) checks[currentPlan] = {};
@@ -279,7 +314,6 @@ function toggleCheck(di, ri, v) {
 function toggleDay(di) { getDays()[di].active = !getDays()[di].active; save(); render(); }
 function resetWeek() { if(confirm("Zresetować postępy?")) { checks[currentPlan] = {}; save(); render(); } }
 function loadPlan() { currentPlan = document.getElementById("planSelect").value; save(); render(); }
-
 function newPlan() {
     const n = prompt("Nazwa planu:");
     if(n) { 
@@ -288,7 +322,6 @@ function newPlan() {
         currentPlan = n; save(); location.reload(); 
     }
 }
-
 function deletePlan() {
     if(confirm(`Usuń plan ${currentPlan}?`)) {
         delete plans[currentPlan];
@@ -297,6 +330,7 @@ function deletePlan() {
     }
 }
 
+// --- IMPORT / EKSPORT ---
 function openExport() {
     const out = [];
     const p = plans[currentPlan];
@@ -310,21 +344,18 @@ function openExport() {
     document.getElementById("exportText").value = out.join("\n");
     document.getElementById("exportModal").classList.add("active");
 }
-
 function downloadTSV() {
     const t = document.getElementById("exportText").value;
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([t], {type:"text/tab-separated-values"}));
     a.download = currentPlan.replace(/\s/g, '_') + ".tsv"; a.click();
 }
-
 function openImport() { document.getElementById("importModal").classList.add("active"); }
 function handleFileSelect(e) {
     const r = new FileReader();
     r.onload = (e) => { document.getElementById("importText").value = e.target.result; };
     r.readAsText(e.target.files[0]);
 }
-
 function applyImport() {
     const lines = document.getElementById("importText").value.trim().split("\n");
     const week = []; let day = null; let notes = "";
@@ -338,17 +369,9 @@ function applyImport() {
     });
     if(week.length > 0) { plans[currentPlan] = { notes: notes, days: week }; save(); location.reload(); }
 }
-
 function closeModals() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
 
-if(Object.keys(plans).length === 0) {
-    const dni = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"];
-    plans["Mój Trening"] = { notes: "", days: dni.map(d => ({ name: d, active: true, rows: [] })) };
-    currentPlan = "Mój Trening";
-    save();
-} else {
-    Object.keys(plans).forEach(key => { if (Array.isArray(plans[key])) plans[key] = { notes: "", days: plans[key] }; });
-}
+// --- INICJALIZACJA UI ---
 const ps = document.getElementById("planSelect");
 Object.keys(plans).forEach(p => {
     const o = document.createElement("option"); o.value = p; o.textContent = p;
