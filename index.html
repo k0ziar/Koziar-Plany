@@ -190,21 +190,49 @@
 
 <script>
 // --- KONFIGURACJA WERSJI I PLANÓW ---
-const GLOBAL_PLAN_VERSION = "1.1"; 
-const DEFAULT_PLAN_NAME = "Basic 3-dniowe FBW - by Koziar";
+const GLOBAL_PLAN_VERSION = "1.2"; // Podniesiona wersja, aby wymusić aktualizację u użytkowników
+const DEFAULT_PLAN_3D = "3-dniowy FBW - by Koziar";
+const DEFAULT_PLAN_4D = "4-dniowy Upper/Lower - by Koziar";
+const DEFAULT_PLAN_5D = "5-dniowy U/L/PPL - by Koziar";
 
 function getDefaultPlans() {
     return {
-        [DEFAULT_PLAN_NAME]: {
+        [DEFAULT_PLAN_3D]: {
             version: GLOBAL_PLAN_VERSION,
-            notes: "Zasady: Przykładowy 3 dniowy plan na przetrenowanie wszystkich partii. Rób ćwiczenia do upadku, notuj ciężary. Baw się dobrze!",
+            notes: "Przykładowy trening 3 dniowy Full Body Workout dla osób początkujących.\n\nRób ćwiczenia do upadku, notuj ciężary, jeśli robisz więcej powtórzeń tym samym ciężarem co tydzień temu - Dołóż sobie.\n\nSam notuj serie, powtórzenia i ciężar. Baw się, eksperymentuj, progresuj i dowolnie modyfikuj pod samego siebie.",
             days: [
-                { name: "Poniedziałek - Upper A", active: true, rows: [["Przysiady","4","6-10",""],["Wyciskanie płaska","4","6-10",""],["Wiosłowanie","4","8-12",""],["OHP","4","8-12",""],["Biceps","3","8-12",""],["Triceps","3","8-12",""],["Brzuch","4","8-12",""]] },
+                { name: "Poniedziałek - FBW A", active: true, rows: [["Przysiady","4","6-10",""],["Wyciskanie ławka płaska","4","6-10",""],["Wiosłowanie","4","8-12",""],["OHP","4","8-12",""],["Biceps","3","8-12",""],["Triceps","3","8-12",""],["Brzuch","4","8-12",""]] },
                 { name: "Wtorek", active: false, rows: [] },
-                { name: "Środa - FBW B", active: true, rows: [["Wyciskanie płaska","4","6-10",""],["Suwnica/Przysiad","4","8-12",""],["Podciąganie","4","8-12",""],["Wznosy","3","8-12",""],["Triceps","3","8-12",""],["Biceps","3","8-12",""],["Łydki","4","15+",""]] },
+                { name: "Środa - FBW B", active: true, rows: [["Wyciskanie ławka płaska","4","6-10",""],["Suwnica/Przysiad wąsko","4","8-12",""],["Podciąganie neutralny chwyt","4","8-12",""],["Wznosy","3","8-12",""],["Triceps","3","8-12",""],["Biceps","3","8-12",""],["Łydki","4","15+",""]] },
                 { name: "Czwartek", active: false, rows: [] },
                 { name: "Piątek - FBW C", active: true, rows: [["Przysiad","4","6-10",""],["Martwy ciąg","4","6-10",""],["Wiosłowanie szeroko","4","8-12",""],["Wyciskanie skos","3","8-12",""],["Dipy","3","8-12",""],["Biceps","4","8-12",""],["Brzuch","4","8-12",""]] },
                 { name: "Sobota", active: false, rows: [] },
+                { name: "Niedziela", active: false, rows: [] }
+            ]
+        },
+        [DEFAULT_PLAN_4D]: {
+            version: GLOBAL_PLAN_VERSION,
+            notes: "Przykładowy trening 4 dniowy Upper/Lower dla osób początkujących.\n\nRób ćwiczenia do upadku, notuj ciężary, jeśli robisz więcej powtórzeń tym samym ciężarem co tydzień temu - Dołóż sobie.\n\nSam notuj serie, powtórzenia i ciężar. Baw się, eksperymentuj, progresuj i dowolnie modyfikuj pod samego siebie.",
+            days: [
+                { name: "Poniedziałek - Upper A", active: true, rows: [["Wyciskanie płaska","4","6-10",""],["Podciąganie szerokie","4","8-12",""],["Wiosłowanie","4","8-12",""],["OHP","4","8-12",""],["Wznosy","4","8-12",""],["Biceps","4","8-12",""],["Triceps","4","8-12",""]] },
+                { name: "Wtorek - Lower A", active: true, rows: [["Przysiad","4","6-10",""],["RDL","4","8-12",""],["Hip thrust","4","8-12",""],["Prostowanie nóg na maszynie","4","8-12",""],["Brzuch maszyna","4","8-12",""],["Unoszenie kolan po skosie wiszac","4","8-12",""],["Łydki","4","15+",""]] },
+                { name: "Środa", active: false, rows: [] },
+                { name: "Czwartek - Upper B", active: true, rows: [["Wiosłowanie","4","8-12",""],["Podciąganie neutralny chwyt","4","8-12",""],["Wyciskanie płaskie","4","8-12",""],["Dipy","4","8-12",""],["OHP","4","8-12",""],["Wznosy","4","8-12",""],["Biceps","4","8-12",""]] },
+                { name: "Piątek - Lower B", active: true, rows: [["Martwy ciąg","4","6-10",""],["Przysiady bułgarskie","4","8-12",""],["Uginanie nóg na maszynie","4","8-12",""],["Back extension","4","8-12",""],["Brzuszki skośne","4","8-12",""],["Unoszenie kolan w opadzie","4","8-12",""],["Łydki","4","15+",""]] },
+                { name: "Sobota", active: false, rows: [] },
+                { name: "Niedziela", active: false, rows: [] }
+            ]
+        },
+        [DEFAULT_PLAN_5D]: {
+            version: GLOBAL_PLAN_VERSION,
+            notes: "Przykładowy trening 5 dniowy Upper/Lower Push Pull Legs dla osób mniej początkujących.\n\nRób ćwiczenia do upadku, notuj ciężary, jeśli robisz więcej powtórzeń tym samym ciężarem co tydzień temu - Dołóż sobie.\n\nSam notuj serie, powtórzenia i ciężar. Baw się, eksperymentuj, progresuj i dowolnie modyfikuj pod samego siebie.",
+            days: [
+                { name: "Poniedziałek - Upper", active: true, rows: [["Wyciskanie płaska","4","6-10",""],["Podciąganie szerokie","4","8-12",""],["Wiosłowanie szerokie","4","8-12",""],["OHP","4","8-12",""],["Wznosy na wyciągu","4","8-12",""],["Biceps","4","8-12",""],["Triceps","4","8-12",""]] },
+                { name: "Wtorek - Lower", active: true, rows: [["Przysiad","4","6-10",""],["RDL","4","8-12",""],["Hip thrust","4","8-12",""],["Prostowanie nóg na maszynie","4","8-12",""],["Brzuch maszyna","4","8-12",""],["Unoszenie kolan po skosie wiszac","4","8-12",""],["Łydki","4","8-12",""]] },
+                { name: "Środa", active: false, rows: [] },
+                { name: "Czwartek - Push", active: true, rows: [["Wyciskanie na płaskiej","4","6-10",""],["Hantle skos","4","8-12",""],["Rozpiętki maszyna","4","8-12",""],["OHP","3","8-12",""],["Wznosy wyciąg","4","8-12",""],["Triceps warkocz","4","8-12",""],["Triceps nad głową","4","8-12",""]] },
+                { name: "Piątek - Pull", active: true, rows: [["Wiosłowanie","4","8-12",""],["Podciąganie neutralnym chwytem","4","8-12",""],["Pullover","4","8-12",""],["Tył barków","4","8-12",""],["Biceps modlitewnik","4","8-12",""],["Biceps jednorącz","4","8-12",""],["Przedramie","3","8-12",""]] },
+                { name: "Sobota - Legs", active: true, rows: [["Przysiad","4","6-10",""],["Martwy ciąg","4","6-10",""],["Prostowanie nóg","4","8-12",""],["Uginanie nóg","4","8-12",""],["Unoszenie kolan wisząc","4","8-12",""],["Brzuszki skośne","4","8-12",""],["Łydki","4","15+",""]] },
                 { name: "Niedziela", active: false, rows: [] }
             ]
         }
@@ -217,12 +245,15 @@ let currentPlan = localStorage.getItem("currentPlanName");
 
 const defaultPlans = getDefaultPlans();
 
-if (!plans[DEFAULT_PLAN_NAME] || plans[DEFAULT_PLAN_NAME].version !== GLOBAL_PLAN_VERSION) {
-    plans[DEFAULT_PLAN_NAME] = defaultPlans[DEFAULT_PLAN_NAME];
-}
+// Aktualizacja domyślnych planów (dodanie nowych lub nadpisanie starych wersji)
+Object.keys(defaultPlans).forEach(planName => {
+    if (!plans[planName] || plans[planName].version !== GLOBAL_PLAN_VERSION) {
+        plans[planName] = defaultPlans[planName];
+    }
+});
 
 if (!currentPlan || !plans[currentPlan]) {
-    currentPlan = DEFAULT_PLAN_NAME;
+    currentPlan = DEFAULT_PLAN_3D;
 }
 
 Object.keys(plans).forEach(key => { 
