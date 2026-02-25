@@ -1,189 +1,191 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Koziar Plany</title>
-    
-    <link rel="icon" type="image/png" href="logo.png">
-    <link rel="apple-touch-icon" href="logo.png">
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0a0a0a">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Koziar Plany</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        :root {
-            --bg: #0a0a0a;
-            --card: #161616;
-            --border: #2a2a2a;
-            --text: #ffffff;
-            --gold: #d4af37;
-            --gold-glow: rgba(212, 175, 55, 0.4);
-            --danger: #ff4444;
-        }
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<meta name="theme-color" content="#0a0a0a">
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            margin: 0; font-family: 'Inter', sans-serif; 
-            background: var(--bg); color: var(--text); 
-            padding-bottom: 100px; overflow-x: hidden;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
 
-        header {
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(15px);
-            padding: 10px; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; gap: 8px;
-        }
+<style>
+:root{
+--bg:#0a0a0a;
+--card:#161616;
+--border:#2a2a2a;
+--text:#ffffff;
+--gold:#d4af37;
+--gold-glow:rgba(212,175,55,.3);
+--danger:#ff4444;
+--pro:#3b82f6;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding-bottom:100px}
 
-        #planSelect { 
-            background: var(--card); color: var(--gold); 
-            border: 1px solid var(--border); padding: 10px; 
-            border-radius: 8px; flex: 1; font-weight: 700; font-size: 14px;
-            outline: none;
-        }
-        
-        optgroup { background: #111; color: #888; }
-        option { background: var(--card); color: var(--text); }
+/* --- NAGŁÓWEK --- */
+header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(15px);
+    padding: 12px 15px; border-bottom: 1px solid var(--border);
+}
+#planSelect {
+    width: 100%; background: var(--card); color: var(--gold);
+    border: 1px solid var(--border); padding: 12px;
+    border-radius: 12px; font-weight: 800; font-size: 14px; outline: none;
+    appearance: none; text-align: center;
+}
 
-        .header-actions { display: flex; gap: 6px; }
+/* --- LOGO W ROGU --- */
+.floating-logo {
+    position: fixed; bottom: 85px; right: 20px;
+    width: 50px; height: 50px; z-index: 999;
+    cursor: pointer; transition: 0.3s;
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+}
+.floating-logo:active { transform: scale(0.9); }
+.floating-logo img { width: 100%; height: 100%; object-fit: contain; }
 
-        .icon-btn {
-            background: var(--card); color: var(--text);
-            border: 1px solid var(--border);
-            width: 40px; height: 40px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 8px; cursor: pointer; transition: 0.2s;
-        }
-        .icon-btn.gold { background: var(--gold); color: #000; border: none; }
-        .icon-btn:active { transform: scale(0.95); }
+/* --- DOLNY NAV BAR --- */
+.bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(22, 22, 22, 0.98);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-around;
+    padding: 10px 5px; z-index: 1000;
+}
+.nav-btn {
+    display: flex; flex-direction: column; align-items: center;
+    background: none; border: none; color: #666; gap: 4px;
+    font-size: 9px; font-weight: 600; cursor: pointer; transition: 0.2s;
+}
+.nav-btn.active { color: var(--gold); }
+.nav-btn i { width: 22px; height: 22px; }
+.nav-btn.pro-btn.active-pro { color: var(--pro); }
 
-        main { padding: 15px; max-width: 600px; margin: 0 auto; }
+/* --- MAIN --- */
+main { padding: 12px; max-width: 600px; margin: 0 auto; }
 
-        /* ZABLOKOWANE PLANY */
-        .locked-mode #week, .locked-mode .notes-area {
-            opacity: 0.45; filter: grayscale(0.7); pointer-events: none; user-select: none;
-        }
+.notes-area {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; margin-bottom: 20px; padding: 12px;
+}
+.notes-area label { display: block; color: var(--gold); font-size: 9px; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; opacity: 0.6; letter-spacing: 1px; }
+.notes-area textarea { width: 100%; background: transparent; border: none; color: #bbb; font-size: 13px; resize: none; outline: none; min-height: 40px; }
 
-        .activate-banner {
-            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
-            border: 1px solid var(--gold); border-radius: 12px;
-            padding: 22px; margin-bottom: 25px; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px var(--gold-glow);
-            position: relative; z-index: 10;
-        }
+/* --- KARTA DNIA --- */
+.day { background: var(--card); margin-bottom: 20px; border-radius: 18px; border: 1px solid var(--border); overflow: hidden; }
+.day.inactive { opacity: 0.25; filter: grayscale(1); }
+.day.active-today { border-color: var(--gold); box-shadow: 0 4px 25px var(--gold-glow); }
 
-        .btn-activate {
-            background: var(--gold); color: #000; border: none;
-            padding: 14px 28px; border-radius: 10px; font-weight: 900;
-            text-transform: uppercase; width: 100%; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-        }
+.day-header {
+    background: rgba(255, 255, 255, 0.03); padding: 12px 15px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.day-title-input { background: transparent; border: none; color: var(--gold); font-size: 15px; font-weight: 800; text-transform: uppercase; }
 
-        .notes-area {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 12px; margin-bottom: 20px; padding: 12px;
-        }
-        .notes-area label { color: var(--gold); font-size: 11px; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 5px; }
-        .notes-area textarea { width: 100%; background: transparent; border: none; color: #ccc; font-size: 14px; outline: none; resize: none; }
+/* --- TABELA --- */
+.table-wrapper { width: 100%; overflow-x: hidden; }
+.pro-mode .table-wrapper { overflow-x: auto; }
 
-        .day { 
-            background: var(--card); margin-bottom: 18px; 
-            border-radius: 16px; border: 1px solid var(--border); 
-            overflow: hidden; transition: 0.3s;
-        }
-        .day.inactive { opacity: 0.25 !important; filter: grayscale(1); }
-        .day.active-today { border-color: var(--gold); box-shadow: 0 0 18px var(--gold-glow); }
-        
-        /* PODŚWIETLENIE EDYCJI (Oryginalny styl z chuj.html) */
-        .day.editing { border-color: var(--gold); box-shadow: 0 0 15px var(--gold-glow); }
+table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.pro-mode table { width: 700px; } 
 
-        .day-header {
-            background: rgba(255,255,255,0.02); padding: 12px 15px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        
-        .day-title-input {
-            background: transparent; border: none; color: var(--gold);
-            font-size: 15px; font-weight: 800; text-transform: uppercase; outline: none;
-        }
+th { font-size: 8px; color: #555; padding: 10px 2px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+td { padding: 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
 
-        table { width: 100%; border-collapse: collapse; }
-        th { font-size: 10px; color: #555; padding: 12px 5px; text-transform: uppercase; letter-spacing: 0.5px; }
-        td { border-top: 1px solid var(--border); padding: 0; text-align: center; }
+input[type="text"] { 
+    width: 100%; background: transparent; border: none; color: var(--text); 
+    padding: 14px 2px; font-size: 13px; text-align: center; outline: none; 
+}
 
-        input[type="text"] { 
-            width: 100%; background: transparent; border: none; 
-            color: var(--text); padding: 14px 2px; font-size: 15px; text-align: center; 
-            outline: none; transition: background 0.2s;
-        }
-        input[type="text"]:focus { background: rgba(212, 175, 55, 0.05); }
-        
-        .ex-name { text-align: left; padding-left: 15px; width: 45%; }
-        .ex-name input { text-align: left; font-weight: 600; }
-        
-        .col-s, .col-p, .col-kg { width: 45px; }
-        .col-check { width: 45px; }
+.col-check { width: 40px; }
+.col-name { width: auto; text-align: left; padding-left: 10px; }
+.col-val { width: 45px; }
+.col-pro { width: 60px; display: none; background: rgba(59, 130, 246, 0.02); }
 
-        .edit-ui { display: none; width: 85px; }
-        .editing .edit-ui { display: table-cell; vertical-align: middle; }
-        
-        .btn-add-row { 
-            display: none; width: 100%; padding: 16px; 
-            background: transparent; color: var(--gold); border: none;
-            border-top: 1px solid var(--border); font-weight: 800; cursor: pointer;
-        }
-        .editing .btn-add-row { display: block; }
+.pro-mode .col-pro { display: table-cell; }
 
-        .row-ops { display: flex; gap: 8px; justify-content: center; }
-        .move-btns { display: flex; flex-direction: column; gap: 2px; }
-        .move-btns button { font-size: 9px; padding: 4px; background: #222; color: #fff; border: 1px solid #333; border-radius: 4px; }
+tr.done { background: rgba(212, 175, 55, 0.05); }
+tr.done input { color: #444; text-decoration: line-through; }
+input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--gold); cursor: pointer; }
 
-        tr.done { background: rgba(212, 175, 55, 0.08); }
-        tr.done input { color: #555 !important; text-decoration: line-through; }
-        
-        input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--gold); cursor: pointer; }
-        input[type="checkbox"]:disabled { opacity: 0.3; cursor: not-allowed; }
+.btn-add-row { width: 100%; padding: 15px; background: transparent; color: var(--gold); border: none; border-top: 1px solid var(--border); font-weight: 700; font-size: 11px; cursor: pointer; }
 
-        .floating-logo {
-            position: fixed; bottom: 25px; right: 25px;
-            width: 55px; height: 55px; background: #000;
-            border: 2px solid var(--gold); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; z-index: 1000;
-        }
-    </style>
+/* MODALE */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 25px; }
+.modal.active { display: flex; }
+.modal-box { background: var(--card); width: 100%; max-width: 360px; padding: 25px; border-radius: 24px; border: 1px solid var(--border); text-align: center; }
+
+/* IKONY W TABELI */
+.row-icon-btn {
+    background: #222; border: 1px solid #333; color: #eee;
+    width: 30px; height: 30px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.row-icon-btn.active { background: var(--gold); color: #000; border: none; }
+
+.locked-mode .edit-only { display: none !important; }
+</style>
 </head>
+
 <body id="bodyTag">
 
 <header>
     <select id="planSelect" onchange="loadPlan()"></select>
-    <div class="header-actions">
-        <button class="icon-btn gold" onclick="newPlan()"><i data-lucide="plus"></i></button>
-        <button class="icon-btn" onclick="resetWeek()"><i data-lucide="rotate-ccw"></i></button>
-        <button class="icon-btn" onclick="openExport()"><i data-lucide="share-2"></i></button>
-        <button id="delBtn" class="icon-btn" style="color:var(--danger)" onclick="deletePlan()"><i data-lucide="trash-2"></i></button>
-    </div>
 </header>
 
+<div class="floating-logo" onclick="handleLogoClick()">
+    <img src="logo.png" alt="Logo">
+</div>
+
 <main>
-    <div id="activateArea"></div>
     <div class="notes-area">
-        <label>Notatki / Wskazówki</label>
-        <textarea id="planNotes" placeholder="Twoje uwagi..." oninput="autoHeight(this); saveNotes()"></textarea>
+        <label>Notatki do planu</label>
+        <textarea id="planNotes" oninput="autoHeight(this); saveNotes()" placeholder="Wpisz swoje uwagi..."></textarea>
     </div>
     <div id="week"></div>
 </main>
 
-<div class="floating-logo" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-    <img src="logo.png" alt="K" style="width:100%; border-radius:50%" onerror="this.style.display='none'">
+<nav class="bottom-nav">
+    <button class="nav-btn pro-btn" id="proBtn" onclick="togglePro()">
+        <i data-lucide="zap"></i><span>PRO</span>
+    </button>
+    <button class="nav-btn edit-only" onclick="newPlan()">
+        <i data-lucide="plus-square"></i><span>NOWY</span>
+    </button>
+    <button class="nav-btn" onclick="resetWeek()">
+        <i data-lucide="rotate-ccw"></i><span>RESET</span>
+    </button>
+    <button class="nav-btn" onclick="openExport()">
+        <i data-lucide="share-2"></i><span>EKSPORT</span>
+    </button>
+    <button class="nav-btn" onclick="openImport()">
+        <i data-lucide="download"></i><span>IMPORT</span>
+    </button>
+    <button class="nav-btn edit-only" style="color:var(--danger)" onclick="deletePlan()">
+        <i data-lucide="trash-2"></i><span>USUŃ</span>
+    </button>
+</nav>
+
+<div class="modal" id="infoModal">
+    <div class="modal-box">
+        <h2 id="infoTitle" style="color:var(--gold); margin-top:0; font-size:18px"></h2>
+        <div id="infoContent" style="font-size:14px; line-height:1.6; color:#bbb; margin: 20px 0; text-align: left; background: #000; padding: 15px; border-radius: 12px; border: 1px solid #222;"></div>
+        <button class="btn-add-row" onclick="closeModals()" style="border:1px solid var(--border); border-radius:12px">ZAMKNIJ</button>
+    </div>
 </div>
 
+<div class="modal" id="exportModal"><div class="modal-box"><h3>Eksport TSV</h3><textarea id="exportText" style="height:150px;width:100%;background:#000;color:#0f0;font-family:monospace;font-size:10px;padding:10px;border:1px solid #333;border-radius:12px" readonly></textarea><button class="btn-add-row" onclick="downloadTSV()" style="color:var(--gold)">POBIERZ .TSV</button><button class="btn-add-row" onclick="closeModals()">ZAMKNIJ</button></div></div>
+
+<div class="modal" id="importModal"><div class="modal-box"><h3>Importuj Plan</h3><input type="file" id="importFile" accept=".tsv" onchange="handleFileSelect(event)" style="margin-bottom:15px; font-size:12px; color:#fff"><textarea id="importText" style="height:120px;width:100%;background:#000;color:#fff;padding:10px;border:1px solid #333;border-radius:12px"></textarea><button class="btn-add-row" onclick="applyImport()" style="color:var(--gold)">IMPORTUJ</button><button class="btn-add-row" onclick="closeModals()">ANULUJ</button></div></div>
+
 <script>
-// KONFIGURACJA PLIKÓW (ścieżki relatywne - pliki w tym samym folderze)
 const REMOTE_FILES = {
     "3-dniowy FBW - by Koziar": "basic1.tsv",
     "4-dniowy Upper/Lower - by Koziar": "basic2.tsv",
@@ -195,206 +197,233 @@ let checks = JSON.parse(localStorage.getItem("checks")) || {};
 let currentPlan = localStorage.getItem("currentPlanName") || "";
 let editStates = {};
 
-// Pobieranie danych z GitHub Pages (pliki TSV w tym samym folderze)
-async function fetchRemotePlans() {
-    for (const [name, file] of Object.entries(REMOTE_FILES)) {
-        try {
-            const resp = await fetch(file);
-            if (!resp.ok) continue;
-            const text = await resp.text();
-            plans[name] = parseTSV(text);
-            plans[name].isLocked = true;
-        } catch (e) { console.warn("Nie znaleziono pliku:", file); }
-    }
-    initSelect();
-    if (!currentPlan || !plans[currentPlan]) currentPlan = Object.keys(plans)[0];
-    render();
-}
-
-function parseTSV(text) {
-    const lines = text.trim().split("\n");
-    let week = [], day = null, notes = "";
-    lines.forEach(l => {
-        if (l.startsWith("!!NOTES!!")) notes = l.split("\t")[1]?.replace(/\[BR\]/g, "\n") || "";
-        else if (l.startsWith("#")) {
-            const [n, s] = l.replace("#", "").split("|").map(x => x.trim());
-            day = { name: n, active: s === "AKTYWNY", rows: [] };
-            week.push(day);
-        } else if (day && l.trim()) {
-            let row = l.split("\t").map(x => x.trim());
-            while(row.length < 4) row.push("");
-            day.rows.push(row);
-        }
-    });
-    return { notes, days: week };
-}
-
-function save() {
+function save(){
     localStorage.setItem("plans", JSON.stringify(plans));
     localStorage.setItem("checks", JSON.stringify(checks));
     localStorage.setItem("currentPlanName", currentPlan);
 }
 
-// --- FUNKCJE BEZ SKAKANIA STRONY ---
-function toggleCheck(di, ri, checked, el) {
-    if (!checks[currentPlan]) checks[currentPlan] = {};
-    if (!checks[currentPlan][di]) checks[currentPlan][di] = {};
-    checks[currentPlan][di][ri] = checked;
-    
-    // Wizualna zmiana wiersza (bez render())
-    const row = el.closest('tr');
-    if (checked) row.classList.add('done');
-    else row.classList.remove('done');
-    
-    // Sprawdzenie glow dla całego dnia
-    const dayDiv = el.closest('.day');
-    const anyChecked = Array.from(dayDiv.querySelectorAll('input[type="checkbox"]')).some(i => i.checked);
-    if (anyChecked) dayDiv.classList.add('active-today');
-    else dayDiv.classList.remove('active-today');
-    
-    save();
+// --- LOGO & UI ---
+function handleLogoClick() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Tutaj możesz dodać dodatkowe info:
+    // alert("Aplikacja Koziar Plany v2.0\nKontakt: ...");
 }
 
-function toggleDay(di, el) {
-    plans[currentPlan].days[di].active = !plans[currentPlan].days[di].active;
-    const dayDiv = el.closest('.day');
-    
-    if (plans[currentPlan].days[di].active) dayDiv.classList.remove('inactive');
-    else dayDiv.classList.add('inactive');
-    
-    // Podmiana ikony bez render()
-    const icon = el.querySelector('i');
-    icon.setAttribute('data-lucide', plans[currentPlan].days[di].active ? 'pause' : 'play');
-    lucide.createIcons();
-    save();
+function showInfo(title, content) {
+    if(!content || content.trim() === "" || content === "...") return;
+    document.getElementById("infoTitle").innerText = title;
+    document.getElementById("infoContent").innerText = content;
+    document.getElementById("infoModal").classList.add("active");
 }
 
+function togglePro(){
+    if(!plans[currentPlan] || plans[currentPlan].isLocked) return;
+    plans[currentPlan].proMode = !plans[currentPlan].proMode;
+    save(); render();
+}
+
+function newPlan() {
+    const n = prompt("Nazwa planu:");
+    if(n) {
+        plans[n] = { notes:"", days:["Poniedziałek","Wtorek","Środa","Czwartek","Piątek","Sobota","Niedziela"].map(d=>({name:d,active:true,rows:[]})), isLocked:false, proMode:false };
+        currentPlan=n; save(); initSelect(); render();
+    }
+}
+
+function deletePlan(){
+    if(plans[currentPlan]?.isLocked) return;
+    if(confirm("Usunąć plan?")){ delete plans[currentPlan]; currentPlan=Object.keys(plans)[0]||""; save(); location.reload(); }
+}
+
+function resetWeek(){
+    if(confirm("Wyczyścić wszystkie postępy?")){ checks[currentPlan]={}; save(); render(); }
+}
+
+// --- RENDER ---
 function render() {
-    const weekEl = document.getElementById("week");
+    const p = plans[currentPlan];
+    if(!p) return;
+
+    const isLocked = p.isLocked;
+    document.getElementById("bodyTag").className = isLocked ? "locked-mode" : "";
+    document.getElementById("proBtn").classList.toggle("active-pro", p.proMode);
+    
     const notesEl = document.getElementById("planNotes");
-    const actArea = document.getElementById("activateArea");
-    const body = document.getElementById("bodyTag");
-    
-    if(!currentPlan || !plans[currentPlan]) return;
-    const isLocked = plans[currentPlan].isLocked;
-    
-    body.className = isLocked ? "locked-mode" : "";
-    actArea.innerHTML = isLocked ? `
-        <div class="activate-banner">
-            <p style="color:var(--gold);font-weight:800;margin:0 0 12px 0;font-size:13px">PROJEKT KOZIAR - PODGLĄD</p>
-            <button class="btn-activate" onclick="activatePlan()">🚀 AKTYWUJ TEN PLAN (KOPIA)</button>
-        </div>` : "";
-    
-    document.getElementById("delBtn").style.display = isLocked ? "none" : "flex";
-    notesEl.value = plans[currentPlan].notes || "";
+    notesEl.value = p.notes || "";
     notesEl.readOnly = isLocked;
     autoHeight(notesEl);
 
-    weekEl.innerHTML = plans[currentPlan].days.map((day, di) => {
+    const weekEl = document.getElementById("week");
+    weekEl.className = p.proMode ? "pro-mode" : "standard-mode";
+
+    weekEl.innerHTML = p.days.map((day, di) => {
         const dayChecks = checks[currentPlan]?.[di] || {};
         const isEditing = editStates[di];
         const hasChecks = Object.values(dayChecks).some(v => v);
 
         return `
-            <div class="day ${day.active ? '' : 'inactive'} ${isEditing ? 'editing' : ''} ${hasChecks && day.active ? 'active-today' : ''}">
-                <div class="day-header">
-                    <input class="day-title-input" value="${day.name}" ${isEditing ? '' : 'readonly'} oninput="plans[currentPlan].days[${di}].name=this.value;save()">
-                    <div style="display:flex; gap:8px;">
-                        ${!isLocked ? `
-                            <button class="icon-btn" onclick="toggleDay(${di}, this)"><i data-lucide="${day.active ? 'pause' : 'play'}" style="width:14px"></i></button>
-                            <button class="icon-btn ${isEditing ? 'gold' : ''}" style="width:75px; font-size:10px; font-weight:900" onclick="toggleEdit(${di})">${isEditing ? 'GOTOWE' : 'EDYTUJ'}</button>
-                        ` : ''}
-                    </div>
+        <div class="day ${day.active?'':'inactive'} ${isEditing?'editing':''} ${hasChecks && day.active ? 'active-today' : ''}">
+            <div class="day-header">
+                <input class="day-title-input" value="${day.name}" ${isEditing && !isLocked ? '' : 'readonly'} oninput="plans[currentPlan].days[${di}].name=this.value;save()">
+                <div style="display:flex;gap:8px">
+                    ${!isLocked ? `
+                        <button class="row-icon-btn ${day.active?'active':''}" onclick="toggleDay(${di})">
+                            <i data-lucide="${day.active?'pause':'play'}" style="width:14px"></i>
+                        </button>
+                        <button class="row-icon-btn ${isEditing?'active':''}" onclick="toggleEdit(${di})">
+                            <i data-lucide="edit-3" style="width:14px"></i>
+                        </button>
+                    ` : ''}
                 </div>
+            </div>
+            <div class="table-wrapper">
                 <table>
-                    <thead><tr><th>✔</th><th style="text-align:left;padding-left:15px">Ćwiczenie</th><th>S</th><th>P</th><th>kg</th><th class="edit-ui">Opcje</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th class="col-check">✔</th>
+                            <th class="col-name">Ćwiczenie</th>
+                            <th class="col-val">S</th>
+                            <th class="col-val">P</th>
+                            <th class="col-val">kg</th>
+                            <th class="col-pro">Odp.</th>
+                            <th class="col-pro">RIR</th>
+                            <th class="col-pro">Tempo</th>
+                            ${isEditing ? '<th style="width:40px"></th>' : ''}
+                        </tr>
+                    </thead>
                     <tbody>
                         ${day.rows.map((r, ri) => `
-                            <tr class="${dayChecks[ri] ? 'done' : ''}">
-                                <td class="col-check"><input type="checkbox" ${dayChecks[ri] ? 'checked' : ''} ${isLocked ? 'disabled' : ''} onchange="toggleCheck(${di},${ri},this.checked, this)"></td>
-                                <td class="ex-name"><input type="text" value="${r[0]}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},0,this.value)"></td>
-                                <td class="col-s"><input type="text" inputmode="decimal" value="${r[1]}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},1,this.value)"></td>
-                                <td class="col-p"><input type="text" inputmode="decimal" value="${r[2]}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},2,this.value)"></td>
-                                <td class="col-kg"><input type="text" inputmode="decimal" value="${r[3]}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},3,this.value)"></td>
-                                <td class="edit-ui">
-                                    <div class="row-ops">
-                                        <div class="move-btns">
-                                            <button onclick="moveRow(${di},${ri},-1)">▲</button>
-                                            <button onclick="moveRow(${di},${ri},1)">▼</button>
-                                        </div>
-                                        <button onclick="delRow(${di},${ri})" style="background:none;border:none;color:var(--danger);font-size:16px">✕</button>
-                                    </div>
+                            <tr class="${dayChecks[ri]?'done':''}">
+                                <td class="col-check"><input type="checkbox" ${dayChecks[ri]?'checked':''} onchange="toggleCheck(${di},${ri},this.checked)"></td>
+                                <td class="col-name">
+                                    <input type="text" value="${r[0]||''}" oninput="updRow(${di},${ri},0,this.value)" placeholder="..." 
+                                    onclick="${!isEditing ? `showInfo('${r[0]}', '${(r[7]||"").replace(/'/g, "\\'")}')` : ''}"
+                                    style="${!isEditing && r[7] && r[7] !== '...' ? 'text-decoration: underline dotted var(--gold);' : ''}">
                                 </td>
+                                <td class="col-val"><input type="text" value="${r[1]||''}" oninput="updRow(${di},${ri},1,this.value)"></td>
+                                <td class="col-val"><input type="text" value="${r[2]||''}" oninput="updRow(${di},${ri},2,this.value)"></td>
+                                <td class="col-val"><input type="text" value="${r[3]||''}" oninput="updRow(${di},${ri},3,this.value)"></td>
+                                <td class="col-pro"><input type="text" value="${r[4]||''}" oninput="updRow(${di},${ri},4,this.value)"></td>
+                                <td class="col-pro"><input type="text" value="${r[5]||''}" oninput="updRow(${di},${ri},5,this.value)"></td>
+                                <td class="col-pro"><input type="text" value="${r[6]||''}" oninput="updRow(${di},${ri},6,this.value)"></td>
+                                ${isEditing ? `
+                                    <td style="display:flex; gap:4px; align-items:center; padding-top:6px">
+                                        <button onclick="promptInfo(${di},${ri})" style="background:none; border:none; color:var(--gold)"><i data-lucide="info" style="width:14px"></i></button>
+                                        <button onclick="delRow(${di},${ri})" style="color:var(--danger);background:none;border:none"><i data-lucide="x" style="width:14px"></i></button>
+                                    </td>` : ''}
                             </tr>
                         `).join('')}
                     </tbody>
                 </table>
-                ${!isLocked ? `<button class="btn-add-row" onclick="addRow(${di})">+ DODAJ ĆWICZENIE</button>` : ''}
             </div>
-        `;
+            ${isEditing ? `<button class="btn-add-row" onclick="addRow(${di})">+ DODAJ ĆWICZENIE</button>` : ''}
+        </div>`;
     }).join('');
+
     lucide.createIcons();
 }
 
-function toggleEdit(di) { editStates[di] = !editStates[di]; render(); }
-function updRow(di, ri, ci, v) { if(!plans[currentPlan].isLocked) { plans[currentPlan].days[di].rows[ri][ci] = v; save(); } }
-function addRow(di) { plans[currentPlan].days[di].rows.push(["","","",""]); save(); render(); }
-function delRow(di, ri) { plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); }
-function moveRow(di, ri, dir) {
-    const r = plans[currentPlan].days[di].rows;
-    const t = ri + dir;
-    if(t >= 0 && t < r.length) { [r[ri], r[t]] = [r[t], r[ri]]; save(); render(); }
+// --- LOGIKA POMOCNICZA ---
+function updRow(di,ri,ci,v){ plans[currentPlan].days[di].rows[ri][ci]=v; save(); }
+function addRow(di){ plans[currentPlan].days[di].rows.push(["","","","","","","","..."]); save(); render(); }
+function delRow(di,ri){ plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); }
+function promptInfo(di,ri){
+    const current = plans[currentPlan].days[di].rows[ri][7] || "";
+    const n = prompt("Dodatkowe informacje / opis ćwiczenia:", current);
+    if(n !== null){ updRow(di,ri,7,n); render(); }
 }
-
-function activatePlan() {
-    const n = prompt("Nazwa Twojej kopii:", currentPlan.replace(" - by Koziar", "") + " (Moja)");
-    if(n) {
-        plans[n] = JSON.parse(JSON.stringify(plans[currentPlan]));
-        plans[n].isLocked = false;
-        plans[n].notes = "Twoja własna kopia planu. Możesz ją dowolnie edytować.";
-        currentPlan = n; save(); location.reload();
-    }
+function toggleCheck(di,ri,v){
+    if(!checks[currentPlan]) checks[currentPlan] = {};
+    if(!checks[currentPlan][di]) checks[currentPlan][di] = {};
+    checks[currentPlan][di][ri] = v; save(); render();
 }
-
-function loadPlan() { currentPlan = document.getElementById("planSelect").value; editStates={}; render(); }
-function autoHeight(el) { el.style.height = "auto"; el.style.height = el.scrollHeight + "px"; }
-function saveNotes() { if(!plans[currentPlan].isLocked) { plans[currentPlan].notes = document.getElementById("planNotes").value; save(); } }
+function toggleDay(di){ plans[currentPlan].days[di].active = !plans[currentPlan].days[di].active; save(); render(); }
+function toggleEdit(di){ editStates[di] = !editStates[di]; render(); }
+function autoHeight(el){ el.style.height="auto"; el.style.height=el.scrollHeight+"px"; }
+function saveNotes(){ if(plans[currentPlan] && !plans[currentPlan].isLocked){ plans[currentPlan].notes=document.getElementById("planNotes").value; save(); }}
 
 function initSelect() {
-    const ps = document.getElementById("planSelect");
-    const gL = document.createElement("optgroup"); gL.label = "📋 PROJEKTY KOZIAR";
+    const ps = document.getElementById("planSelect"); ps.innerHTML = "";
+    const gL = document.createElement("optgroup"); gL.label = "📋 PLANY KOZIAR";
     const gU = document.createElement("optgroup"); gU.label = "💪 TWOJE PLANY";
-    ps.innerHTML = "";
     Object.keys(plans).sort().forEach(k => {
-        const o = document.createElement("option"); o.value = k; o.textContent = k;
+        const o = new Option(k, k);
         if(plans[k].isLocked) gL.appendChild(o); else gU.appendChild(o);
     });
-    ps.add(gL); ps.add(gU);
-    ps.value = currentPlan;
+    ps.add(gL); ps.add(gU); ps.value = currentPlan;
 }
-
-function newPlan() {
-    const n = prompt("Nazwa nowego planu:");
-    if(n) { 
-        plans[n] = {notes:"", isLocked:false, days:[{name:"Dzień 1", active:true, rows:[]}]}; 
-        currentPlan=n; save(); location.reload(); 
-    }
-}
-
-function deletePlan() { if(confirm("Usunąć ten plan na stałe?")) { delete plans[currentPlan]; currentPlan=Object.keys(plans)[0]; save(); location.reload(); } }
 
 function openExport() {
-    const out = []; const p = plans[currentPlan];
-    out.push(`!!NOTES!!\t${(p.notes||"").replace(/\n/g, "[BR]")}`);
+    const p = plans[currentPlan]; if(!p) return;
+    let out = [`!!NOTES!!\t${(p.notes||"").replace(/\n/g,"[BR]")}`];
     p.days.forEach(d => {
-        out.push(`# ${d.name} | ${d.active ? "AKTYWNY" : "PRZERWA"}`);
+        out.push(`# ${d.name} | ${d.active?'AKTYWNY':'PRZERWA'}`);
         d.rows.forEach(r => out.push(r.join("\t")));
     });
-    alert("Dane planu skopiowane do konsoli (F12) lub możesz je wyeksportować jako plik TSV w pełnej wersji.");
-    console.log(out.join("\n"));
+    document.getElementById("exportText").value = out.join("\n");
+    document.getElementById("exportModal").classList.add("active");
+}
+
+function downloadTSV() {
+    const t = document.getElementById("exportText").value;
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([t], {type: "text/tab-separated-values"}));
+    a.download = currentPlan.replace(/\s/g, '_') + ".tsv"; a.click();
+}
+
+function openImport() { document.getElementById("importModal").classList.add("active"); }
+
+function handleFileSelect(e) {
+    const reader = new FileReader();
+    reader.onload = (ev) => { document.getElementById("importText").value = ev.target.result; };
+    reader.readAsText(e.target.files[0]);
+}
+
+function applyImport() {
+    const txt = document.getElementById("importText").value.trim();
+    if(!txt) return;
+    const imported = parseTSV(txt);
+    const name = prompt("Podaj nazwę dla importowanego planu:", "Nowy Plan");
+    if(name) { plans[name] = imported; currentPlan = name; save(); location.reload(); }
+}
+
+function closeModals() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
+
+function parseTSV(text) {
+    const lines = text.trim().split("\n");
+    let week = [], day = null, notes = "";
+    lines.forEach(l => {
+        if(l.startsWith("!!NOTES!!")) notes = l.split("\t")[1]?.replace(/\[BR\]/g,"\n")||"";
+        else if(l.startsWith("#")) {
+            const p = l.replace("#","").split("|").map(x=>x.trim());
+            day = { name: p[0], active: p[1]==="AKTYWNY", rows: [] };
+            week.push(day);
+        } else if(day && l.trim()) {
+            let row = l.split("\t"); while(row.length<8) row.push("");
+            day.rows.push(row);
+        }
+    });
+    return { notes, days: week, proMode: false, isLocked: false };
+}
+
+async function fetchRemotePlans() {
+    for(const [name, file] of Object.entries(REMOTE_FILES)) {
+        try {
+            const r = await fetch(file);
+            if(r.ok) {
+                const text = await r.text();
+                plans[name] = parseTSV(text);
+                plans[name].isLocked = true;
+            }
+        } catch(e) {}
+    }
+    if(!currentPlan || !plans[currentPlan]) currentPlan = Object.keys(plans)[0] || "";
+    initSelect(); render();
 }
 
 fetchRemotePlans();
+function loadPlan(){ currentPlan=document.getElementById("planSelect").value; save(); render(); }
 </script>
 </body>
 </html>
