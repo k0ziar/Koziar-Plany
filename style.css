@@ -37,13 +37,17 @@ header {
 .icon-btn.gold { color: var(--gold); border-color: var(--gold-glow); }
 
 .btn-activate {
-    width: calc(100% - 30px); margin: 15px; padding: 18px;
-    background: var(--gold); color: #000; border: none;
-    border-radius: 10px; font-weight: 800; font-size: 14px;
-    cursor: pointer; box-shadow: 0 0 20px var(--gold-glow);
-    text-transform: uppercase;
+    width: calc(100% - 30px);
+    margin: 15px;
+    padding: 18px;
+    background: var(--gold);
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 0 20px var(--gold-glow);
 }
-
 .notes-container { padding: 0 15px; }
 #planNotes {
     width: 100%; background: var(--card); border: 1px solid var(--border);
@@ -73,13 +77,17 @@ th { text-align: left; padding: 10px; font-size: 11px; color: #666; border-botto
 td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.02); }
 
 input[type="text"] { width: 100%; background: transparent; border: none; color: #fff; font-size: 14px; outline: none; }
-input[readonly] { color: #888; }
+input[readonly] {
+    color: #888 !important;
+    cursor: default;
+}
 
 .col-check { width: 40px; }
 .col-s, .col-p, .col-kg { width: 50px; text-align: center; }
 .col-s input, .col-p input, .col-kg input { text-align: center; color: var(--gold); font-weight: bold; }
 
 .edit-ui { display: none; }
+/* Pokazywanie tylko gdy dzień jest w trybie edycji */
 .editing .edit-ui { display: table-cell; }
 
 .row-ops { display: flex; align-items: center; gap: 8px; }
@@ -110,3 +118,4 @@ input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--gold); c
     box-shadow: 0 4px 15px rgba(0,0,0,0.6); z-index: 1000;
 }
 .floating-logo img { width: 30px; height: 30px; }
+
