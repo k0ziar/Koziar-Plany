@@ -1,0 +1,143 @@
+:root {
+            --bg: #0a0a0a;
+            --card: #161616;
+            --border: #2a2a2a;
+            --text: #ffffff;
+            --gold: #d4af37;
+            --gold-glow: rgba(212, 175, 55, 0.3);
+            --danger: #ff4444;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 100px; }
+
+        /* POPRAWIONY HEADER MOBILNY */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(15px);
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            display: flex; 
+            flex-wrap: wrap; /* Pozwala elementom przejść niżej jeśli braknie miejsca */
+            align-items: center; 
+            gap: 6px;
+        }
+
+        #planSelect { 
+            background: var(--card); color: var(--gold); 
+            border: 1px solid var(--border); padding: 10px; 
+            border-radius: 8px; 
+            flex: 1; /* Zajmuje całą dostępną przestrzeń */
+            min-width: 140px; /* Nie pozwoli się ścisnąć za bardzo */
+            max-width: 100%; /* Nie wyjdzie poza ekran */
+            font-weight: 600; font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; /* Dodaje "..." gdy nazwa jest za długa */
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 5px;
+            flex-shrink: 0; /* Nie pozwala ikonom się ścisnąć */
+        }
+
+        .icon-btn {
+            background: var(--card); color: var(--text);
+            border: 1px solid var(--border);
+            width: 38px; height: 38px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 8px; cursor: pointer; transition: 0.2s;
+        }
+        .icon-btn.gold { background: var(--gold); color: #000; border: none; }
+
+        main { padding: 12px; max-width: 600px; margin: 0 auto; }
+
+        .notes-area {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 12px; margin-bottom: 20px; padding: 10px;
+        }
+        .notes-area label {
+            display: block; color: var(--gold); font-size: 10px;
+            font-weight: bold; text-transform: uppercase; margin-bottom: 5px;
+        }
+        .notes-area textarea {
+            width: 100%; background: transparent; border: none;
+            color: #bbb; font-size: 13px; font-family: inherit;
+            resize: none; outline: none; min-height: 40px;
+        }
+
+        .day { 
+            background: var(--card); margin-bottom: 15px; 
+            border-radius: 16px; border: 1px solid var(--border); 
+            overflow: hidden; transition: opacity 0.3s;
+        }
+        .day.inactive { opacity: 0.25; filter: grayscale(1); }
+        .day.active-today { border-color: var(--gold); box-shadow: 0 5px 20px var(--gold-glow); }
+
+        .day-header {
+            background: rgba(255,255,255,0.03); padding: 10px 15px;
+            display: flex; justify-content: space-between; align-items: center; gap: 10px;
+        }
+        
+        .day-title-input {
+            background: transparent; border: 1px dashed transparent;
+            color: var(--gold); font-size: 14px; font-weight: 700;
+            text-transform: uppercase; padding: 4px; width: 60%;
+        }
+        .editing .day-title-input { border-color: #444; background: rgba(0,0,0,0.2); }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { font-size: 9px; color: #555; padding: 10px 4px; text-transform: uppercase; }
+        td { border-top: 1px solid var(--border); padding: 2px; text-align: center; }
+
+        input { width: 100%; background: transparent; border: none; color: var(--text); padding: 12px 2px; font-size: 15px; text-align: center; }
+        input:focus { background: rgba(255,255,255,0.05); outline: none; }
+        
+        .ex-name { text-align: left; padding-left: 10px; width: auto; min-width: 110px; }
+        .ex-name input { text-align: left; font-weight: 500; }
+        .col-s, .col-p, .col-kg { width: 42px; }
+        .col-check { width: 40px; }
+
+        .edit-ui { display: none; width: 80px; }
+        .editing .edit-ui { display: table-cell; }
+        .editing .btn-add-row { display: block; }
+        
+        .btn-add-row { 
+            display: none; width: 100%; padding: 15px; 
+            background: transparent; color: var(--gold); 
+            border: 1px dashed var(--gold); border-top: 1px solid var(--border); 
+            font-weight: 600; cursor: pointer;
+        }
+
+        .row-ops { display: flex; gap: 10px; align-items: center; justify-content: center; }
+        .move-up-down { display: flex; flex-direction: column; gap: 4px; }
+        .move-up-down button { 
+            padding: 4px 8px; font-size: 11px; background: #222; 
+            border: 1px solid #444; color: #fff; border-radius: 4px; cursor: pointer; 
+        }
+
+        @keyframes highlight {
+            0% { background: var(--gold); }
+            100% { background: transparent; }
+        }
+        .moved-row { animation: highlight 1s ease-out; }
+
+        tr.done { background: rgba(212, 175, 55, 0.05); }
+        tr.done input { color: #555; text-decoration: line-through; }
+        input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--gold); cursor: pointer; }
+
+        .floating-logo {
+            position: fixed; bottom: 20px; right: 20px;
+            width: 60px; height: 60px;
+            background: #000; border: 2px solid var(--gold);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6); z-index: 1000; cursor: pointer;
+            overflow: hidden;
+        }
+        .floating-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 1001; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-box { background: var(--card); width: 100%; max-width: 400px; padding: 20px; border-radius: 12px; border: 1px solid var(--gold); }
