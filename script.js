@@ -1,5 +1,5 @@
 // --- KONFIGURACJA ---
-const GLOBAL_PLAN_VERSION = "1.8"; // Podbicie wersji wymusza odświeżenie
+const GLOBAL_PLAN_VERSION = "1.9"; // Podbijamy wersję, aby wymusić pobranie plików z serwera
 
 const DEFAULT_PLANS_CONFIG = {
     "3-dniowy FBW - by Koziar": "basic1.tsv",
@@ -12,7 +12,9 @@ let remotePlans = {};
 let checks = {};
 let currentPlan = "";
 let editStates = {};
+let lastMovedRow = null;
 
+// Parser TSV
 function parseTSV(text) {
     const lines = text.trim().split("\n");
     const week = []; let day = null; let notes = "";
@@ -32,15 +34,16 @@ function parseTSV(text) {
     return { notes, days: week, version: GLOBAL_PLAN_VERSION, isRemote: true };
 }
 
+// Inicjalizacja
 async function initApp() {
     plans = JSON.parse(localStorage.getItem("plans")) || {};
     checks = JSON.parse(localStorage.getItem("checks")) || {};
     currentPlan = localStorage.getItem("currentPlanName");
 
-    // Pobieramy zdalne plany ZAWSZE, aby starsi użytkownicy też je zobaczyli
+    // Pobieranie planów zdalnych (zawsze świeże dane z GitHub)
     for (const [planName, fileName] of Object.entries(DEFAULT_PLANS_CONFIG)) {
         try {
-            const response = await fetch(fileName + "?v=" + GLOBAL_PLAN_VERSION);
+            const response = await fetch(fileName + "?v=" + new Date().getTime());
             if (response.ok) {
                 const text = await response.text();
                 remotePlans[planName] = parseTSV(text);
@@ -48,6 +51,7 @@ async function initApp() {
         } catch (err) { console.error("Błąd pobierania:", fileName); }
     }
 
+    // Ustalanie startowego planu
     if (!currentPlan || (!plans[currentPlan] && !remotePlans[currentPlan])) {
         currentPlan = Object.keys(remotePlans)[0] || "";
     }
@@ -61,7 +65,6 @@ function refreshSelect() {
     if(!ps) return;
     ps.innerHTML = "";
     
-    // Grupa PROJEKTY
     const g1 = document.createElement("optgroup");
     g1.label = "PROJEKTY KOZIAR";
     Object.keys(remotePlans).sort().forEach(p => {
@@ -69,16 +72,13 @@ function refreshSelect() {
     });
     ps.appendChild(g1);
 
-    // Grupa TWOJE KOPIE
-    const userKeys = Object.keys(plans);
-    if(userKeys.length > 0) {
-        const g2 = document.createElement("optgroup");
-        g2.label = "TWOJE KOPIE";
-        userKeys.sort().forEach(p => {
-            const o = document.createElement("option"); o.value = p; o.textContent = p; g2.appendChild(o);
-        });
-        ps.appendChild(g2);
-    }
+    const g2 = document.createElement("optgroup");
+    g2.label = "TWOJE KOPIE";
+    Object.keys(plans).sort().forEach(p => {
+        const o = document.createElement("option"); o.value = p; o.textContent = p; g2.appendChild(o);
+    });
+    ps.appendChild(g2);
+    
     ps.value = currentPlan;
 }
 
@@ -134,10 +134,10 @@ function render() {
             <tr class="${dayChecks[ri] ? 'done' : ''}">
                 <td class="col-check"><input type="checkbox" ${dayChecks[ri] ? 'checked' : ''} onchange="toggleCheck(${di},${ri},this.checked)"></td>
                 <td class="ex-name"><textarea rows="1" ${isRemote ? 'readonly' : ''} oninput="autoHeight(this); updRow(${di},${ri},0,this.value)">${r[0]||''}</textarea></td>
-                <td class="col-s"><input type="text" value="${r[1]||''}" ${isRemote ? 'readonly' : ''} oninput="updRow(${di},${ri},1,this.value)"></td>
-                <td class="col-p"><input type="text" value="${r[2]||''}" ${isRemote ? 'readonly' : ''} oninput="updRow(${di},${ri},2,this.value)"></td>
-                <td class="col-kg"><input type="text" value="${r[3]||''}" ${isRemote ? 'readonly' : ''} oninput="updRow(${di},${ri},3,this.value)"></td>
-                ${!isRemote ? `<td class="edit-ui"><button onclick="delRow(${di},${ri})">✕</button></td>` : ''}
+                <td class="col-s"><input type="text" inputmode="decimal" value="${r[1]||''}" ${isRemote ? 'readonly' : ''} oninput="updRow(${di},${ri},1,this.value)"></td>
+                <td class="col-p"><input type="text" inputmode="decimal" value="${r[2]||''}" ${isRemote ? 'readonly' : ''} oninput="updRow(${di},${ri},2,this.value)"></td>
+                <td class="col-kg"><input type="text" inputmode="decimal" value="${r[3]||''}" ${isRemote ? 'readonly' : ''} oninput="updRow(${di},${ri},3,this.value)"></td>
+                ${!isRemote ? `<td class="edit-ui"><div class="row-ops"><button onclick="moveRow(${di},${ri},-1)">▲</button><button onclick="moveRow(${di},${ri},1)">▼</button><button onclick="delRow(${di},${ri})" style="color:var(--danger)">✕</button></div></td>` : ''}
             </tr>`).join('');
 
         d.innerHTML = `
@@ -149,7 +149,7 @@ function render() {
                     <button class="icon-btn-sm ${isEditing ? 'gold' : ''}" onclick="toggleEdit(${di})">${isEditing ? 'GOTOWE' : 'EDYTUJ'}</button>
                 </div>` : ''}
             </div>
-            <table><thead><tr><th>✔</th><th>Ćwiczenie</th><th>S</th><th>P</th><th>kg</th>${!isRemote ? '<th></th>' : ''}</tr></thead><tbody>${rowsHtml}</tbody></table>
+            <table><thead><tr><th class="col-check">✔</th><th style="text-align:left">Ćwiczenie</th><th>S</th><th>P</th><th>kg</th>${!isRemote ? '<th></th>' : ''}</tr></thead><tbody>${rowsHtml}</tbody></table>
             ${(!isRemote && isEditing) ? `<button class="btn-add-row" onclick="addRow(${di})">+ DODAJ ĆWICZENIE</button>` : ''}
         `;
         weekEl.appendChild(d);
@@ -158,11 +158,16 @@ function render() {
     document.querySelectorAll('textarea').forEach(autoHeight);
 }
 
+// Funkcje pomocnicze
 function autoHeight(el) { el.style.height = "auto"; el.style.height = (el.scrollHeight) + "px"; }
-function saveNotes() { if (plans[currentPlan]) { plans[currentPlan].notes = document.getElementById("planNotes").value; save(); } }
+function saveNotes() { if (plans[currentPlan] && !plans[currentPlan].isRemote) { plans[currentPlan].notes = document.getElementById("planNotes").value; save(); } }
 function toggleEdit(di) { editStates[di] = !editStates[di]; render(); }
 function addRow(di) { if(plans[currentPlan]) { plans[currentPlan].days[di].rows.push(["","","",""]); save(); render(); } }
 function delRow(di, ri) { if(confirm("Usunąć?")) { plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); } }
+function moveRow(di, ri, dir) {
+    const r = plans[currentPlan].days[di].rows; const t = ri + dir;
+    if(t >= 0 && t < r.length) { [r[ri], r[t]] = [r[t], r[ri]]; save(); render(); }
+}
 function updRow(di, ri, ci, v) { if(plans[currentPlan]) { plans[currentPlan].days[di].rows[ri][ci] = v; save(); } }
 function toggleCheck(di, ri, v) { 
     if(!checks[currentPlan]) checks[currentPlan] = {}; 
@@ -185,5 +190,33 @@ function deletePlan() {
         delete plans[currentPlan]; currentPlan = Object.keys(remotePlans)[0]; save(); location.reload(); 
     } 
 }
+
+// Import/Export
+function openExport() {
+    const p = plans[currentPlan] || remotePlans[currentPlan];
+    const out = [`!!NOTES!!\t${(p.notes||"").replace(/\n/g, "[BR]")}`];
+    p.days.forEach(d => { out.push(`# ${d.name} | ${d.active ? "AKTYWNY" : "PRZERWA"}`); d.rows.forEach(r => out.push(r.join("\t"))); });
+    document.getElementById("exportText").value = out.join("\n");
+    document.getElementById("exportModal").classList.add("active");
+}
+function downloadTSV() {
+    const t = document.getElementById("exportText").value; const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([t], {type:"text/tab-separated-values"}));
+    a.download = currentPlan.replace(/\s/g, '_') + ".tsv"; a.click();
+}
+function openImport() { document.getElementById("importModal").classList.add("active"); }
+function handleFileSelect(e) {
+    const reader = new FileReader();
+    reader.onload = (ev) => { document.getElementById("importText").value = ev.target.result; };
+    reader.readAsText(e.target.files[0]);
+}
+function applyImport() {
+    const data = parseTSV(document.getElementById("importText").value);
+    if(data.days.length > 0) {
+        const n = prompt("Podaj nazwę dla importowanego planu:", "Zaimportowany Plan");
+        if(n) { data.isRemote = false; plans[n] = data; currentPlan = n; save(); location.reload(); }
+    }
+}
+function closeModals() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
 
 initApp();
