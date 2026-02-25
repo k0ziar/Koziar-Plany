@@ -29,7 +29,7 @@
         body { 
             margin: 0; font-family: 'Inter', sans-serif; 
             background: var(--bg); color: var(--text); 
-            padding-bottom: 100px; overflow-x: hidden;
+            padding-bottom: 100px;
         }
 
         header {
@@ -48,7 +48,6 @@
         }
         
         optgroup { background: #111; color: #888; }
-        option { background: var(--card); color: var(--text); }
 
         .header-actions { display: flex; gap: 6px; }
 
@@ -60,7 +59,6 @@
             border-radius: 8px; cursor: pointer; transition: 0.2s;
         }
         .icon-btn.gold { background: var(--gold); color: #000; border: none; }
-        .icon-btn:active { transform: scale(0.95); }
 
         main { padding: 15px; max-width: 600px; margin: 0 auto; }
 
@@ -73,15 +71,13 @@
             background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
             border: 1px solid var(--gold); border-radius: 12px;
             padding: 22px; margin-bottom: 25px; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px var(--gold-glow);
-            position: relative; z-index: 10;
+            box-shadow: 0 0 15px var(--gold-glow);
         }
 
         .btn-activate {
             background: var(--gold); color: #000; border: none;
-            padding: 14px 28px; border-radius: 10px; font-weight: 900;
+            padding: 14px; border-radius: 10px; font-weight: 900;
             text-transform: uppercase; width: 100%; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
         }
 
         .notes-area {
@@ -98,8 +94,6 @@
         }
         .day.inactive { opacity: 0.25 !important; filter: grayscale(1); }
         .day.active-today { border-color: var(--gold); box-shadow: 0 0 18px var(--gold-glow); }
-        
-        /* PODŚWIETLENIE EDYCJI (Oryginalny styl z chuj.html) */
         .day.editing { border-color: var(--gold); box-shadow: 0 0 15px var(--gold-glow); }
 
         .day-header {
@@ -113,15 +107,14 @@
         }
 
         table { width: 100%; border-collapse: collapse; }
-        th { font-size: 10px; color: #555; padding: 12px 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+        th { font-size: 10px; color: #555; padding: 12px 5px; text-transform: uppercase; }
         td { border-top: 1px solid var(--border); padding: 0; text-align: center; }
 
         input[type="text"] { 
             width: 100%; background: transparent; border: none; 
             color: var(--text); padding: 14px 2px; font-size: 15px; text-align: center; 
-            outline: none; transition: background 0.2s;
+            outline: none;
         }
-        input[type="text"]:focus { background: rgba(212, 175, 55, 0.05); }
         
         .ex-name { text-align: left; padding-left: 15px; width: 45%; }
         .ex-name input { text-align: left; font-weight: 600; }
@@ -130,7 +123,7 @@
         .col-check { width: 45px; }
 
         .edit-ui { display: none; width: 85px; }
-        .editing .edit-ui { display: table-cell; vertical-align: middle; }
+        .editing .edit-ui { display: table-cell; }
         
         .btn-add-row { 
             display: none; width: 100%; padding: 16px; 
@@ -147,7 +140,13 @@
         tr.done input { color: #555 !important; text-decoration: line-through; }
         
         input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--gold); cursor: pointer; }
-        input[type="checkbox"]:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* MODALE ORYGINALNE */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 1001; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-box { background: var(--card); width: 100%; max-width: 450px; padding: 25px; border-radius: 15px; border: 1px solid var(--border); }
+        .modal-box h3 { color: var(--gold); margin-top: 0; }
+        .modal-box textarea { width: 100%; height: 200px; background: #000; color: #fff; border: 1px solid var(--border); padding: 10px; font-family: monospace; font-size: 12px; resize: none; outline: none; }
 
         .floating-logo {
             position: fixed; bottom: 25px; right: 25px;
@@ -165,6 +164,7 @@
         <button class="icon-btn gold" onclick="newPlan()"><i data-lucide="plus"></i></button>
         <button class="icon-btn" onclick="resetWeek()"><i data-lucide="rotate-ccw"></i></button>
         <button class="icon-btn" onclick="openExport()"><i data-lucide="share-2"></i></button>
+        <button class="icon-btn" onclick="openImport()"><i data-lucide="download"></i></button>
         <button id="delBtn" class="icon-btn" style="color:var(--danger)" onclick="deletePlan()"><i data-lucide="trash-2"></i></button>
     </div>
 </header>
@@ -178,12 +178,34 @@
     <div id="week"></div>
 </main>
 
+<div class="modal" id="exportModal">
+    <div class="modal-box">
+        <h3>Eksportuj plan</h3>
+        <textarea id="exportText" readonly></textarea>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px">
+            <button class="btn-activate" onclick="downloadTSV()" style="font-size:12px">Zapisz .TSV</button>
+            <button class="icon-btn" style="width:100%" onclick="closeModals()">Zamknij</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="importModal">
+    <div class="modal-box">
+        <h3>Importuj plan</h3>
+        <input type="file" id="importFile" accept=".tsv" onchange="handleFileSelect(event)" style="margin-bottom:15px; color:#888">
+        <textarea id="importText" placeholder="Wklej zawartość pliku TSV tutaj..."></textarea>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px">
+            <button class="btn-activate" onclick="applyImport()" style="font-size:12px">Importuj</button>
+            <button class="icon-btn" style="width:100%" onclick="closeModals()">Anuluj</button>
+        </div>
+    </div>
+</div>
+
 <div class="floating-logo" onclick="window.scrollTo({top:0, behavior:'smooth'})">
     <img src="logo.png" alt="K" style="width:100%; border-radius:50%" onerror="this.style.display='none'">
 </div>
 
 <script>
-// KONFIGURACJA PLIKÓW (ścieżki relatywne - pliki w tym samym folderze)
 const REMOTE_FILES = {
     "3-dniowy FBW - by Koziar": "basic1.tsv",
     "4-dniowy Upper/Lower - by Koziar": "basic2.tsv",
@@ -195,7 +217,6 @@ let checks = JSON.parse(localStorage.getItem("checks")) || {};
 let currentPlan = localStorage.getItem("currentPlanName") || "";
 let editStates = {};
 
-// Pobieranie danych z GitHub Pages (pliki TSV w tym samym folderze)
 async function fetchRemotePlans() {
     for (const [name, file] of Object.entries(REMOTE_FILES)) {
         try {
@@ -204,7 +225,7 @@ async function fetchRemotePlans() {
             const text = await resp.text();
             plans[name] = parseTSV(text);
             plans[name].isLocked = true;
-        } catch (e) { console.warn("Nie znaleziono pliku:", file); }
+        } catch (e) { console.warn("Błąd TSV:", file); }
     }
     initSelect();
     if (!currentPlan || !plans[currentPlan]) currentPlan = Object.keys(plans)[0];
@@ -235,34 +256,23 @@ function save() {
     localStorage.setItem("currentPlanName", currentPlan);
 }
 
-// --- FUNKCJE BEZ SKAKANIA STRONY ---
+// MANIPULACJA BEZ SKAKANIA
 function toggleCheck(di, ri, checked, el) {
     if (!checks[currentPlan]) checks[currentPlan] = {};
     if (!checks[currentPlan][di]) checks[currentPlan][di] = {};
     checks[currentPlan][di][ri] = checked;
-    
-    // Wizualna zmiana wiersza (bez render())
     const row = el.closest('tr');
-    if (checked) row.classList.add('done');
-    else row.classList.remove('done');
-    
-    // Sprawdzenie glow dla całego dnia
+    if (checked) row.classList.add('done'); else row.classList.remove('done');
     const dayDiv = el.closest('.day');
     const anyChecked = Array.from(dayDiv.querySelectorAll('input[type="checkbox"]')).some(i => i.checked);
-    if (anyChecked) dayDiv.classList.add('active-today');
-    else dayDiv.classList.remove('active-today');
-    
+    if (anyChecked) dayDiv.classList.add('active-today'); else dayDiv.classList.remove('active-today');
     save();
 }
 
 function toggleDay(di, el) {
     plans[currentPlan].days[di].active = !plans[currentPlan].days[di].active;
     const dayDiv = el.closest('.day');
-    
-    if (plans[currentPlan].days[di].active) dayDiv.classList.remove('inactive');
-    else dayDiv.classList.add('inactive');
-    
-    // Podmiana ikony bez render()
+    if (plans[currentPlan].days[di].active) dayDiv.classList.remove('inactive'); else dayDiv.classList.add('inactive');
     const icon = el.querySelector('i');
     icon.setAttribute('data-lucide', plans[currentPlan].days[di].active ? 'pause' : 'play');
     lucide.createIcons();
@@ -279,11 +289,7 @@ function render() {
     const isLocked = plans[currentPlan].isLocked;
     
     body.className = isLocked ? "locked-mode" : "";
-    actArea.innerHTML = isLocked ? `
-        <div class="activate-banner">
-            <p style="color:var(--gold);font-weight:800;margin:0 0 12px 0;font-size:13px">PROJEKT KOZIAR - PODGLĄD</p>
-            <button class="btn-activate" onclick="activatePlan()">🚀 AKTYWUJ TEN PLAN (KOPIA)</button>
-        </div>` : "";
+    actArea.innerHTML = isLocked ? `<div class="activate-banner"><p style="color:var(--gold);font-weight:800;margin-bottom:12px">PLAN ZABLOKOWANY</p><button class="btn-activate" onclick="activatePlan()">🚀 AKTYWUJ KOPIĘ</button></div>` : "";
     
     document.getElementById("delBtn").style.display = isLocked ? "none" : "flex";
     notesEl.value = plans[currentPlan].notes || "";
@@ -313,16 +319,13 @@ function render() {
                             <tr class="${dayChecks[ri] ? 'done' : ''}">
                                 <td class="col-check"><input type="checkbox" ${dayChecks[ri] ? 'checked' : ''} ${isLocked ? 'disabled' : ''} onchange="toggleCheck(${di},${ri},this.checked, this)"></td>
                                 <td class="ex-name"><input type="text" value="${r[0]}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},0,this.value)"></td>
-                                <td class="col-s"><input type="text" inputmode="decimal" value="${r[1]}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},1,this.value)"></td>
-                                <td class="col-p"><input type="text" inputmode="decimal" value="${r[2]}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},2,this.value)"></td>
-                                <td class="col-kg"><input type="text" inputmode="decimal" value="${r[3]}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},3,this.value)"></td>
+                                <td class="col-s"><input type="text" inputmode="decimal" value="${r[1]}" oninput="updRow(${di},${ri},1,this.value)"></td>
+                                <td class="col-p"><input type="text" inputmode="decimal" value="${r[2]}" oninput="updRow(${di},${ri},2,this.value)"></td>
+                                <td class="col-kg"><input type="text" inputmode="decimal" value="${r[3]}" oninput="updRow(${di},${ri},3,this.value)"></td>
                                 <td class="edit-ui">
                                     <div class="row-ops">
-                                        <div class="move-btns">
-                                            <button onclick="moveRow(${di},${ri},-1)">▲</button>
-                                            <button onclick="moveRow(${di},${ri},1)">▼</button>
-                                        </div>
-                                        <button onclick="delRow(${di},${ri})" style="background:none;border:none;color:var(--danger);font-size:16px">✕</button>
+                                        <div class="move-btns"><button onclick="moveRow(${di},${ri},-1)">▲</button><button onclick="moveRow(${di},${ri},1)">▼</button></div>
+                                        <button onclick="delRow(${di},${ri})" style="background:none;border:none;color:var(--danger)">✕</button>
                                     </div>
                                 </td>
                             </tr>
@@ -351,10 +354,51 @@ function activatePlan() {
     if(n) {
         plans[n] = JSON.parse(JSON.stringify(plans[currentPlan]));
         plans[n].isLocked = false;
-        plans[n].notes = "Twoja własna kopia planu. Możesz ją dowolnie edytować.";
         currentPlan = n; save(); location.reload();
     }
 }
+
+// IMPORT / EKSPORT (PRZYWRÓCONE)
+function openExport() {
+    const out = []; const p = plans[currentPlan];
+    out.push(`!!NOTES!!\t${(p.notes||"").replace(/\n/g, "[BR]")}`);
+    p.days.forEach(d => {
+        out.push(`# ${d.name} | ${d.active ? "AKTYWNY" : "PRZERWA"}`);
+        d.rows.forEach(r => out.push(r.join("\t")));
+    });
+    document.getElementById("exportText").value = out.join("\n");
+    document.getElementById("exportModal").classList.add("active");
+}
+function downloadTSV() {
+    const t = document.getElementById("exportText").value;
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([t], {type:"text/tab-separated-values"}));
+    a.download = currentPlan.replace(/\s/g, '_') + ".tsv"; a.click();
+}
+function openImport() { document.getElementById("importModal").classList.add("active"); }
+function handleFileSelect(e) {
+    const r = new FileReader();
+    r.onload = (e) => { document.getElementById("importText").value = e.target.result; };
+    r.readAsText(e.target.files[0]);
+}
+function applyImport() {
+    const lines = document.getElementById("importText").value.trim().split("\n");
+    const week = []; let day = null; let notes = "";
+    lines.forEach(l => {
+        if (l.startsWith("!!NOTES!!")) notes = l.split("\t")[1]?.replace(/\[BR\]/g, "\n") || "";
+        else if (l.startsWith("#")) {
+            const [n, s] = l.replace("#", "").split("|").map(x => x.trim());
+            day = { name: n, active: s === "AKTYWNY", rows: [] };
+            week.push(day);
+        } else if (day && l.trim()) { day.rows.push(l.split("\t")); }
+    });
+    if(week.length > 0) {
+        const n = "Importowany_" + Date.now();
+        plans[n] = { notes, isLocked: false, days: week };
+        currentPlan = n; save(); location.reload();
+    }
+}
+function closeModals() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
 
 function loadPlan() { currentPlan = document.getElementById("planSelect").value; editStates={}; render(); }
 function autoHeight(el) { el.style.height = "auto"; el.style.height = el.scrollHeight + "px"; }
@@ -362,9 +406,9 @@ function saveNotes() { if(!plans[currentPlan].isLocked) { plans[currentPlan].not
 
 function initSelect() {
     const ps = document.getElementById("planSelect");
+    ps.innerHTML = "";
     const gL = document.createElement("optgroup"); gL.label = "📋 PROJEKTY KOZIAR";
     const gU = document.createElement("optgroup"); gU.label = "💪 TWOJE PLANY";
-    ps.innerHTML = "";
     Object.keys(plans).sort().forEach(k => {
         const o = document.createElement("option"); o.value = k; o.textContent = k;
         if(plans[k].isLocked) gL.appendChild(o); else gU.appendChild(o);
@@ -374,25 +418,11 @@ function initSelect() {
 }
 
 function newPlan() {
-    const n = prompt("Nazwa nowego planu:");
-    if(n) { 
-        plans[n] = {notes:"", isLocked:false, days:[{name:"Dzień 1", active:true, rows:[]}]}; 
-        currentPlan=n; save(); location.reload(); 
-    }
+    const n = prompt("Nazwa planu:");
+    if(n) { plans[n] = {notes:"", isLocked:false, days:[{name:"Dzień 1", active:true, rows:[]}]}; currentPlan=n; save(); location.reload(); }
 }
-
-function deletePlan() { if(confirm("Usunąć ten plan na stałe?")) { delete plans[currentPlan]; currentPlan=Object.keys(plans)[0]; save(); location.reload(); } }
-
-function openExport() {
-    const out = []; const p = plans[currentPlan];
-    out.push(`!!NOTES!!\t${(p.notes||"").replace(/\n/g, "[BR]")}`);
-    p.days.forEach(d => {
-        out.push(`# ${d.name} | ${d.active ? "AKTYWNY" : "PRZERWA"}`);
-        d.rows.forEach(r => out.push(r.join("\t")));
-    });
-    alert("Dane planu skopiowane do konsoli (F12) lub możesz je wyeksportować jako plik TSV w pełnej wersji.");
-    console.log(out.join("\n"));
-}
+function deletePlan() { if(confirm("Usunąć plan?")) { delete plans[currentPlan]; currentPlan=Object.keys(plans)[0]; save(); location.reload(); } }
+function resetWeek() { if(confirm("Zresetować postępy?")) { checks[currentPlan] = {}; save(); render(); } }
 
 fetchRemotePlans();
 </script>
