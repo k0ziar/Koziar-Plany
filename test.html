@@ -21,26 +21,22 @@
             --border: #2a2a2a;
             --text: #ffffff;
             --gold: #d4af37;
-            --gold-glow: rgba(212, 175, 55, 0.3);
+            --gold-glow: rgba(212, 175, 55, 0.4);
             --danger: #ff4444;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
-            margin: 0; 
-            font-family: 'Inter', sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            padding-bottom: 100px;
-            scroll-behavior: smooth;
+            margin: 0; font-family: 'Inter', sans-serif; 
+            background: var(--bg); color: var(--text); 
+            padding-bottom: 100px; overflow-x: hidden;
         }
 
         header {
             position: sticky; top: 0; z-index: 100;
             background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(15px);
-            padding: 10px;
-            border-bottom: 1px solid var(--border);
+            padding: 10px; border-bottom: 1px solid var(--border);
             display: flex; align-items: center; gap: 8px;
         }
 
@@ -48,7 +44,7 @@
             background: var(--card); color: var(--gold); 
             border: 1px solid var(--border); padding: 10px; 
             border-radius: 8px; flex: 1; font-weight: 700; font-size: 14px;
-            outline: none; appearance: none;
+            outline: none;
         }
         
         optgroup { background: #111; color: #888; }
@@ -68,64 +64,43 @@
 
         main { padding: 15px; max-width: 600px; margin: 0 auto; }
 
-        /* Styl dla zablokowanego planu */
+        /* ZABLOKOWANE PLANY */
         .locked-mode #week, .locked-mode .notes-area {
-            opacity: 0.4;
-            filter: grayscale(0.5);
-            pointer-events: none; /* Blokuje wszystkie interakcje pod spodem */
-            user-select: none;
+            opacity: 0.45; filter: grayscale(0.7); pointer-events: none; user-select: none;
         }
 
         .activate-banner {
-            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-            border: 1px solid var(--gold);
-            border-radius: 12px;
-            padding: 25px 15px;
-            margin-bottom: 25px;
-            text-align: center;
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            border: 1px solid var(--gold); border-radius: 12px;
+            padding: 22px; margin-bottom: 25px; text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px var(--gold-glow);
-            position: relative;
-            z-index: 10;
+            position: relative; z-index: 10;
         }
 
         .btn-activate {
-            background: var(--gold);
-            color: #000;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-weight: 900;
-            font-size: 15px;
-            cursor: pointer;
-            text-transform: uppercase;
-            width: 100%;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
-            transition: 0.3s;
+            background: var(--gold); color: #000; border: none;
+            padding: 14px 28px; border-radius: 10px; font-weight: 900;
+            text-transform: uppercase; width: 100%; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
         }
-        .btn-activate:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--gold-glow); }
 
         .notes-area {
             background: var(--card); border: 1px solid var(--border);
             border-radius: 12px; margin-bottom: 20px; padding: 12px;
         }
-        .notes-area label {
-            display: block; color: var(--gold); font-size: 11px;
-            font-weight: 800; text-transform: uppercase; margin-bottom: 8px;
-            letter-spacing: 0.5px;
-        }
-        .notes-area textarea {
-            width: 100%; background: transparent; border: none;
-            color: #ccc; font-size: 14px; font-family: inherit;
-            resize: none; outline: none; line-height: 1.5;
-        }
+        .notes-area label { color: var(--gold); font-size: 11px; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        .notes-area textarea { width: 100%; background: transparent; border: none; color: #ccc; font-size: 14px; outline: none; resize: none; }
 
         .day { 
             background: var(--card); margin-bottom: 18px; 
             border-radius: 16px; border: 1px solid var(--border); 
             overflow: hidden; transition: 0.3s;
         }
-        .day.inactive { opacity: 0.3; filter: grayscale(1); }
-        .day.active-today { border-color: var(--gold); box-shadow: 0 0 20px var(--gold-glow); }
+        .day.inactive { opacity: 0.25 !important; filter: grayscale(1); }
+        .day.active-today { border-color: var(--gold); box-shadow: 0 0 18px var(--gold-glow); }
+        
+        /* PODŚWIETLENIE EDYCJI (Oryginalny styl z chuj.html) */
+        .day.editing { border-color: var(--gold); box-shadow: 0 0 15px var(--gold-glow); }
 
         .day-header {
             background: rgba(255,255,255,0.02); padding: 12px 15px;
@@ -133,20 +108,18 @@
         }
         
         .day-title-input {
-            background: transparent; border: none;
-            color: var(--gold); font-size: 15px; font-weight: 800;
-            text-transform: uppercase; width: 60%; outline: none;
+            background: transparent; border: none; color: var(--gold);
+            font-size: 15px; font-weight: 800; text-transform: uppercase; outline: none;
         }
-        .editing .day-title-input { color: #fff; text-decoration: underline; }
 
         table { width: 100%; border-collapse: collapse; }
-        th { font-size: 10px; color: #666; padding: 12px 5px; text-transform: uppercase; letter-spacing: 1px; }
+        th { font-size: 10px; color: #555; padding: 12px 5px; text-transform: uppercase; letter-spacing: 0.5px; }
         td { border-top: 1px solid var(--border); padding: 0; text-align: center; }
 
         input[type="text"] { 
             width: 100%; background: transparent; border: none; 
             color: var(--text); padding: 14px 2px; font-size: 15px; text-align: center; 
-            outline: none; transition: 0.2s;
+            outline: none; transition: background 0.2s;
         }
         input[type="text"]:focus { background: rgba(212, 175, 55, 0.05); }
         
@@ -156,46 +129,32 @@
         .col-s, .col-p, .col-kg { width: 45px; }
         .col-check { width: 45px; }
 
-        .edit-ui { display: none; width: 90px; padding: 5px; }
+        .edit-ui { display: none; width: 85px; }
         .editing .edit-ui { display: table-cell; vertical-align: middle; }
         
         .btn-add-row { 
             display: none; width: 100%; padding: 16px; 
-            background: transparent; color: var(--gold); 
-            border: none; border-top: 1px solid var(--border); 
-            font-weight: 800; cursor: pointer; font-size: 12px;
+            background: transparent; color: var(--gold); border: none;
+            border-top: 1px solid var(--border); font-weight: 800; cursor: pointer;
         }
         .editing .btn-add-row { display: block; }
 
-        .row-ops { display: flex; gap: 8px; align-items: center; justify-content: center; }
-        .move-up-down { display: flex; flex-direction: column; gap: 2px; }
-        .move-up-down button { 
-            padding: 2px 8px; font-size: 10px; background: #222; 
-            border: 1px solid #333; color: #fff; border-radius: 4px; cursor: pointer; 
-        }
+        .row-ops { display: flex; gap: 8px; justify-content: center; }
+        .move-btns { display: flex; flex-direction: column; gap: 2px; }
+        .move-btns button { font-size: 9px; padding: 4px; background: #222; color: #fff; border: 1px solid #333; border-radius: 4px; }
 
-        tr.done { background: rgba(212, 175, 55, 0.07); }
-        tr.done input { color: #666 !important; text-decoration: line-through; }
+        tr.done { background: rgba(212, 175, 55, 0.08); }
+        tr.done input { color: #555 !important; text-decoration: line-through; }
         
-        input[type="checkbox"] { 
-            width: 22px; height: 22px; accent-color: var(--gold); cursor: pointer; 
-        }
-        input[type="checkbox"]:disabled { opacity: 0.5; cursor: not-allowed; }
+        input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--gold); cursor: pointer; }
+        input[type="checkbox"]:disabled { opacity: 0.3; cursor: not-allowed; }
 
         .floating-logo {
             position: fixed; bottom: 25px; right: 25px;
-            width: 55px; height: 55px;
-            background: #000; border: 2px solid var(--gold);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.8); z-index: 1000; cursor: pointer;
+            width: 55px; height: 55px; background: #000;
+            border: 2px solid var(--gold); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; z-index: 1000;
         }
-        .floating-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-
-        /* MODALE */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 1001; padding: 20px; }
-        .modal.active { display: flex; }
-        .modal-box { background: var(--card); width: 100%; max-width: 450px; padding: 25px; border-radius: 15px; border: 1px solid var(--border); }
-        .modal-box textarea { width: 100%; height: 200px; background: #000; color: var(--gold); border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: monospace; font-size: 12px; }
     </style>
 </head>
 <body id="bodyTag">
@@ -206,65 +165,69 @@
         <button class="icon-btn gold" onclick="newPlan()"><i data-lucide="plus"></i></button>
         <button class="icon-btn" onclick="resetWeek()"><i data-lucide="rotate-ccw"></i></button>
         <button class="icon-btn" onclick="openExport()"><i data-lucide="share-2"></i></button>
-        <button class="icon-btn" onclick="openImport()"><i data-lucide="download"></i></button>
         <button id="delBtn" class="icon-btn" style="color:var(--danger)" onclick="deletePlan()"><i data-lucide="trash-2"></i></button>
     </div>
 </header>
 
 <main>
     <div id="activateArea"></div>
-
     <div class="notes-area">
         <label>Notatki / Wskazówki</label>
         <textarea id="planNotes" placeholder="Twoje uwagi..." oninput="autoHeight(this); saveNotes()"></textarea>
     </div>
-    
     <div id="week"></div>
 </main>
 
 <div class="floating-logo" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-    <img src="logo.png" alt="K" onerror="this.style.display='none'">
+    <img src="logo.png" alt="K" style="width:100%; border-radius:50%" onerror="this.style.display='none'">
 </div>
 
-<div class="modal" id="exportModal"><div class="modal-box"><h3 style="color:var(--gold);margin-top:0">Eksportuj</h3><textarea id="exportText" readonly></textarea><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px"><button class="btn-activate" style="padding:10px;font-size:12px" onclick="downloadTSV()">Zapisz plik</button><button class="icon-btn" style="width:100%" onclick="closeModals()">Zamknij</button></div></div></div>
-<div class="modal" id="importModal"><div class="modal-box"><h3 style="color:var(--gold);margin-top:0">Importuj</h3><input type="file" id="importFile" accept=".tsv,.csv" onchange="handleFileSelect(event)" style="margin-bottom:15px;color:#888"><textarea id="importText" placeholder="Wklej kod TSV tutaj..."></textarea><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px"><button class="btn-activate" style="padding:10px;font-size:12px" onclick="applyImport()">Importuj</button><button class="icon-btn" style="width:100%" onclick="closeModals()">Anuluj</button></div></div></div>
-
 <script>
-const KOZIAR_TAG = " - by Koziar";
-
-function getDefaultPlans() {
-    return {
-        ["3-dniowy FBW" + KOZIAR_TAG]: {
-            isLocked: true,
-            notes: "Kompletny plan FBW dla początkujących.\n3 dni w tygodniu.\n\nAktywuj, aby edytować i zapisywać postępy.",
-            days: [
-                { name: "Poniedziałek - FBW A", active: true, rows: [["Przysiady","4","6-10",""],["Wyciskanie płaska","4","6-10",""],["Wiosłowanie","4","8-12",""],["OHP","4","8-12",""],["Biceps","3","8-12",""],["Triceps","3","8-12",""]] },
-                { name: "Środa - FBW B", active: true, rows: [["Wyciskanie płaska","4","6-10",""],["Suwnica","4","8-12",""],["Podciąganie","4","8-12",""],["Wznosy","3","8-12",""],["Biceps","3","8-12",""]] },
-                { name: "Piątek - FBW C", active: true, rows: [["Przysiad","4","6-10",""],["Martwy ciąg","4","6-10",""],["Wiosłowanie","4","8-12",""],["Wyciskanie skos","3","8-12",""],["Brzuch","4","8-12",""]] }
-            ]
-        },
-        ["4-dniowy Upper/Lower" + KOZIAR_TAG]: {
-            isLocked: true,
-            notes: "Podział Góra/Dół.\nIdealny dla średniozaawansowanych.",
-            days: [
-                { name: "Poniedziałek - Upper A", active: true, rows: [["Wyciskanie płaska","4","6-10",""],["Podciąganie","4","8-12",""],["OHP","4","8-12",""]] },
-                { name: "Wtorek - Lower A", active: true, rows: [["Przysiad","4","6-10",""],["RDL","4","8-12",""],["Łydki","4","15+",""]] }
-            ]
-        }
-    };
-}
+// KONFIGURACJA PLIKÓW (ścieżki relatywne - pliki w tym samym folderze)
+const REMOTE_FILES = {
+    "3-dniowy FBW - by Koziar": "basic1.tsv",
+    "4-dniowy Upper/Lower - by Koziar": "basic2.tsv",
+    "5-dniowy U/L/PPL - by Koziar": "basic3.tsv"
+};
 
 let plans = JSON.parse(localStorage.getItem("plans")) || {};
 let checks = JSON.parse(localStorage.getItem("checks")) || {};
-let currentPlan = localStorage.getItem("currentPlanName");
-
-// Sync defaultów
-const defaults = getDefaultPlans();
-Object.keys(defaults).forEach(k => { plans[k] = defaults[k]; });
-
-if (!currentPlan || !plans[currentPlan]) currentPlan = Object.keys(plans)[0];
-
+let currentPlan = localStorage.getItem("currentPlanName") || "";
 let editStates = {};
+
+// Pobieranie danych z GitHub Pages (pliki TSV w tym samym folderze)
+async function fetchRemotePlans() {
+    for (const [name, file] of Object.entries(REMOTE_FILES)) {
+        try {
+            const resp = await fetch(file);
+            if (!resp.ok) continue;
+            const text = await resp.text();
+            plans[name] = parseTSV(text);
+            plans[name].isLocked = true;
+        } catch (e) { console.warn("Nie znaleziono pliku:", file); }
+    }
+    initSelect();
+    if (!currentPlan || !plans[currentPlan]) currentPlan = Object.keys(plans)[0];
+    render();
+}
+
+function parseTSV(text) {
+    const lines = text.trim().split("\n");
+    let week = [], day = null, notes = "";
+    lines.forEach(l => {
+        if (l.startsWith("!!NOTES!!")) notes = l.split("\t")[1]?.replace(/\[BR\]/g, "\n") || "";
+        else if (l.startsWith("#")) {
+            const [n, s] = l.replace("#", "").split("|").map(x => x.trim());
+            day = { name: n, active: s === "AKTYWNY", rows: [] };
+            week.push(day);
+        } else if (day && l.trim()) {
+            let row = l.split("\t").map(x => x.trim());
+            while(row.length < 4) row.push("");
+            day.rows.push(row);
+        }
+    });
+    return { notes, days: week };
+}
 
 function save() {
     localStorage.setItem("plans", JSON.stringify(plans));
@@ -272,224 +235,166 @@ function save() {
     localStorage.setItem("currentPlanName", currentPlan);
 }
 
-function autoHeight(el) { el.style.height = "auto"; el.style.height = (el.scrollHeight) + "px"; }
-
-function saveNotes() { 
-    if (currentPlan && !plans[currentPlan].isLocked) { 
-        plans[currentPlan].notes = document.getElementById("planNotes").value; 
-        save(); 
-    } 
+// --- FUNKCJE BEZ SKAKANIA STRONY ---
+function toggleCheck(di, ri, checked, el) {
+    if (!checks[currentPlan]) checks[currentPlan] = {};
+    if (!checks[currentPlan][di]) checks[currentPlan][di] = {};
+    checks[currentPlan][di][ri] = checked;
+    
+    // Wizualna zmiana wiersza (bez render())
+    const row = el.closest('tr');
+    if (checked) row.classList.add('done');
+    else row.classList.remove('done');
+    
+    // Sprawdzenie glow dla całego dnia
+    const dayDiv = el.closest('.day');
+    const anyChecked = Array.from(dayDiv.querySelectorAll('input[type="checkbox"]')).some(i => i.checked);
+    if (anyChecked) dayDiv.classList.add('active-today');
+    else dayDiv.classList.remove('active-today');
+    
+    save();
 }
 
-function activatePlan() {
-    const newName = prompt("Podaj nazwę dla swojej kopii:", currentPlan.replace(KOZIAR_TAG, "") + " (Moja Kopia)");
-    if (newName) {
-        let copy = JSON.parse(JSON.stringify(plans[currentPlan]));
-        copy.isLocked = false;
-        plans[newName] = copy;
-        currentPlan = newName;
-        save();
-        location.reload();
-    }
+function toggleDay(di, el) {
+    plans[currentPlan].days[di].active = !plans[currentPlan].days[di].active;
+    const dayDiv = el.closest('.day');
+    
+    if (plans[currentPlan].days[di].active) dayDiv.classList.remove('inactive');
+    else dayDiv.classList.add('inactive');
+    
+    // Podmiana ikony bez render()
+    const icon = el.querySelector('i');
+    icon.setAttribute('data-lucide', plans[currentPlan].days[di].active ? 'pause' : 'play');
+    lucide.createIcons();
+    save();
 }
 
 function render() {
     const weekEl = document.getElementById("week");
     const notesEl = document.getElementById("planNotes");
     const actArea = document.getElementById("activateArea");
-    const delBtn = document.getElementById("delBtn");
     const body = document.getElementById("bodyTag");
     
-    weekEl.innerHTML = "";
-    actArea.innerHTML = "";
-    
     if(!currentPlan || !plans[currentPlan]) return;
-
     const isLocked = plans[currentPlan].isLocked;
     
-    if(isLocked) {
-        body.classList.add("locked-mode");
-        actArea.innerHTML = `
-            <div class="activate-banner">
-                <p style="margin:0 0 15px 0; font-size:14px; color:var(--gold); font-weight:700">PROJEKT KOZIAR - TYLKO DO ODCZYTU</p>
-                <button class="btn-activate" onclick="activatePlan()">🚀 AKTYWUJ TEN PLAN (UTWÓRZ KOPIĘ)</button>
-            </div>
-        `;
-        delBtn.style.display = "none";
-    } else {
-        body.classList.remove("locked-mode");
-        delBtn.style.display = "flex";
-    }
-
+    body.className = isLocked ? "locked-mode" : "";
+    actArea.innerHTML = isLocked ? `
+        <div class="activate-banner">
+            <p style="color:var(--gold);font-weight:800;margin:0 0 12px 0;font-size:13px">PROJEKT KOZIAR - PODGLĄD</p>
+            <button class="btn-activate" onclick="activatePlan()">🚀 AKTYWUJ TEN PLAN (KOPIA)</button>
+        </div>` : "";
+    
+    document.getElementById("delBtn").style.display = isLocked ? "none" : "flex";
     notesEl.value = plans[currentPlan].notes || "";
     notesEl.readOnly = isLocked;
     autoHeight(notesEl);
 
-    plans[currentPlan].days.forEach((day, di) => {
-        const isEditing = editStates[di];
+    weekEl.innerHTML = plans[currentPlan].days.map((day, di) => {
         const dayChecks = checks[currentPlan]?.[di] || {};
-        const activeToday = Object.values(dayChecks).some(v => v);
+        const isEditing = editStates[di];
+        const hasChecks = Object.values(dayChecks).some(v => v);
 
-        const d = document.createElement("div");
-        d.className = `day ${day.active ? '' : 'inactive'} ${isEditing ? 'editing' : ''} ${activeToday && day.active ? 'active-today' : ''}`;
-        
-        let rowsHtml = day.rows.map((r, ri) => `
-            <tr class="${dayChecks[ri] ? 'done' : ''}">
-                <td class="col-check">
-                    <input type="checkbox" ${dayChecks[ri] ? 'checked' : ''} 
-                    ${isLocked ? 'disabled' : ''} 
-                    onchange="toggleCheck(${di},${ri},this.checked)">
-                </td>
-                <td class="ex-name"><input type="text" value="${r[0]||''}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},0,this.value)" placeholder="..."></td>
-                <td class="col-s"><input type="text" inputmode="decimal" value="${r[1]||''}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},1,this.value)"></td>
-                <td class="col-p"><input type="text" inputmode="decimal" value="${r[2]||''}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},2,this.value)"></td>
-                <td class="col-kg"><input type="text" inputmode="decimal" value="${r[3]||''}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},3,this.value)"></td>
-                <td class="edit-ui">
-                    <div class="row-ops">
-                        <div class="move-up-down">
-                            <button onclick="moveRow(${di},${ri},-1)">▲</button>
-                            <button onclick="moveRow(${di},${ri},1)">▼</button>
-                        </div>
-                        <button onclick="delRow(${di},${ri})" style="color:var(--danger); border:none; background:none; font-size:18px;">✕</button>
+        return `
+            <div class="day ${day.active ? '' : 'inactive'} ${isEditing ? 'editing' : ''} ${hasChecks && day.active ? 'active-today' : ''}">
+                <div class="day-header">
+                    <input class="day-title-input" value="${day.name}" ${isEditing ? '' : 'readonly'} oninput="plans[currentPlan].days[${di}].name=this.value;save()">
+                    <div style="display:flex; gap:8px;">
+                        ${!isLocked ? `
+                            <button class="icon-btn" onclick="toggleDay(${di}, this)"><i data-lucide="${day.active ? 'pause' : 'play'}" style="width:14px"></i></button>
+                            <button class="icon-btn ${isEditing ? 'gold' : ''}" style="width:75px; font-size:10px; font-weight:900" onclick="toggleEdit(${di})">${isEditing ? 'GOTOWE' : 'EDYTUJ'}</button>
+                        ` : ''}
                     </div>
-                </td>
-            </tr>
-        `).join('');
-
-        d.innerHTML = `
-            <div class="day-header">
-                <input class="day-title-input" value="${day.name}" ${isEditing ? '' : 'readonly'} oninput="updDayName(${di}, this.value)">
-                <div style="display:flex; gap:8px;">
-                    ${!isLocked ? `
-                        <button class="icon-btn" style="height:34px; width:34px" onclick="toggleDay(${di})"><i data-lucide="${day.active ? 'pause' : 'play'}" style="width:14px"></i></button>
-                        <button class="icon-btn ${isEditing ? 'gold' : ''}" style="height:34px; width:75px; font-size:10px; font-weight:900" onclick="toggleEdit(${di})">${isEditing ? 'GOTOWE' : 'EDYTUJ'}</button>
-                    ` : ''}
                 </div>
+                <table>
+                    <thead><tr><th>✔</th><th style="text-align:left;padding-left:15px">Ćwiczenie</th><th>S</th><th>P</th><th>kg</th><th class="edit-ui">Opcje</th></tr></thead>
+                    <tbody>
+                        ${day.rows.map((r, ri) => `
+                            <tr class="${dayChecks[ri] ? 'done' : ''}">
+                                <td class="col-check"><input type="checkbox" ${dayChecks[ri] ? 'checked' : ''} ${isLocked ? 'disabled' : ''} onchange="toggleCheck(${di},${ri},this.checked, this)"></td>
+                                <td class="ex-name"><input type="text" value="${r[0]}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},0,this.value)"></td>
+                                <td class="col-s"><input type="text" inputmode="decimal" value="${r[1]}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},1,this.value)"></td>
+                                <td class="col-p"><input type="text" inputmode="decimal" value="${r[2]}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},2,this.value)"></td>
+                                <td class="col-kg"><input type="text" inputmode="decimal" value="${r[3]}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},3,this.value)"></td>
+                                <td class="edit-ui">
+                                    <div class="row-ops">
+                                        <div class="move-btns">
+                                            <button onclick="moveRow(${di},${ri},-1)">▲</button>
+                                            <button onclick="moveRow(${di},${ri},1)">▼</button>
+                                        </div>
+                                        <button onclick="delRow(${di},${ri})" style="background:none;border:none;color:var(--danger);font-size:16px">✕</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                ${!isLocked ? `<button class="btn-add-row" onclick="addRow(${di})">+ DODAJ ĆWICZENIE</button>` : ''}
             </div>
-            <table>
-                <thead><tr><th>✔</th><th style="text-align:left; padding-left:15px">Ćwiczenie</th><th>S</th><th>P</th><th>kg</th><th class="edit-ui">Opcje</th></tr></thead>
-                <tbody>${rowsHtml}</tbody>
-            </table>
-            ${!isLocked ? `<button class="btn-add-row" onclick="addRow(${di})">+ DODAJ ĆWICZENIE</button>` : ''}
         `;
-        weekEl.appendChild(d);
-    });
+    }).join('');
     lucide.createIcons();
 }
 
-// Obsługa bez skakania strony (Event.preventDefault niepotrzebny przy buttonach, ale pilnujemy braku href)
-function updDayName(di, val) { if(!plans[currentPlan].isLocked) { plans[currentPlan].days[di].name = val; save(); } }
 function toggleEdit(di) { editStates[di] = !editStates[di]; render(); }
-function addRow(di) { plans[currentPlan].days[di].rows.push(["", "", "", ""]); save(); render(); }
-function delRow(di, ri) { plans[currentPlan].days[di].rows.splice(ri, 1); save(); render(); }
-
+function updRow(di, ri, ci, v) { if(!plans[currentPlan].isLocked) { plans[currentPlan].days[di].rows[ri][ci] = v; save(); } }
+function addRow(di) { plans[currentPlan].days[di].rows.push(["","","",""]); save(); render(); }
+function delRow(di, ri) { plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); }
 function moveRow(di, ri, dir) {
     const r = plans[currentPlan].days[di].rows;
     const t = ri + dir;
     if(t >= 0 && t < r.length) { [r[ri], r[t]] = [r[t], r[ri]]; save(); render(); }
 }
 
-function updRow(di, ri, ci, v) { if(!plans[currentPlan].isLocked) { plans[currentPlan].days[di].rows[ri][ci] = v; save(); } }
-
-function toggleCheck(di, ri, v) {
-    if(!checks[currentPlan]) checks[currentPlan] = {};
-    if(!checks[currentPlan][di]) checks[currentPlan][di] = {};
-    checks[currentPlan][di][ri] = v;
-    save(); render();
+function activatePlan() {
+    const n = prompt("Nazwa Twojej kopii:", currentPlan.replace(" - by Koziar", "") + " (Moja)");
+    if(n) {
+        plans[n] = JSON.parse(JSON.stringify(plans[currentPlan]));
+        plans[n].isLocked = false;
+        plans[n].notes = "Twoja własna kopia planu. Możesz ją dowolnie edytować.";
+        currentPlan = n; save(); location.reload();
+    }
 }
 
-function toggleDay(di) { 
-    plans[currentPlan].days[di].active = !plans[currentPlan].days[di].active; 
-    save(); 
-    render(); 
-}
+function loadPlan() { currentPlan = document.getElementById("planSelect").value; editStates={}; render(); }
+function autoHeight(el) { el.style.height = "auto"; el.style.height = el.scrollHeight + "px"; }
+function saveNotes() { if(!plans[currentPlan].isLocked) { plans[currentPlan].notes = document.getElementById("planNotes").value; save(); } }
 
-function resetWeek() { if(confirm("Zresetować postępy w tym planie?")) { checks[currentPlan] = {}; save(); render(); } }
-function loadPlan() { currentPlan = document.getElementById("planSelect").value; editStates = {}; render(); }
+function initSelect() {
+    const ps = document.getElementById("planSelect");
+    const gL = document.createElement("optgroup"); gL.label = "📋 PROJEKTY KOZIAR";
+    const gU = document.createElement("optgroup"); gU.label = "💪 TWOJE PLANY";
+    ps.innerHTML = "";
+    Object.keys(plans).sort().forEach(k => {
+        const o = document.createElement("option"); o.value = k; o.textContent = k;
+        if(plans[k].isLocked) gL.appendChild(o); else gU.appendChild(o);
+    });
+    ps.add(gL); ps.add(gU);
+    ps.value = currentPlan;
+}
 
 function newPlan() {
     const n = prompt("Nazwa nowego planu:");
     if(n) { 
-        const dni = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"];
-        plans[n] = { notes: "", isLocked: false, days: dni.map(d => ({ name: d, active: true, rows: [] })) };
-        currentPlan = n; save(); location.reload(); 
+        plans[n] = {notes:"", isLocked:false, days:[{name:"Dzień 1", active:true, rows:[]}]}; 
+        currentPlan=n; save(); location.reload(); 
     }
 }
 
-function deletePlan() {
-    if(plans[currentPlan].isLocked) return;
-    if(confirm(`Czy na pewno usunąć plan: ${currentPlan}?`)) {
-        delete plans[currentPlan];
-        currentPlan = Object.keys(plans)[0];
-        save(); location.reload();
-    }
-}
+function deletePlan() { if(confirm("Usunąć ten plan na stałe?")) { delete plans[currentPlan]; currentPlan=Object.keys(plans)[0]; save(); location.reload(); } }
 
-// Import / Eksport
 function openExport() {
-    const out = [];
-    const p = plans[currentPlan];
+    const out = []; const p = plans[currentPlan];
     out.push(`!!NOTES!!\t${(p.notes||"").replace(/\n/g, "[BR]")}`);
     p.days.forEach(d => {
         out.push(`# ${d.name} | ${d.active ? "AKTYWNY" : "PRZERWA"}`);
         d.rows.forEach(r => out.push(r.join("\t")));
     });
-    document.getElementById("exportText").value = out.join("\n");
-    document.getElementById("exportModal").classList.add("active");
-}
-function downloadTSV() {
-    const t = document.getElementById("exportText").value;
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([t], {type:"text/tab-separated-values"}));
-    a.download = currentPlan.replace(/\s/g, '_') + ".tsv"; a.click();
-}
-function openImport() { document.getElementById("importModal").classList.add("active"); }
-function handleFileSelect(e) {
-    const r = new FileReader();
-    r.onload = (e) => { document.getElementById("importText").value = e.target.result; };
-    r.readAsText(e.target.files[0]);
-}
-function applyImport() {
-    const lines = document.getElementById("importText").value.trim().split("\n");
-    const week = []; let day = null; let notes = "";
-    lines.forEach(l => {
-        if (l.startsWith("!!NOTES!!")) notes = l.split("\t")[1].replace(/\[BR\]/g, "\n");
-        else if (l.startsWith("#")) {
-            const [n, s] = l.replace("#", "").split("|").map(x => x.trim());
-            day = { name: n, active: s === "AKTYWNY", rows: [] };
-            week.push(day);
-        } else if (day && l.trim()) { day.rows.push(l.split("\t")); }
-    });
-    if(week.length > 0) { 
-        const n = "Importowany_" + Date.now();
-        plans[n] = { notes: notes, isLocked: false, days: week }; 
-        currentPlan = n; save(); location.reload(); 
-    }
-}
-function closeModals() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
-
-function initSelect() {
-    const ps = document.getElementById("planSelect");
-    ps.innerHTML = "";
-    
-    const groups = { locked: document.createElement("optgroup"), user: document.createElement("optgroup") };
-    groups.locked.label = "📋 PROJEKTY KOZIAR";
-    groups.user.label = "💪 TWOJE PLANY";
-
-    Object.keys(plans).sort().forEach(k => {
-        const o = document.createElement("option");
-        o.value = k; o.textContent = k;
-        if(plans[k].isLocked) groups.locked.appendChild(o);
-        else groups.user.appendChild(o);
-    });
-
-    ps.appendChild(groups.locked);
-    ps.appendChild(groups.user);
-    ps.value = currentPlan;
+    alert("Dane planu skopiowane do konsoli (F12) lub możesz je wyeksportować jako plik TSV w pełnej wersji.");
+    console.log(out.join("\n"));
 }
 
-initSelect();
-render();
+fetchRemotePlans();
 </script>
 </body>
 </html>
