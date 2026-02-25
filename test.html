@@ -7,134 +7,126 @@
     
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0a0a0a">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
-            --bg: #0a0a0a;
-            --card: #161616;
-            --border: #2a2a2a;
-            --text: #ffffff;
-            --gold: #d4af37;
-            --gold-glow: rgba(212, 175, 55, 0.4);
-            --danger: #ff4444;
-            --pro-color: #3b82f6;
+            --bg: #0a0a0a; --card: #161616; --border: #2a2a2a; --text: #ffffff;
+            --gold: #d4af37; --gold-glow: rgba(212, 175, 55, 0.4);
+            --danger: #ff4444; --pro-color: #3b82f6;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
             margin: 0; font-family: 'Inter', sans-serif; 
-            background: var(--bg); color: var(--text); 
-            padding-bottom: 100px;
+            background: var(--bg); color: var(--text); padding-bottom: 100px;
         }
 
         header {
             position: sticky; top: 0; z-index: 100;
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(15px);
+            background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(15px);
             padding: 10px; border-bottom: 1px solid var(--border);
             display: flex; align-items: center; gap: 8px;
         }
 
         #planSelect { 
-            background: var(--card); color: var(--gold); 
-            border: 1px solid var(--border); padding: 10px; 
-            border-radius: 8px; flex: 1; font-weight: 700; font-size: 14px; outline: none;
+            background: var(--card); color: var(--gold); border: 1px solid var(--border);
+            padding: 10px; border-radius: 8px; flex: 1; font-weight: 700; font-size: 14px; outline: none;
         }
 
         .header-actions { display: flex; gap: 6px; }
 
         .icon-btn {
-            background: var(--card); color: var(--text);
-            border: 1px solid var(--border);
-            width: 40px; height: 40px;
-            display: flex; align-items: center; justify-content: center;
+            background: var(--card); color: var(--text); border: 1px solid var(--border);
+            width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
             border-radius: 8px; cursor: pointer; transition: 0.2s;
         }
         .icon-btn.gold { background: var(--gold); color: #000; border: none; }
-        .icon-btn.pro-active { border-color: var(--pro-color); color: var(--pro-color); }
+        .icon-btn.pro-active { border-color: var(--pro-color); color: var(--pro-color); box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
 
-        main { padding: 15px; max-width: 900px; margin: 0 auto; }
+        main { padding: 12px; max-width: 1000px; margin: 0 auto; }
 
         .day { 
-            background: var(--card); margin-bottom: 18px; 
-            border-radius: 16px; border: 1px solid var(--border); 
-            overflow: hidden; transition: 0.3s;
+            background: var(--card); margin-bottom: 15px; border-radius: 12px; 
+            border: 1px solid var(--border); overflow: hidden; transition: 0.3s;
         }
         .day.inactive { opacity: 0.25; filter: grayscale(1); }
-        .day.active-today { border-color: var(--gold); box-shadow: 0 0 18px var(--gold-glow); }
-        .day.editing { border-color: var(--gold); box-shadow: 0 0 15px var(--gold-glow); }
+        .day.active-today { border-color: var(--gold); box-shadow: 0 0 15px var(--gold-glow); }
+        .day.editing { border-color: var(--gold); }
 
         .day-header {
-            background: rgba(255,255,255,0.02); padding: 12px 15px;
+            background: rgba(255,255,255,0.03); padding: 10px 15px;
             display: flex; justify-content: space-between; align-items: center;
         }
         
         .day-title-input {
             background: transparent; border: none; color: var(--gold);
-            font-size: 15px; font-weight: 800; text-transform: uppercase; outline: none;
+            font-size: 14px; font-weight: 800; text-transform: uppercase; outline: none; width: 60%;
         }
 
-        .table-container { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; min-width: 400px; }
-        th { font-size: 9px; color: #555; padding: 10px 4px; text-transform: uppercase; white-space: nowrap; }
-        td { border-top: 1px solid var(--border); padding: 0; text-align: center; }
+        /* TABELA I SCROLL */
+        .table-wrapper { width: 100%; overflow-x: auto; scrollbar-width: none; }
+        .table-wrapper::-webkit-scrollbar { display: none; }
+        
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        
+        th { font-size: 9px; color: #666; padding: 12px 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { border-top: 1px solid var(--border); padding: 0; position: relative; }
 
         input[type="text"] { 
             width: 100%; background: transparent; border: none; 
-            color: var(--text); padding: 12px 2px; font-size: 14px; text-align: center; 
-            outline: none;
+            color: var(--text); padding: 14px 2px; font-size: 13px; text-align: center; outline: none;
         }
-        
-        .ex-name { text-align: left; padding-left: 8px; min-width: 140px; display: flex; align-items: center; gap: 5px; }
-        .ex-name input { text-align: left; font-weight: 600; }
-        
-        /* Kolumny PRO - domyślnie ukryte */
+
+        /* KOLUMNY - SZEROKOŚCI */
+        .col-check { width: 35px; }
+        .col-nr { width: 35px; }
+        .col-name { width: 150px; text-align: left; padding-left: 5px; }
+        .col-data { width: 45px; }
+        .col-edit { width: 70px; display: none; }
+        .editing .col-edit { display: table-cell; }
+
+        .ex-name-box { display: flex; align-items: center; gap: 4px; }
+        .ex-name-box input { text-align: left; font-weight: 600; }
+
+        /* UKRYWANIE KOLUMN */
         .pro-col { display: none; }
-        .is-pro .pro-col { display: table-cell; }
+        .is-pro .pro-col.force-show { display: table-cell; } /* Pokaż w edycji */
 
-        .col-nr { width: 25px; color: #444; font-size: 10px; }
-        .col-check { width: 40px; }
-        .col-small { width: 45px; }
+        .info-btn { color: #444; font-size: 14px; cursor: pointer; padding: 5px; }
+        .info-btn.has-data { color: var(--gold); }
 
-        /* Rozwijane detale */
-        .details-row { display: none; background: #0f0f0f; }
+        /* WIERSZ DETALI */
+        .details-row { display: none; background: #0c0c0c; }
         .details-row.open { display: table-row; }
-        .details-content { padding: 10px; text-align: left; border-top: 1px dashed var(--border); }
-        .details-content textarea { width: 100%; background: #111; border: 1px solid #333; color: #aaa; padding: 8px; border-radius: 6px; font-size: 12px; resize: none; }
+        .details-content { padding: 10px; border-top: 1px dashed #333; }
+        .details-content textarea { 
+            width: 100%; background: #000; border: 1px solid #222; 
+            color: #888; padding: 10px; border-radius: 6px; font-size: 12px; resize: none;
+        }
 
-        .info-toggle { color: #444; cursor: pointer; }
-        .info-toggle.active { color: var(--gold); }
-
-        .edit-ui { display: none; width: 60px; }
-        .editing .edit-ui { display: table-cell; }
+        tr.done { background: rgba(212, 175, 55, 0.05); }
+        tr.done input { color: #555 !important; text-decoration: line-through; }
         
         .btn-add-row { 
-            display: none; width: 100%; padding: 16px; 
-            background: transparent; color: var(--gold); border: none;
-            border-top: 1px solid var(--border); font-weight: 800; cursor: pointer;
+            display: none; width: 100%; padding: 15px; background: transparent; 
+            color: var(--gold); border: none; border-top: 1px solid var(--border); 
+            font-weight: 800; font-size: 11px; cursor: pointer;
         }
         .editing .btn-add-row { display: block; }
 
-        tr.done { background: rgba(212, 175, 55, 0.08); }
-        tr.done input { color: #555 !important; text-decoration: line-through; }
-        
-        input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--gold); }
+        /* BANNER */
+        .activate-banner { background: #111; border: 1px solid var(--gold); padding: 15px; margin-bottom: 15px; border-radius: 10px; text-align: center; }
+        .btn-activate { background: var(--gold); color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: 900; width: 100%; }
 
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 1001; padding: 20px; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 1001; padding: 20px; }
         .modal.active { display: flex; }
-        .modal-box { background: var(--card); width: 100%; max-width: 500px; padding: 25px; border-radius: 15px; border: 1px solid var(--border); }
+        .modal-box { background: var(--card); width: 100%; max-width: 400px; padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
+        .modal-box textarea { width: 100%; height: 200px; background: #000; color: #fff; border: 1px solid var(--border); padding: 10px; font-size: 12px; }
 
-        .locked-mode #week, .locked-mode .notes-area { opacity: 0.45; filter: grayscale(0.7); pointer-events: none; }
-        .activate-banner { background: linear-gradient(135deg, #1a1a1a, #0a0a0a); border: 1px solid var(--gold); border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center; }
-        .btn-activate { background: var(--gold); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: 900; width: 100%; cursor: pointer; }
-
-        .floating-logo { position: fixed; bottom: 25px; right: 25px; width: 50px; height: 50px; background: #000; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .floating-logo { position: fixed; bottom: 20px; right: 20px; width: 45px; height: 45px; background: #000; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1000; }
     </style>
 </head>
 <body id="bodyTag">
@@ -142,9 +134,8 @@
 <header>
     <select id="planSelect" onchange="loadPlan()"></select>
     <div class="header-actions">
-        <button id="proToggle" class="icon-btn" onclick="toggleProMode()" title="Tryb Zaawansowany"><i data-lucide="zap"></i></button>
+        <button id="proBtn" class="icon-btn" onclick="toggleProMode()"><i data-lucide="zap"></i></button>
         <button class="icon-btn gold" onclick="newPlan()"><i data-lucide="plus"></i></button>
-        <button class="icon-btn" onclick="resetWeek()"><i data-lucide="rotate-ccw"></i></button>
         <button class="icon-btn" onclick="openExport()"><i data-lucide="share-2"></i></button>
         <button class="icon-btn" onclick="openImport()"><i data-lucide="download"></i></button>
         <button id="delBtn" class="icon-btn" style="color:var(--danger)" onclick="deletePlan()"><i data-lucide="trash-2"></i></button>
@@ -153,30 +144,25 @@
 
 <main>
     <div id="activateArea"></div>
-    <div class="notes-area">
-        <label style="color:var(--gold); font-size:10px; font-weight:900; text-transform:uppercase; margin-bottom:5px; display:block">Notatki ogólne</label>
-        <textarea id="planNotes" placeholder="Wskazówki do planu..." oninput="autoHeight(this); saveNotes()"></textarea>
+    <div class="notes-area" style="margin-bottom:15px">
+        <textarea id="planNotes" style="width:100%; background:var(--card); border:1px solid var(--border); color:#aaa; padding:10px; border-radius:10px; font-size:13px; outline:none; resize:none" placeholder="Notatki ogólne..." oninput="saveNotes()"></textarea>
     </div>
     <div id="week"></div>
 </main>
 
 <div class="modal" id="exportModal">
     <div class="modal-box">
-        <h3>Eksport PRO (TSV)</h3>
+        <h3 style="color:var(--gold); margin-top:0">Eksport Planu</h3>
         <textarea id="exportText" readonly></textarea>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px">
-            <button class="btn-activate" onclick="downloadTSV()">Pobierz plik</button>
-            <button class="icon-btn" style="width:100%" onclick="closeModals()">Zamknij</button>
-        </div>
+        <button class="btn-activate" style="margin-top:10px" onclick="closeModals()">Zamknij</button>
     </div>
 </div>
 
 <div class="modal" id="importModal">
     <div class="modal-box">
-        <h3>Importuj plan</h3>
-        <input type="file" id="importFile" accept=".tsv" onchange="handleFileSelect(event)" style="margin-bottom:10px">
-        <textarea id="importText" placeholder="Wklej TSV..."></textarea>
-        <button class="btn-activate" style="margin-top:10px" onclick="applyImport()">Zatwierdź</button>
+        <h3 style="color:var(--gold); margin-top:0">Importuj Plan</h3>
+        <textarea id="importText" placeholder="Wklej tutaj kod planu..."></textarea>
+        <button class="btn-activate" style="margin-top:10px" onclick="applyImport()">Importuj</button>
     </div>
 </div>
 
@@ -189,7 +175,7 @@ let plans = JSON.parse(localStorage.getItem("plans")) || {};
 let checks = JSON.parse(localStorage.getItem("checks")) || {};
 let currentPlan = localStorage.getItem("currentPlanName") || "";
 let editStates = {};
-let openDetails = {}; // Przechowuje stan rozwiniętych info o ćwiczeniu
+let detailsState = {};
 
 async function fetchRemotePlans() {
     const files = {"3-dniowy FBW - by Koziar":"basic1.tsv","4-dniowy Upper/Lower - by Koziar":"basic2.tsv","5-dniowy U/L/PPL - by Koziar":"basic3.tsv"};
@@ -218,7 +204,7 @@ function parseTSV(text) {
             week.push(day);
         } else if (day && l.trim()) {
             let row = l.split("\t").map(x => x.trim());
-            while(row.length < 9) row.push(""); // Nr, Nazwa, S, P, KG, Rest, RIR, Tempo, Prog
+            while(row.length < 10) row.push(""); // 0:Nr, 1:Nazwa, 2:S, 3:P, 4:KG, 5:Rest, 6:RIR, 7:Tempo, 8:Prog, 9:Desc
             day.rows.push(row);
         }
     });
@@ -231,143 +217,141 @@ function save() {
     localStorage.setItem("currentPlanName", currentPlan);
 }
 
-function toggleProMode() {
-    if (plans[currentPlan].isLocked) return alert("Musisz najpierw aktywować kopię planu!");
-    plans[currentPlan].proMode = !plans[currentPlan].proMode;
-    save();
-    render();
-}
-
-function toggleDetails(di, ri) {
-    const id = `${di}-${ri}`;
-    openDetails[id] = !openDetails[id];
-    render();
-}
-
 function render() {
     const weekEl = document.getElementById("week");
     const notesEl = document.getElementById("planNotes");
-    const body = document.getElementById("bodyTag");
-    const isPro = plans[currentPlan]?.proMode;
-    
-    if(!currentPlan || !plans[currentPlan]) return;
-    const isLocked = plans[currentPlan].isLocked;
-    
-    body.className = isLocked ? "locked-mode" : "";
-    document.getElementById("proToggle").className = `icon-btn ${isPro ? 'pro-active' : ''}`;
-    document.getElementById("activateArea").innerHTML = isLocked ? `<div class="activate-banner"><button class="btn-activate" onclick="activatePlan()">🚀 AKTYWUJ TEN PLAN</button></div>` : "";
-    
-    notesEl.value = plans[currentPlan].notes || "";
-    notesEl.readOnly = isLocked;
+    const p = plans[currentPlan];
+    if(!p) return;
 
-    weekEl.innerHTML = plans[currentPlan].days.map((day, di) => {
+    document.getElementById("bodyTag").className = p.isLocked ? "locked-mode" : "";
+    document.getElementById("proBtn").className = `icon-btn ${p.proMode ? 'pro-active' : ''}`;
+    document.getElementById("delBtn").style.display = p.isLocked ? "none" : "flex";
+    document.getElementById("activateArea").innerHTML = p.isLocked ? `<div class="activate-banner"><button class="btn-activate" onclick="activatePlan()">🚀 AKTYWUJ TEN PLAN</button></div>` : "";
+    
+    notesEl.value = p.notes || "";
+    
+    weekEl.innerHTML = p.days.map((day, di) => {
         const isEditing = editStates[di];
         return `
-            <div class="day ${day.active ? '' : 'inactive'} ${isEditing ? 'editing' : ''} ${isPro ? 'is-pro' : ''} ${hasChecks(di) ? 'active-today' : ''}">
+            <div class="day ${day.active ? '' : 'inactive'} ${isEditing ? 'editing' : ''} ${p.proMode ? 'is-pro' : ''} ${hasChecks(di) ? 'active-today' : ''}">
                 <div class="day-header">
                     <input class="day-title-input" value="${day.name}" ${isEditing ? '' : 'readonly'} oninput="plans[currentPlan].days[${di}].name=this.value;save()">
-                    <div style="display:flex; gap:8px;">
-                        ${!isLocked ? `
-                            <button class="icon-btn" onclick="toggleDayState(${di})"><i data-lucide="${day.active ? 'pause' : 'play'}" style="width:14px"></i></button>
-                            <button class="icon-btn ${isEditing ? 'gold' : ''}" style="width:70px; font-size:10px; font-weight:900" onclick="toggleEdit(${di})">${isEditing ? 'OK' : 'EDYTUJ'}</button>
+                    <div style="display:flex; gap:6px;">
+                        ${!p.isLocked ? `
+                            <button class="icon-btn" onclick="toggleDay(${di})"><i data-lucide="${day.active ? 'pause' : 'play'}" style="width:14px"></i></button>
+                            <button class="icon-btn ${isEditing ? 'gold' : ''}" style="width:60px; font-size:10px; font-weight:900" onclick="toggleEdit(${di})">${isEditing ? 'OK' : 'EDYTUJ'}</button>
                         ` : ''}
                     </div>
                 </div>
-                <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>✔</th>
-                            <th style="text-align:left; padding-left:10px">Ćwiczenie</th>
-                            <th>S</th><th>P</th><th>KG</th>
-                            <th class="pro-col">Rest</th><th class="pro-col">RIR</th><th class="pro-col">Tempo</th><th class="pro-col">Prog</th>
-                            <th class="edit-ui">Opcje</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${day.rows.map((r, ri) => renderRow(di, ri, r, isPro, isLocked, isEditing)).join('')}
-                    </tbody>
-                </table>
+                <div class="table-wrapper">
+                    <table style="width: ${calculateTableWidth(di)}px">
+                        <thead>
+                            <tr>
+                                <th class="col-check">✔</th>
+                                <th class="pro-col col-nr ${isEditing ? 'force-show':''}">Nr</th>
+                                <th class="col-name">Ćwiczenie</th>
+                                <th class="col-data">S</th><th class="col-data">P</th><th class="col-data">KG</th>
+                                <th class="pro-col col-data ${isEditing ? 'force-show':''}">Rest</th>
+                                <th class="pro-col col-data ${isEditing ? 'force-show':''}">RIR</th>
+                                <th class="pro-col col-data ${isEditing ? 'force-show':''}">Tempo</th>
+                                <th class="pro-col col-data ${isEditing ? 'force-show':''}">Prog</th>
+                                <th class="col-edit">Opcje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${day.rows.map((r, ri) => renderRow(di, ri, r, isEditing, p.isLocked)).join('')}
+                        </tbody>
+                    </table>
                 </div>
-                ${isEditing ? `<button class="btn-add-row" onclick="addRow(${di})">+ DODAJ NOWE ĆWICZENIE</button>` : ''}
+                ${isEditing ? `<button class="btn-add-row" onclick="addRow(${di})">+ DODAJ ĆWICZENIE</button>` : ''}
             </div>
         `;
     }).join('');
     lucide.createIcons();
 }
 
-function renderRow(di, ri, r, isPro, isLocked, isEditing) {
+function calculateTableWidth(di) {
+    const p = plans[currentPlan];
+    if (!p.proMode) return 350;
+    // W trybie PRO dynamicznie licz szerokość (nazwa + stale + aktywne kolumny pro)
+    let w = 230; // Check + Name + S + P + KG
+    if (editStates[di]) return 600; // W edycji pokazujemy wszystko
+    return 550; // W treningu scrollujemy
+}
+
+function renderRow(di, ri, r, isEditing, isLocked) {
     const done = checks[currentPlan]?.[di]?.[ri];
-    const detailOpen = openDetails[`${di}-${ri}`];
-    
-    // Logika inteligentnego ukrywania pustych kolumn PRO w trybie treningu (nie edycji)
-    const showPro = (colIdx) => isPro && (isEditing || (r[colIdx] && r[colIdx] !== ""));
+    const isPro = plans[currentPlan].proMode;
+    const showCol = (idx) => isPro && (isEditing || (r[idx] && r[idx] !== ""));
 
     return `
         <tr class="${done ? 'done' : ''}">
             <td class="col-check"><input type="checkbox" ${done ? 'checked' : ''} ${isLocked ? 'disabled' : ''} onchange="toggleCheckState(${di},${ri},this.checked,this)"></td>
-            <td class="ex-name">
-                <i data-lucide="info" class="info-toggle ${r[9] ? 'active' : ''}" onclick="toggleDetails(${di},${ri})"></i>
-                <input type="text" value="${r[1]}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},1,this.value)">
+            <td class="pro-col col-nr ${isEditing ? 'force-show':''}" style="${!showCol(0) ? 'display:none' : ''}">
+                <input type="text" value="${r[0]||''}" oninput="updRow(${di},${ri},0,this.value)">
             </td>
-            <td class="col-small"><input type="text" inputmode="decimal" value="${r[2]}" oninput="updRow(${di},${ri},2,this.value)"></td>
-            <td class="col-small"><input type="text" inputmode="decimal" value="${r[3]}" oninput="updRow(${di},${ri},3,this.value)"></td>
-            <td class="col-small"><input type="text" inputmode="decimal" value="${r[4]}" oninput="updRow(${di},${ri},4,this.value)"></td>
+            <td class="col-name">
+                <div class="ex-name-box">
+                    <i data-lucide="info" class="info-btn ${r[9] ? 'has-data' : ''}" onclick="toggleDetails(${di},${ri})"></i>
+                    <input type="text" value="${r[1]||''}" ${isLocked ? 'readonly' : ''} oninput="updRow(${di},${ri},1,this.value)">
+                </div>
+            </td>
+            <td class="col-data"><input type="text" value="${r[2]||''}" oninput="updRow(${di},${ri},2,this.value)"></td>
+            <td class="col-data"><input type="text" value="${r[3]||''}" oninput="updRow(${di},${ri},3,this.value)"></td>
+            <td class="col-data"><input type="text" value="${r[4]||''}" oninput="updRow(${di},${ri},4,this.value)"></td>
             
-            <td class="pro-col col-small" style="${!showPro(5) ? 'display:none' : ''}"><input type="text" value="${r[5]}" oninput="updRow(${di},${ri},5,this.value)"></td>
-            <td class="pro-col col-small" style="${!showPro(6) ? 'display:none' : ''}"><input type="text" value="${r[6]}" oninput="updRow(${di},${ri},6,this.value)"></td>
-            <td class="pro-col col-small" style="${!showPro(7) ? 'display:none' : ''}"><input type="text" value="${r[7]}" oninput="updRow(${di},${ri},7,this.value)"></td>
-            <td class="pro-col col-small" style="${!showPro(8) ? 'display:none' : ''}"><input type="text" value="${r[8]}" oninput="updRow(${di},${ri},8,this.value)"></td>
-            
-            <td class="edit-ui">
-                <button onclick="moveRow(${di},${ri},-1)" style="background:none;border:none;color:white">▲</button>
-                <button onclick="delRow(${di},${ri})" style="background:none;border:none;color:var(--danger)">✕</button>
+            <td class="pro-col col-data ${isEditing ? 'force-show':''}" style="${!showCol(5) ? 'display:none' : ''}"><input type="text" value="${r[5]||''}" oninput="updRow(${di},${ri},5,this.value)"></td>
+            <td class="pro-col col-data ${isEditing ? 'force-show':''}" style="${!showCol(6) ? 'display:none' : ''}"><input type="text" value="${r[6]||''}" oninput="updRow(${di},${ri},6,this.value)"></td>
+            <td class="pro-col col-data ${isEditing ? 'force-show':''}" style="${!showCol(7) ? 'display:none' : ''}"><input type="text" value="${r[7]||''}" oninput="updRow(${di},${ri},7,this.value)"></td>
+            <td class="pro-col col-data ${isEditing ? 'force-show':''}" style="${!showCol(8) ? 'display:none' : ''}"><input type="text" value="${r[8]||''}" oninput="updRow(${di},${ri},8,this.value)"></td>
+
+            <td class="col-edit">
+                <button onclick="delRow(${di},${ri})" style="background:none; border:none; color:var(--danger)">✕</button>
             </td>
         </tr>
-        <tr class="details-row ${detailOpen ? 'open' : ''}">
-            <td colspan="15">
+        <tr class="details-row ${detailsState[di+'-'+ri] ? 'open' : ''}">
+            <td colspan="10">
                 <div class="details-content">
-                    <label style="font-size:9px; color:var(--gold)">OPIS ĆWICZENIA / WIDEO:</label>
-                    <textarea placeholder="Wklej link do YT lub instrukcję..." oninput="updRow(${di},${ri},9,this.value)">${r[9] || ''}</textarea>
+                    <textarea placeholder="Opis ćwiczenia, wskazówki, linki..." oninput="updRow(${di},${ri},9,this.value)">${r[9]||''}</textarea>
                 </div>
             </td>
         </tr>
     `;
 }
 
-// Funkcje bez skakania strony
+function updRow(di, ri, ci, v) {
+    if(plans[currentPlan].isLocked) return;
+    plans[currentPlan].days[di].rows[ri][ci] = v;
+    save();
+}
+
+function toggleDetails(di, ri) {
+    const key = di + '-' + ri;
+    detailsState[key] = !detailsState[key];
+    render();
+}
+
+function toggleProMode() {
+    if(plans[currentPlan].isLocked) return alert("Aktywuj plan, aby edytować tryb PRO");
+    plans[currentPlan].proMode = !plans[currentPlan].proMode;
+    save(); render();
+}
+
 function toggleCheckState(di, ri, val, el) {
     if (!checks[currentPlan]) checks[currentPlan] = {};
     if (!checks[currentPlan][di]) checks[currentPlan][di] = {};
     checks[currentPlan][di][ri] = val;
-    el.closest('tr').className = val ? 'done' : '';
+    el.closest('tr').classList.toggle('done', val);
     save();
 }
 
-function toggleDayState(di) {
-    plans[currentPlan].days[di].active = !plans[currentPlan].days[di].active;
-    save(); render();
-}
-
-function hasChecks(di) { return Object.values(checks[currentPlan]?.[di] || {}).some(v => v); }
-function toggleEdit(di) { editStates[di] = !editStates[di]; render(); }
-function updRow(di, ri, ci, v) { 
-    if(!plans[currentPlan].isLocked) { 
-        while(plans[currentPlan].days[di].rows[ri].length <= ci) plans[currentPlan].days[di].rows[ri].push("");
-        plans[currentPlan].days[di].rows[ri][ci] = v; 
-        save(); 
-    } 
-}
-function addRow(di) { plans[currentPlan].days[di].rows.push(["","","","","","","","","",""]); save(); render(); }
-function delRow(di, ri) { plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); }
-function moveRow(di, ri, dir) {
-    const r = plans[currentPlan].days[di].rows; const t = ri+dir;
-    if(t>=0 && t<r.length) { [r[ri], r[t]] = [r[t], r[ri]]; save(); render(); }
-}
-
 function activatePlan() {
-    const n = prompt("Nazwa kopii:", currentPlan.replace(" - by Koziar", ""));
-    if(n) { plans[n] = JSON.parse(JSON.stringify(plans[currentPlan])); plans[n].isLocked = false; currentPlan = n; save(); location.reload(); }
+    const n = prompt("Nazwa Twojego planu:", currentPlan.replace(" - by Koziar", ""));
+    if(n) {
+        plans[n] = JSON.parse(JSON.stringify(plans[currentPlan]));
+        plans[n].isLocked = false;
+        currentPlan = n; save(); location.reload();
+    }
 }
 
 function openExport() {
@@ -382,45 +366,31 @@ function openExport() {
     document.getElementById("exportModal").classList.add("active");
 }
 
-function downloadTSV() {
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([document.getElementById("exportText").value], {type:"text/tab-separated-values"}));
-    a.download = currentPlan + ".tsv"; a.click();
-}
-
 function openImport() { document.getElementById("importModal").classList.add("active"); }
 function applyImport() {
+    const txt = document.getElementById("importText").value;
+    if(!txt) return;
     const n = "Import_" + Date.now();
-    plans[n] = parseTSV(document.getElementById("importText").value);
+    plans[n] = parseTSV(txt);
     plans[n].isLocked = false;
     currentPlan = n; save(); location.reload();
 }
 
-function handleFileSelect(e) {
-    const reader = new FileReader();
-    reader.onload = (ev) => document.getElementById("importText").value = ev.target.result;
-    reader.readAsText(e.target.files[0]);
-}
-
-function initSelect() {
-    const ps = document.getElementById("planSelect");
-    ps.innerHTML = "";
-    const gL = document.createElement("optgroup"); gL.label = "PROJEKTY KOZIAR";
-    const gU = document.createElement("optgroup"); gU.label = "TWOJE PLANY";
-    Object.keys(plans).forEach(k => {
-        const o = document.createElement("option"); o.value = k; o.innerText = k;
-        if(plans[k].isLocked) gL.appendChild(o); else gU.appendChild(o);
-    });
-    ps.appendChild(gL); ps.appendChild(gU);
-    ps.value = currentPlan;
-}
-
+function toggleEdit(di) { editStates[di] = !editStates[di]; render(); }
+function toggleDay(di) { plans[currentPlan].days[di].active = !plans[currentPlan].days[di].active; save(); render(); }
+function addRow(di) { plans[currentPlan].days[di].rows.push(["","","","","","","","","",""]); save(); render(); }
+function delRow(di, ri) { plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); }
+function hasChecks(di) { return Object.values(checks[currentPlan]?.[di] || {}).some(v => v); }
+function saveNotes() { plans[currentPlan].notes = document.getElementById("planNotes").value; save(); }
 function loadPlan() { currentPlan = document.getElementById("planSelect").value; render(); }
-function resetWeek() { if(confirm("Zresetować?")) { checks[currentPlan] = {}; save(); render(); } }
-function newPlan() { const n = prompt("Nazwa:"); if(n) { plans[n]={notes:"", proMode:false, isLocked:false, days:[{name:"Dzień 1", active:true, rows:[]}]}; currentPlan=n; save(); location.reload(); } }
-function deletePlan() { if(confirm("Usunąć?")) { delete plans[currentPlan]; currentPlan=Object.keys(plans)[0]; save(); location.reload(); } }
-function autoHeight(el) { el.style.height = "auto"; el.style.height = el.scrollHeight + "px"; }
-function closeModals() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
+function closeModals() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
+function initSelect() {
+    const s = document.getElementById("planSelect"); s.innerHTML = "";
+    Object.keys(plans).forEach(k => {
+        const o = document.createElement("option"); o.value = k; o.innerText = k; s.appendChild(o);
+    });
+    s.value = currentPlan;
+}
 
 fetchRemotePlans();
 </script>
