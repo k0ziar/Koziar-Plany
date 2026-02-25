@@ -1,5 +1,5 @@
 // --- KONFIGURACJA ---
-const GLOBAL_PLAN_VERSION = "1.7"; 
+const GLOBAL_PLAN_VERSION = "1.8"; // Podbicie wersji wymusza odświeżenie
 
 const DEFAULT_PLANS_CONFIG = {
     "3-dniowy FBW - by Koziar": "basic1.tsv",
@@ -7,12 +7,11 @@ const DEFAULT_PLANS_CONFIG = {
     "5-dniowy U/L/PPL - by Koziar": "basic3.tsv"
 };
 
-let plans = {};        // Tutaj będą plany użytkownika (z localStorage)
-let remotePlans = {};  // Tutaj będą plany zablokowane (z GitHub)
+let plans = {};        
+let remotePlans = {};  
 let checks = {};
 let currentPlan = "";
 let editStates = {};
-let lastMovedRow = null;
 
 function parseTSV(text) {
     const lines = text.trim().split("\n");
@@ -34,15 +33,14 @@ function parseTSV(text) {
 }
 
 async function initApp() {
-    // 1. Pobierz plany użytkownika
     plans = JSON.parse(localStorage.getItem("plans")) || {};
     checks = JSON.parse(localStorage.getItem("checks")) || {};
     currentPlan = localStorage.getItem("currentPlanName");
 
-    // 2. Pobierz plany zablokowane z GitHub
+    // Pobieramy zdalne plany ZAWSZE, aby starsi użytkownicy też je zobaczyli
     for (const [planName, fileName] of Object.entries(DEFAULT_PLANS_CONFIG)) {
         try {
-            const response = await fetch(fileName + "?t=" + new Date().getTime()); // Cache-buster
+            const response = await fetch(fileName + "?v=" + GLOBAL_PLAN_VERSION);
             if (response.ok) {
                 const text = await response.text();
                 remotePlans[planName] = parseTSV(text);
@@ -50,7 +48,6 @@ async function initApp() {
         } catch (err) { console.error("Błąd pobierania:", fileName); }
     }
 
-    // Jeśli brak wybranego planu, pokaż pierwszy dostępny zablokowany
     if (!currentPlan || (!plans[currentPlan] && !remotePlans[currentPlan])) {
         currentPlan = Object.keys(remotePlans)[0] || "";
     }
@@ -64,42 +61,37 @@ function refreshSelect() {
     if(!ps) return;
     ps.innerHTML = "";
     
-    // Grupa planów zablokowanych
+    // Grupa PROJEKTY
     const g1 = document.createElement("optgroup");
-    g1.label = "PROJEKTY KOZIAR (Zablokowane)";
+    g1.label = "PROJEKTY KOZIAR";
     Object.keys(remotePlans).sort().forEach(p => {
-        const o = document.createElement("option"); o.value = p; o.textContent = "⭐ " + p; g1.appendChild(o);
+        const o = document.createElement("option"); o.value = p; o.textContent = p; g1.appendChild(o);
     });
     ps.appendChild(g1);
 
-    // Grupa planów użytkownika
+    // Grupa TWOJE KOPIE
     const userKeys = Object.keys(plans);
     if(userKeys.length > 0) {
         const g2 = document.createElement("optgroup");
-        g2.label = "TWOJE KOPIE (Edytowalne)";
+        g2.label = "TWOJE KOPIE";
         userKeys.sort().forEach(p => {
-            const o = document.createElement("option"); o.value = p; o.textContent = "👤 " + p; g2.appendChild(o);
+            const o = document.createElement("option"); o.value = p; o.textContent = p; g2.appendChild(o);
         });
         ps.appendChild(g2);
     }
     ps.value = currentPlan;
 }
 
-// FUNKCJA AKTYWACJI (KOPIOWANIA)
 function activatePlan() {
     if (!remotePlans[currentPlan]) return;
-    
-    const newName = prompt("Jak chcesz nazwać swoją kopię?", currentPlan + " - Kopia");
+    const newName = prompt("Podaj nazwę dla swojej kopii:", currentPlan + " (User)");
     if (newName) {
-        // Głęboka kopia obiektu
-        const copy = JSON.parse(JSON.stringify(remotePlans[currentPlan]));
-        copy.isRemote = false; // Ta wersja jest już edytowalna
-        plans[newName] = copy;
+        plans[newName] = JSON.parse(JSON.stringify(remotePlans[currentPlan]));
+        plans[newName].isRemote = false;
         currentPlan = newName;
         save();
         refreshSelect();
         render();
-        alert("Plan aktywowany! Teraz możesz go edytować.");
     }
 }
 
@@ -110,26 +102,22 @@ function save() {
 }
 
 function render() {
-    const scrollPos = window.scrollY;
     const weekEl = document.getElementById("week");
     const notesEl = document.getElementById("planNotes");
     if(!weekEl) return;
     
-    // Sprawdzamy czy plan jest zdalny (zablokowany)
     const activePlanObj = plans[currentPlan] || remotePlans[currentPlan];
     if(!activePlanObj) return;
 
     const isRemote = activePlanObj.isRemote === true;
     weekEl.innerHTML = "";
     
-    // Przycisk aktywacji jeśli plan jest zablokowany
     if(isRemote) {
-        const btnBox = document.createElement("div");
-        btnBox.innerHTML = `<button onclick="activatePlan()" class="btn-activate">🚀 AKTYWUJ TEN PLAN (UTWÓRZ KOPIĘ)</button>`;
-        weekEl.appendChild(btnBox);
-        weekEl.classList.add("remote-view");
-    } else {
-        weekEl.classList.remove("remote-view");
+        const btn = document.createElement("button");
+        btn.className = "btn-activate";
+        btn.innerText = "🚀 AKTYWUJ TEN PLAN";
+        btn.onclick = activatePlan;
+        weekEl.appendChild(btn);
     }
 
     notesEl.value = activePlanObj.notes || "";
@@ -145,32 +133,31 @@ function render() {
         let rowsHtml = day.rows.map((r, ri) => `
             <tr class="${dayChecks[ri] ? 'done' : ''}">
                 <td class="col-check"><input type="checkbox" ${dayChecks[ri] ? 'checked' : ''} onchange="toggleCheck(${di},${ri},this.checked)"></td>
-                <td class="ex-name"><input type="text" value="${r[0]||''}" ${isRemote ? 'readonly' : ''} oninput="updRow(${di},${ri},0,this.value)"></td>
+                <td class="ex-name"><textarea rows="1" ${isRemote ? 'readonly' : ''} oninput="autoHeight(this); updRow(${di},${ri},0,this.value)">${r[0]||''}</textarea></td>
                 <td class="col-s"><input type="text" value="${r[1]||''}" ${isRemote ? 'readonly' : ''} oninput="updRow(${di},${ri},1,this.value)"></td>
                 <td class="col-p"><input type="text" value="${r[2]||''}" ${isRemote ? 'readonly' : ''} oninput="updRow(${di},${ri},2,this.value)"></td>
                 <td class="col-kg"><input type="text" value="${r[3]||''}" ${isRemote ? 'readonly' : ''} oninput="updRow(${di},${ri},3,this.value)"></td>
-                ${!isRemote ? `<td class="edit-ui"><div class="row-ops"><button onclick="delRow(${di},${ri})">✕</button></div></td>` : '<td class="edit-ui"></td>'}
+                ${!isRemote ? `<td class="edit-ui"><button onclick="delRow(${di},${ri})">✕</button></td>` : ''}
             </tr>`).join('');
 
         d.innerHTML = `
             <div class="day-header">
-                <input class="day-title-input" value="${day.name}" readonly>
+                <span class="day-title-text">${day.name}</span>
                 ${!isRemote ? `
-                <div style="display:flex; gap:6px;">
-                    <button class="icon-btn" onclick="toggleDay(${di})"><i data-lucide="${day.active ? 'pause' : 'play'}" style="width:14px"></i></button>
-                    <button class="icon-btn ${isEditing ? 'gold' : ''}" onclick="toggleEdit(${di})">${isEditing ? 'GOTOWE' : 'EDYTUJ'}</button>
+                <div class="day-actions">
+                    <button class="icon-btn-sm" onclick="toggleDay(${di})"><i data-lucide="${day.active ? 'pause' : 'play'}"></i></button>
+                    <button class="icon-btn-sm ${isEditing ? 'gold' : ''}" onclick="toggleEdit(${di})">${isEditing ? 'GOTOWE' : 'EDYTUJ'}</button>
                 </div>` : ''}
             </div>
-            <table><tbody>${rowsHtml}</tbody></table>
-            ${(!isRemote && isEditing) ? `<button class="btn-add-row" onclick="addRow(${di})">+ DODAJ</button>` : ''}
+            <table><thead><tr><th>✔</th><th>Ćwiczenie</th><th>S</th><th>P</th><th>kg</th>${!isRemote ? '<th></th>' : ''}</tr></thead><tbody>${rowsHtml}</tbody></table>
+            ${(!isRemote && isEditing) ? `<button class="btn-add-row" onclick="addRow(${di})">+ DODAJ ĆWICZENIE</button>` : ''}
         `;
         weekEl.appendChild(d);
     });
     if(window.lucide) lucide.createIcons();
-    window.scrollTo(0, scrollPos);
+    document.querySelectorAll('textarea').forEach(autoHeight);
 }
 
-// --- RESZTA FUNKCJI POMOCNICZYCH ---
 function autoHeight(el) { el.style.height = "auto"; el.style.height = (el.scrollHeight) + "px"; }
 function saveNotes() { if (plans[currentPlan]) { plans[currentPlan].notes = document.getElementById("planNotes").value; save(); } }
 function toggleEdit(di) { editStates[di] = !editStates[di]; render(); }
