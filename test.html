@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Koziar Plany PRO v4.1</title>
+    <title>Koziar Plany Ultimate v4.2</title>
     
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
@@ -19,170 +19,191 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            margin: 0; font-family: 'Inter', sans-serif; 
-            background: var(--bg); color: var(--text); padding-bottom: 120px;
-        }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; overflow-x: hidden; }
 
-        /* HEADER */
         header {
             position: sticky; top: 0; z-index: 1000;
             background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(15px);
-            padding: 10px; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; gap: 8px;
+            padding: 8px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 6px;
         }
 
         #planSelect { 
             background: var(--card); color: var(--gold); border: 1px solid var(--border);
-            padding: 10px; border-radius: 8px; flex: 1; font-weight: 700; font-size: 14px; outline: none;
+            padding: 10px; border-radius: 8px; flex: 1; font-weight: 700; font-size: 13px; outline: none;
         }
 
-        .header-actions { display: flex; gap: 6px; }
+        .header-actions { display: flex; gap: 4px; }
 
         .icon-btn {
             background: var(--card); color: var(--text); border: 1px solid var(--border);
-            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
             border-radius: 8px; cursor: pointer; transition: 0.2s;
         }
         .icon-btn.gold { background: var(--gold); color: #000; border: none; }
-        .icon-btn.active-pro { border-color: var(--pro); color: var(--pro); box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+        .icon-btn.active-pro { border-color: var(--pro); color: var(--pro); box-shadow: 0 0 10px rgba(59,130,246,0.3); }
 
-        /* MAIN */
-        main { padding: 12px; max-width: 1000px; margin: 0 auto; }
+        main { padding: 10px; max-width: 1200px; margin: 0 auto; }
 
         .day { 
-            background: var(--card); margin-bottom: 25px; border-radius: 16px; 
+            background: var(--card); margin-bottom: 20px; border-radius: 12px; 
             border: 1px solid var(--border); overflow: hidden;
         }
-        .day.inactive { opacity: 0.3; filter: grayscale(1); }
-        .day.active-today { border-color: var(--gold); box-shadow: 0 0 20px var(--gold-glow); }
+        .day.inactive { opacity: 0.4; }
+        .day.active-today { border-color: var(--gold); box-shadow: 0 0 15px var(--gold-glow); }
 
         .day-header {
-            background: rgba(255,255,255,0.03); padding: 12px 15px;
+            background: rgba(255,255,255,0.03); padding: 10px 15px;
             display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border);
         }
         
-        .day-title {
-            background: transparent; border: none; color: var(--gold);
-            font-size: 15px; font-weight: 900; text-transform: uppercase; outline: none;
-        }
+        .day-title { background: transparent; border: none; color: var(--gold); font-size: 14px; font-weight: 900; text-transform: uppercase; width: 60%; }
 
-        /* TABELA */
         .table-scroll { width: 100%; overflow-x: auto; position: relative; }
         table { width: 100%; border-collapse: collapse; min-width: 450px; }
         
-        th { font-size: 10px; color: #555; padding: 12px 5px; text-transform: uppercase; text-align: center; border-bottom: 1px solid var(--border); }
-        td { border-bottom: 1px solid var(--border); padding: 0; }
+        th { font-size: 9px; color: #666; padding: 10px 5px; text-transform: uppercase; text-align: center; border-bottom: 1px solid var(--border); }
+        td { border-bottom: 1px solid var(--border); padding: 0; position: relative; }
 
-        /* Sticky Columns */
         .sticky-col { position: sticky; left: 0; background: var(--card); z-index: 10; border-right: 1px solid var(--border); }
         tr.done .sticky-col { background: #1a1812; }
 
         input[type="text"] { 
             width: 100%; background: transparent; border: none; 
-            color: var(--text); padding: 14px 2px; font-size: 14px; text-align: center; outline: none;
+            color: var(--text); padding: 14px 4px; font-size: 14px; text-align: center; outline: none;
         }
 
         .col-check { width: 45px; }
-        .col-nr { width: 40px; }
-        .col-name { width: 170px; text-align: left !important; }
-        .col-data { width: 50px; }
+        .col-name { width: 180px; text-align: left !important; }
+        .col-data { width: 48px; }
         .col-hide { display: none !important; }
 
-        .name-box { display: flex; align-items: center; gap: 8px; padding-left: 10px; }
-        .name-box input { text-align: left; font-weight: 600; }
+        .name-box { display: flex; align-items: center; gap: 8px; padding-left: 8px; }
+        .name-box input { text-align: left; font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
 
-        .info-btn { color: #333; cursor: pointer; transition: 0.2s; }
+        .info-btn { color: #333; cursor: pointer; flex-shrink: 0; }
         .info-btn.has-data { color: var(--gold); }
 
-        /* DETAILS */
         .details-row { display: none; background: #000; }
         .details-row.open { display: table-row; }
-        .details-content { padding: 15px; }
+        .details-content { padding: 12px; }
         .details-content textarea { 
             width: 100%; background: #111; border: 1px solid #333; 
-            color: #888; padding: 12px; border-radius: 8px; font-size: 13px; resize: none;
+            color: #ccc; padding: 10px; border-radius: 6px; font-size: 12px; resize: none;
         }
 
-        /* ACTIONS */
-        tr.done { background: rgba(212, 175, 55, 0.05); }
-        tr.done input { color: #555 !important; text-decoration: line-through; }
-        input[type="checkbox"] { width: 24px; height: 24px; accent-color: var(--gold); }
+        tr.done { background: rgba(212, 175, 55, 0.03); }
+        tr.done input { color: #444 !important; text-decoration: line-through; }
+        input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--gold); }
 
-        .btn-add-row { 
-            width: 100%; padding: 18px; background: transparent; 
-            color: var(--gold); border: none; border-top: 1px solid var(--border); 
-            font-weight: 900; font-size: 12px; cursor: pointer; text-transform: uppercase;
-        }
+        .btn-add-row { width: 100%; padding: 15px; background: transparent; color: var(--gold); border: none; font-weight: 800; font-size: 11px; cursor: pointer; }
 
-        /* MODAL */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 15px; }
         .modal.active { display: flex; }
-        .modal-box { background: var(--card); width: 100%; max-width: 450px; padding: 25px; border-radius: 15px; border: 1px solid var(--border); }
+        .modal-box { background: var(--card); width: 100%; max-width: 400px; padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
         
-        .floating-logo { position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background: #000; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1000; box-shadow: 0 0 15px var(--gold-glow); }
+        .floating-logo { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #000; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 999; }
     </style>
 </head>
-<body id="bodyTag">
+<body>
 
 <header>
     <select id="planSelect" onchange="loadPlan()"></select>
     <div class="header-actions">
-        <button id="resetBtn" class="icon-btn" style="color:var(--danger)" title="Resetuj tydzień" onclick="resetWeek()"><i data-lucide="rotate-ccw"></i></button>
-        <button id="proBtn" class="icon-btn" title="Tryb PRO" onclick="toggleProMode()"><i data-lucide="zap"></i></button>
-        <button class="icon-btn gold" title="Nowy Plan" onclick="newPlan()"><i data-lucide="plus"></i></button>
+        <button id="resetBtn" class="icon-btn" style="color:var(--danger)" onclick="resetWeek()"><i data-lucide="rotate-ccw"></i></button>
+        <button id="proBtn" class="icon-btn" onclick="toggleProMode()"><i data-lucide="zap"></i></button>
+        <button class="icon-btn gold" onclick="newPlan()"><i data-lucide="plus"></i></button>
         <button class="icon-btn" onclick="openImport()"><i data-lucide="download"></i></button>
-        <button class="icon-btn" onclick="exportPlan()"><i data-lucide="share-2"></i></button>
+        <button class="icon-btn" onclick="openExport()"><i data-lucide="share-2"></i></button>
+        <button id="delBtn" class="icon-btn" style="color:var(--danger)" onclick="deletePlan()"><i data-lucide="trash-2"></i></button>
     </div>
 </header>
 
-<main>
-    <div id="app"></div>
-</main>
+<main id="app"></main>
 
-<div class="modal" id="importModal">
+<div class="modal" id="ioModal">
     <div class="modal-box">
-        <h3 style="color:var(--gold); margin-top:0">Importuj Plan TSV</h3>
-        <textarea id="importText" style="width:100%; height:200px; background:#000; color:#fff; border:1px solid #333; padding:10px; border-radius:8px; font-size:10px" placeholder="Wklej kod planu..."></textarea>
-        <button class="icon-btn" style="width:100%; margin-top:15px; background:var(--gold); color:#000; font-weight:900" onclick="applyImport()">IMPORTUJ</button>
-        <button class="icon-btn" style="width:100%; margin-top:8px; border:none" onclick="closeModals()">Anuluj</button>
+        <h3 id="modalTitle" style="color:var(--gold); margin-top:0; font-size: 16px;">Plan</h3>
+        <textarea id="ioText" style="width:100%; height:250px; background:#000; color:#fff; border:1px solid #333; padding:10px; border-radius:6px; font-size:11px; font-family: monospace;"></textarea>
+        <div id="importActions" style="display:none">
+            <button class="icon-btn" style="width:100%; margin-top:10px; background:var(--gold); color:#000; font-weight:900" onclick="applyImport()">IMPORTUJ TERAZ</button>
+        </div>
+        <button class="btn-add-row" style="margin-top:5px" onclick="closeModals()">ZAMKNIJ</button>
     </div>
 </div>
 
 <div class="floating-logo" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-    <img src="logo.png" alt="K" style="width:85%; border-radius:50%" onerror="this.style.display='none'">
+    <img src="logo.png" alt="K" style="width:80%; border-radius:50%" onerror="this.style.display='none'">
 </div>
 
 <script>
-let plans = JSON.parse(localStorage.getItem("koziar_plans_v4")) || {};
-let checks = JSON.parse(localStorage.getItem("koziar_checks_v4")) || {};
-let currentPlan = localStorage.getItem("koziar_current") || "";
+let plans = {};
+let checks = JSON.parse(localStorage.getItem("koziar_checks_final")) || {};
+let currentPlan = localStorage.getItem("koziar_current_final") || "";
 let editStates = {};
 let openDetails = {};
+
+// 1. POŁĄCZENIE STARYCH BAZ I NOWYCH
+function initData() {
+    const legacy1 = JSON.parse(localStorage.getItem("plans")) || {};
+    const legacy2 = JSON.parse(localStorage.getItem("koziar_plans_v4")) || {};
+    const current = JSON.parse(localStorage.getItem("koziar_plans_final")) || {};
+    
+    plans = {...legacy1, ...legacy2, ...current};
+    
+    // Konwersja starych planów na nowy format z nagłówkami
+    Object.keys(plans).forEach(k => {
+        if (plans[k].days) {
+            plans[k].days.forEach(d => {
+                if (d.rows && d.rows.length > 0 && d.rows[0].length < 10) {
+                    d.rows = d.rows.map(r => {
+                        let newRow = new Array(10).fill("");
+                        if (r.length === 4) { // Nazwa, S, P, KG
+                            newRow[1]=r[0]; newRow[2]=r[1]; newRow[3]=r[2]; newRow[4]=r[3];
+                        } else {
+                            r.forEach((v, i) => { if(i<10) newRow[i]=v; });
+                        }
+                        return newRow;
+                    });
+                }
+            });
+        }
+    });
+    fetchRemotePlans();
+}
+
+async function fetchRemotePlans() {
+    const remotes = {"3-dniowy FBW - by Koziar":"basic1.tsv","4-dniowy Upper/Lower - by Koziar":"basic2.tsv","5-dniowy U/L/PPL - by Koziar":"basic3.tsv"};
+    for (const [name, file] of Object.entries(remotes)) {
+        try {
+            const resp = await fetch(file);
+            if(resp.ok) {
+                plans[name] = parseTSV(await resp.text());
+                plans[name].isLocked = true;
+            }
+        } catch(e) {}
+    }
+    if(!currentPlan || !plans[currentPlan]) currentPlan = Object.keys(plans)[0];
+    updateSelect();
+    render();
+}
 
 function parseTSV(text) {
     const lines = text.trim().split("\n");
     let days = [], day = null, notes = "", pro = false;
-    
-    lines.forEach(line => {
-        if (line.startsWith("!!PRO!!")) pro = true;
-        else if (line.startsWith("!!NOTES!!")) notes = line.split("\t")[1]?.replace(/\[BR\]/g, "\n") || "";
-        else if (line.startsWith("#")) {
-            const [name, status] = line.replace("#", "").split("|").map(s => s.trim());
-            day = { name, active: status === "AKTYWNY", rows: [] };
+    lines.forEach(l => {
+        if (l.startsWith("!!PRO!!")) pro = true;
+        else if (l.startsWith("!!NOTES!!")) notes = l.split("\t")[1]?.replace(/\[BR\]/g, "\n") || "";
+        else if (l.startsWith("#")) {
+            const [n, s] = l.replace("#", "").split("|").map(x => x.trim());
+            day = { name: n, active: s === "AKTYWNY", rows: [] };
             days.push(day);
-        } else if (day && line.trim()) {
-            const parts = line.split("\t").map(p => p.trim());
-            if (parts[0] === "Nr" || parts[0] === "Nazwa") return;
-            
+        } else if (day && l.trim()) {
+            const p = l.split("\t").map(x => x.trim());
+            if (p[0] === "Nr" || p[0] === "Nazwa") return;
             let row = new Array(10).fill("");
-            // Naprawa starych planów (4 kolumny)
-            if (parts.length <= 4 && !text.includes("Nazwa\tS")) {
-                row[1] = parts[0] || ""; row[2] = parts[1] || ""; row[3] = parts[2] || ""; row[4] = parts[3] || "";
-            } else {
-                parts.forEach((val, idx) => { if(idx < 10) row[idx] = val; });
-            }
+            if (p.length <= 4) { row[1]=p[0]; row[2]=p[1]; row[3]=p[2]; row[4]=p[3]; }
+            else { p.forEach((v, i) => { if(i<10) row[i]=v; }); }
             day.rows.push(row);
         }
     });
@@ -190,36 +211,34 @@ function parseTSV(text) {
 }
 
 function render() {
-    const container = document.getElementById("app");
+    const app = document.getElementById("app");
     const p = plans[currentPlan];
-    if (!p) { container.innerHTML = "<p style='text-align:center; padding:50px; color:#555'>Wklej lub dodaj swój pierwszy plan.</p>"; return; }
+    if(!p) return;
 
     document.getElementById("proBtn").classList.toggle("active-pro", p.proMode);
-    
-    container.innerHTML = p.days.map((day, di) => {
+    document.getElementById("delBtn").style.display = p.isLocked ? "none" : "flex";
+
+    app.innerHTML = p.days.map((day, di) => {
         const isEditing = editStates[di];
         return `
             <div class="day ${day.active ? '' : 'inactive'} ${hasChecks(di) ? 'active-today' : ''}">
                 <div class="day-header">
-                    <input class="day-title" value="${day.name}" ${isEditing ? '' : 'readonly'} oninput="updateDayName(${di}, this.value)">
-                    <div style="display:flex; gap:6px">
-                        <button class="icon-btn" style="width:32px; height:32px" onclick="toggleDayActive(${di})"><i data-lucide="${day.active ? 'eye' : 'eye-off'}" style="width:14px"></i></button>
-                        <button class="icon-btn ${isEditing ? 'gold' : ''}" style="width:70px; height:32px; font-size:10px; font-weight:900" onclick="toggleEdit(${di})">${isEditing ? 'GOTOWE' : 'EDYTUJ'}</button>
-                    </div>
+                    <input class="day-title" value="${day.name}" ${isEditing ? '' : 'readonly'} oninput="plans['${currentPlan}'].days[${di}].name=this.value;save()">
+                    <button class="icon-btn" style="width:65px; font-size:10px; font-weight:900" onclick="toggleEdit(${di})">${isEditing ? 'GOTOWE' : 'EDYTUJ'}</button>
                 </div>
                 <div class="table-scroll">
                     <table>
                         <thead>
                             <tr>
                                 <th class="sticky-col col-check">✔</th>
-                                <th class="col-nr ${!p.proMode && !isEditing ? 'col-hide' : ''}">Nr</th>
+                                <th class="col-data ${!p.proMode && !isEditing ? 'col-hide' : ''}">Nr</th>
                                 <th class="sticky-col col-name" style="left:45px">Ćwiczenie</th>
                                 <th class="col-data">S</th><th class="col-data">P</th><th class="col-data">KG</th>
                                 <th class="col-data ${!p.proMode && !isEditing ? 'col-hide' : ''}">Rest</th>
                                 <th class="col-data ${!p.proMode && !isEditing ? 'col-hide' : ''}">RIR</th>
                                 <th class="col-data ${!p.proMode && !isEditing ? 'col-hide' : ''}">Tempo</th>
                                 <th class="col-data ${!p.proMode && !isEditing ? 'col-hide' : ''}">Prog</th>
-                                ${isEditing ? '<th style="width:40px">✕</th>' : ''}
+                                ${isEditing ? '<th>✕</th>' : ''}
                             </tr>
                         </thead>
                         <tbody>
@@ -227,7 +246,7 @@ function render() {
                         </tbody>
                     </table>
                 </div>
-                ${isEditing ? `<button class="btn-add-row" onclick="addRow(${di})">+ Dodaj ćwiczenie</button>` : ''}
+                ${isEditing ? `<button class="btn-add-row" onclick="addRow(${di})">+ DODAJ ĆWICZENIE</button>` : ''}
             </div>
         `;
     }).join('');
@@ -235,18 +254,14 @@ function render() {
 }
 
 function renderRow(di, ri, row, isPro, isEditing) {
-    const isDone = checks[currentPlan]?.[di]?.[ri];
-    const isOpen = openDetails[`${di}-${ri}`];
+    const done = checks[currentPlan]?.[di]?.[ri];
+    const open = openDetails[di+'-'+ri];
     const hide = (idx) => !isEditing && (!isPro || !row[idx]);
 
     return `
-        <tr class="${isDone ? 'done' : ''}">
-            <td class="sticky-col col-check" style="text-align:center">
-                <input type="checkbox" ${isDone ? 'checked' : ''} onchange="setCheck(${di},${ri},this.checked)">
-            </td>
-            <td class="col-nr ${hide(0) ? 'col-hide' : ''}">
-                <input type="text" value="${row[0]||''}" oninput="upd(${di},${ri},0,this.value)">
-            </td>
+        <tr class="${done ? 'done' : ''}">
+            <td class="sticky-col col-check" style="text-align:center"><input type="checkbox" ${done?'checked':''} onchange="setCheck(${di},${ri},this.checked)"></td>
+            <td class="col-data ${hide(0)?'col-hide':''}"><input type="text" value="${row[0]||''}" oninput="upd(${di},${ri},0,this.value)"></td>
             <td class="sticky-col col-name" style="left:45px">
                 <div class="name-box">
                     <i data-lucide="info" class="info-btn ${row[9]?'has-data':''}" onclick="toggleDetails(${di},${ri})"></i>
@@ -256,87 +271,95 @@ function renderRow(di, ri, row, isPro, isEditing) {
             <td class="col-data"><input type="text" value="${row[2]||''}" oninput="upd(${di},${ri},2,this.value)"></td>
             <td class="col-data"><input type="text" value="${row[3]||''}" oninput="upd(${di},${ri},3,this.value)"></td>
             <td class="col-data"><input type="text" value="${row[4]||''}" oninput="upd(${di},${ri},4,this.value)"></td>
-            
-            <td class="col-data ${hide(5) ? 'col-hide' : ''}"><input type="text" value="${row[5]||''}" oninput="upd(${di},${ri},5,this.value)"></td>
-            <td class="col-data ${hide(6) ? 'col-hide' : ''}"><input type="text" value="${row[6]||''}" oninput="upd(${di},${ri},6,this.value)"></td>
-            <td class="col-data ${hide(7) ? 'col-hide' : ''}"><input type="text" value="${row[7]||''}" oninput="upd(${di},${ri},7,this.value)"></td>
-            <td class="col-data ${hide(8) ? 'col-hide' : ''}"><input type="text" value="${row[8]||''}" oninput="upd(${di},${ri},8,this.value)"></td>
-            
-            ${isEditing ? `<td style="text-align:center; color:var(--danger)" onclick="delRow(${di},${ri})"><i data-lucide="trash-2" style="width:14px"></i></td>` : ''}
+            <td class="col-data ${hide(5)?'col-hide':''}"><input type="text" value="${row[5]||''}" oninput="upd(${di},${ri},5,this.value)"></td>
+            <td class="col-data ${hide(6)?'col-hide':''}"><input type="text" value="${row[6]||''}" oninput="upd(${di},${ri},6,this.value)"></td>
+            <td class="col-data ${hide(7)?'col-hide':''}"><input type="text" value="${row[7]||''}" oninput="upd(${di},${ri},7,this.value)"></td>
+            <td class="col-data ${hide(8)?'col-hide':''}"><input type="text" value="${row[8]||''}" oninput="upd(${di},${ri},8,this.value)"></td>
+            ${isEditing ? `<td style="text-align:center; color:var(--danger)" onclick="delRow(${di},${ri})">✕</td>` : ''}
         </tr>
-        <tr class="details-row ${isOpen ? 'open' : ''}">
-            <td colspan="12">
-                <div class="details-content">
-                    <textarea placeholder="Notatki, technika, linki..." oninput="upd(${di},${ri},9,this.value)">${row[9]||''}</textarea>
-                </div>
-            </td>
+        <tr class="details-row ${open ? 'open' : ''}">
+            <td colspan="12"><div class="details-content"><textarea oninput="upd(${di},${ri},9,this.value)">${row[9]||''}</textarea></div></td>
         </tr>
     `;
 }
 
-// FUNKCJE
-function upd(di, ri, ci, v) { plans[currentPlan].days[di].rows[ri][ci] = v; save(); }
+function upd(di, ri, ci, v) { 
+    if(plans[currentPlan].isLocked) return;
+    plans[currentPlan].days[di].rows[ri][ci] = v; save(); 
+}
 function setCheck(di, ri, v) {
     if(!checks[currentPlan]) checks[currentPlan] = {};
     if(!checks[currentPlan][di]) checks[currentPlan][di] = {};
     checks[currentPlan][di][ri] = v; save(); render();
 }
 function save() {
-    localStorage.setItem("koziar_plans_v4", JSON.stringify(plans));
-    localStorage.setItem("koziar_checks_v4", JSON.stringify(checks));
-    localStorage.setItem("koziar_current", currentPlan);
+    localStorage.setItem("koziar_plans_final", JSON.stringify(plans));
+    localStorage.setItem("koziar_checks_final", JSON.stringify(checks));
+    localStorage.setItem("koziar_current_final", currentPlan);
+}
+function toggleEdit(di) { 
+    if(plans[currentPlan].isLocked) { activateCopy(); return; }
+    editStates[di] = !editStates[di]; render(); 
 }
 function toggleProMode() { plans[currentPlan].proMode = !plans[currentPlan].proMode; save(); render(); }
-function toggleEdit(di) { editStates[di] = !editStates[di]; render(); }
-function toggleDetails(di, ri) { const k=`${di}-${ri}`; openDetails[k]=!openDetails[k]; render(); }
-function toggleDayActive(di) { plans[currentPlan].days[di].active = !plans[currentPlan].days[di].active; save(); render(); }
-function resetWeek() { if(confirm("Zresetować wszystkie odznaczenia w tym planie?")) { checks[currentPlan] = {}; save(); render(); } }
+function toggleDetails(di, ri) { openDetails[di+'-'+ri] = !openDetails[di+'-'+ri]; render(); }
 function addRow(di) { plans[currentPlan].days[di].rows.push(new Array(10).fill("")); save(); render(); }
 function delRow(di, ri) { plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); }
-function updateDayName(di, v) { plans[currentPlan].days[di].name = v; save(); }
+function resetWeek() { if(confirm("Zresetować postępy?")) { checks[currentPlan] = {}; save(); render(); } }
 
-function openImport() { document.getElementById("importModal").classList.add("active"); }
-function closeModals() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
-function applyImport() {
-    const text = document.getElementById("importText").value;
-    if(!text) return;
-    const name = "Import_" + new Date().toLocaleDateString();
-    plans[name] = parseTSV(text);
-    currentPlan = name; save(); location.reload();
-}
-
-function exportPlan() {
-    const p = plans[currentPlan];
-    let out = p.proMode ? "!!PRO!!\n" : "";
-    out += `!!NOTES!!\t${(p.notes||"").replace(/\n/g, "[BR]")}\n`;
-    p.days.forEach(d => {
-        out += `# ${d.name} | ${d.active ? 'AKTYWNY' : 'PRZERWA'}\n`;
-        out += "Nr\tNazwa\tS\tP\tKG\tRest\tRIR\tTempo\tProg\tDesc\n";
-        d.rows.forEach(r => out += r.join("\t") + "\n");
-    });
-    const blob = new Blob([out], {type: "text/tab-separated-values"});
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = currentPlan+".tsv"; a.click();
-}
-
-function initSelect() {
+function updateSelect() {
     const s = document.getElementById("planSelect");
-    s.innerHTML = Object.keys(plans).map(k => `<option value="${k}" ${k===currentPlan?'selected':''}>${k}</option>`).join('');
-}
-function loadPlan() { currentPlan = document.getElementById("planSelect").value; render(); }
-function hasChecks(di) { return Object.values(checks[currentPlan]?.[di] || {}).some(v => v); }
-function newPlan() {
-    const n = prompt("Nazwa nowego planu:");
-    if(n) {
-        plans[n] = { days: [{name: "Dzień 1", active: true, rows: []}], notes: "", proMode: false };
-        currentPlan = n; save(); location.reload();
-    }
+    s.innerHTML = "";
+    const g1 = document.createElement("optgroup"); g1.label = "PROJEKTY KOZIAR";
+    const g2 = document.createElement("optgroup"); g2.label = "TWOJE PLANY";
+    Object.keys(plans).sort().forEach(k => {
+        const o = document.createElement("option"); o.value = k; o.innerText = k;
+        if(plans[k].isLocked) g1.appendChild(o); else g2.appendChild(o);
+    });
+    s.appendChild(g1); s.appendChild(g2); s.value = currentPlan;
 }
 
-// Inicjalizacja
-if(Object.keys(plans).length > 0) {
-    if(!currentPlan) currentPlan = Object.keys(plans)[0];
-    initSelect(); render();
-} else { openImport(); }
+function loadPlan() { currentPlan = document.getElementById("planSelect").value; render(); }
+function deletePlan() { if(confirm("Usunąć ten plan na stałe?")) { delete plans[currentPlan]; currentPlan = Object.keys(plans)[0]; save(); location.reload(); } }
+
+function activateCopy() {
+    const n = prompt("To jest plan systemowy. Podaj nazwę dla swojej kopii:", currentPlan + " Kopia");
+    if(n) { plans[n] = JSON.parse(JSON.stringify(plans[currentPlan])); plans[n].isLocked = false; currentPlan = n; save(); location.reload(); }
+}
+
+function openExport() {
+    const p = plans[currentPlan];
+    let t = p.proMode ? "!!PRO!!\n" : "";
+    t += `!!NOTES!!\t${(p.notes||"").replace(/\n/g, "[BR]")}\n`;
+    p.days.forEach(d => {
+        t += `# ${d.name} | ${d.active ? 'AKTYWNY' : 'PRZERWA'}\nNr\tNazwa\tS\tP\tKG\tRest\tRIR\tTempo\tProg\tDesc\n`;
+        d.rows.forEach(r => t += r.join("\t") + "\n");
+    });
+    document.getElementById("modalTitle").innerText = "Eksportuj Kod";
+    document.getElementById("ioText").value = t;
+    document.getElementById("importActions").style.display = "none";
+    document.getElementById("ioModal").classList.add("active");
+}
+
+function openImport() {
+    document.getElementById("modalTitle").innerText = "Importuj Plan";
+    document.getElementById("ioText").value = "";
+    document.getElementById("importActions").style.display = "block";
+    document.getElementById("ioModal").classList.add("active");
+}
+
+function applyImport() {
+    const n = "Import_" + Date.now();
+    plans[n] = parseTSV(document.getElementById("ioText").value);
+    plans[n].isLocked = false;
+    currentPlan = n; save(); location.reload();
+}
+
+function closeModals() { document.getElementById("ioModal").classList.remove("active"); }
+function hasChecks(di) { return Object.values(checks[currentPlan]?.[di] || {}).some(v => v); }
+function newPlan() { const n = prompt("Nazwa planu:"); if(n) { plans[n] = {days:[{name:"Dzień 1", active:true, rows:[]}], notes:"", proMode:false}; currentPlan=n; save(); location.reload(); } }
+
+initData();
 </script>
 </body>
 </html>
