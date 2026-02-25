@@ -3,39 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Koziar Plany PRO v4.4</title>
-    
-    <link rel="icon" type="image/png" href="logo.png">
-    <link rel="apple-touch-icon" href="logo.png">
-    <meta name="theme-color" content="#0a0a0a">
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <title>Koziar Plany v4.6</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
-            --bg: #0a0a0a; --card: #141414; --border: #262626; --text: #ffffff;
-            --gold: #d4af37; --gold-glow: rgba(212, 175, 55, 0.3);
-            --danger: #ff4444; --pro: #3b82f6;
+            --bg: #0a0a0a; --card: #141414; --border: #262626; --text: #eee;
+            --gold: #d4af37; --danger: #ff4444; --pro: #3b82f6;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            margin: 0; font-family: 'Inter', sans-serif; 
-            background: var(--bg); color: var(--text); padding-bottom: 100px;
-            overflow-x: hidden;
-        }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; overflow-x: hidden; }
 
-        /* HEADER */
         header {
             position: sticky; top: 0; z-index: 1000;
-            background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(15px);
+            background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(12px);
             padding: 8px 10px; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; gap: 6px;
+            display: flex; align-items: center; justify-content: space-between; gap: 8px;
         }
 
         #planSelect { 
-            background: #1a1a1a; color: var(--gold); border: 1px solid var(--border);
-            padding: 10px; border-radius: 8px; flex-grow: 1; min-width: 0;
+            background: #111; color: var(--gold); border: 1px solid var(--border);
+            padding: 10px; border-radius: 8px; flex: 1; min-width: 0;
             font-weight: 800; font-size: 13px; outline: none; text-overflow: ellipsis;
         }
 
@@ -44,74 +33,60 @@
         .icon-btn {
             background: #1a1a1a; color: var(--text); border: 1px solid var(--border);
             width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
-            border-radius: 8px; cursor: pointer; transition: 0.2s;
+            border-radius: 8px; cursor: pointer;
         }
         .icon-btn.gold { background: var(--gold); color: #000; border: none; }
-        .icon-btn.active-pro { border-color: var(--pro); color: var(--pro); box-shadow: 0 0 8px rgba(59, 130, 246, 0.3); }
+        .icon-btn.pro-active { border-color: var(--pro); color: var(--pro); box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); }
 
-        /* MAIN CONTENT */
-        main { padding: 12px; max-width: 1000px; margin: 0 auto; }
+        main { padding: 10px; max-width: 1000px; margin: 0 auto; }
+        .day { background: var(--card); margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+        .day-header { padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); }
+        .day-title { color: var(--gold); font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        .day { 
-            background: var(--card); margin-bottom: 20px; border-radius: 12px; 
-            border: 1px solid var(--border); overflow: hidden;
-        }
-        .day.inactive { opacity: 0.4; }
-        .day.active-today { border-color: var(--gold); box-shadow: 0 0 15px var(--gold-glow); }
-
-        .day-header {
-            background: rgba(255,255,255,0.02); padding: 12px 15px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        
-        .day-title { color: var(--gold); font-size: 13px; font-weight: 900; text-transform: uppercase; }
-
-        /* TABLE SYSTEM */
-        .table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; min-width: 400px; table-layout: fixed; }
+        .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 320px; }
         
         th { font-size: 9px; color: #555; padding: 10px 2px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-        td { border-bottom: 1px solid var(--border); padding: 0; height: 48px; position: relative; }
+        td { border-bottom: 1px solid var(--border); height: 50px; position: relative; }
 
-        /* Column Widths */
-        .col-check { width: 42px; }
+        /* SZEROKOŚCI KOLUMN - PANCERNE */
+        .col-check { width: 40px; }
         .col-nr { width: 35px; }
-        .col-name { width: 160px; text-align: left !important; }
+        .col-name { width: auto; text-align: left; }
         .col-data { width: 45px; }
-        .col-pro { width: 50px; }
+        .col-pro { width: 48px; }
 
         input[type="text"] { 
             width: 100%; height: 100%; background: transparent; border: none; 
-            color: #fff; text-align: center; font-size: 14px; outline: none;
+            color: #fff; text-align: center; font-size: 14px; outline: none; padding: 0 4px;
         }
+        .name-cell { display: flex; align-items: center; gap: 8px; padding-left: 10px; height: 100%; }
+        .name-cell input { text-align: left; font-weight: 600; font-size: 13px; }
 
-        .name-box { display: flex; align-items: center; gap: 6px; padding-left: 8px; height: 100%; }
-        .name-box input { text-align: left; font-weight: 600; }
+        .info-i { color: #333; flex-shrink: 0; cursor: pointer; }
+        .info-i.active { color: var(--gold); }
 
-        .info-btn { color: #333; cursor: pointer; flex-shrink: 0; }
-        .info-btn.has-data { color: var(--gold); }
-
-        .details-row { display: none; background: #000; }
-        .details-row.open { display: table-row; }
-        .details-content { padding: 12px; }
-        .details-content textarea { 
-            width: 100%; background: #111; border: 1px solid #333; 
-            color: #aaa; padding: 10px; border-radius: 6px; font-size: 12px; resize: none;
-        }
-
-        tr.done { background: rgba(212, 175, 55, 0.04); }
+        tr.done { background: rgba(212, 175, 55, 0.03); }
         tr.done input { color: #555 !important; text-decoration: line-through; }
-        input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--gold); }
+        
+        .details-row { display: none; background: #080808; }
+        .details-row.open { display: table-row; }
+        .details-box { padding: 12px; }
+        .details-box textarea { 
+            width: 100%; background: #111; border: 1px solid #333; color: #bbb; 
+            padding: 10px; border-radius: 6px; font-size: 12px; height: 100px; resize: none;
+        }
 
-        .btn-add-row { width: 100%; padding: 16px; background: transparent; color: var(--gold); border: none; font-weight: 900; font-size: 11px; cursor: pointer; }
-
-        /* MODALS */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
         .modal.active { display: flex; }
-        .modal-box { background: var(--card); width: 100%; max-width: 400px; padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
+        .modal-box { background: var(--card); width: 100%; max-width: 450px; padding: 25px; border-radius: 15px; border: 1px solid var(--border); }
         
+        .btn-action { width: 100%; padding: 15px; margin-top: 10px; border-radius: 8px; border: none; font-weight: 900; font-size: 12px; cursor: pointer; text-transform: uppercase; }
+        .btn-gold { background: var(--gold); color: #000; }
+        .btn-gray { background: #222; color: #fff; }
+
         .hidden { display: none !important; }
-        .floating-logo { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #000; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1000; box-shadow: 0 0 10px var(--gold-glow); }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--gold); }
     </style>
 </head>
 <body>
@@ -119,8 +94,8 @@
 <header>
     <select id="planSelect" onchange="loadPlan()"></select>
     <div class="header-actions">
-        <button id="resetBtn" class="icon-btn" style="color:var(--danger)" title="Resetuj postępy" onclick="resetWeek()"><i data-lucide="rotate-ccw"></i></button>
-        <button id="proBtn" class="icon-btn" title="Tryb PRO" onclick="togglePro()"><i data-lucide="zap"></i></button>
+        <button id="resetBtn" class="icon-btn" style="color:var(--danger)" onclick="resetWeek()"><i data-lucide="rotate-ccw"></i></button>
+        <button id="proBtn" class="icon-btn" onclick="togglePro()"><i data-lucide="zap"></i></button>
         <button class="icon-btn gold" onclick="newPlan()"><i data-lucide="plus"></i></button>
         <button class="icon-btn" onclick="openIO('import')"><i data-lucide="download"></i></button>
         <button class="icon-btn" onclick="openIO('export')"><i data-lucide="share-2"></i></button>
@@ -132,36 +107,28 @@
 
 <div class="modal" id="ioModal">
     <div class="modal-box">
-        <h3 id="ioTitle" style="color:var(--gold); margin:0 0 15px 0; font-size: 16px;">Plan TSV</h3>
-        <textarea id="ioText" style="width:100%; height:250px; background:#000; color:#fff; border:1px solid #333; padding:10px; border-radius:6px; font-size:11px; font-family:monospace;"></textarea>
-        <div id="importActions" style="display:none; margin-top:10px">
-            <button class="icon-btn" style="width:100%; background:var(--gold); color:#000; font-weight:900" onclick="applyImport()">IMPORTUJ</button>
+        <h3 id="ioTitle" style="color:var(--gold); margin-top:0; font-size: 18px;">Import/Eksport</h3>
+        <textarea id="ioText" style="width:100%; height:280px; background:#000; color:#0f0; border:1px solid #333; padding:12px; font-size:11px; font-family:monospace; border-radius:8px;"></textarea>
+        <div id="importActions" style="display:none">
+            <button class="btn-action btn-gold" onclick="applyImport()">Zatwierdź Import</button>
         </div>
-        <button class="btn-add-row" onclick="closeModal()">ZAMKNIJ</button>
+        <button class="btn-action btn-gray" onclick="closeModal()">Zamknij</button>
     </div>
-</div>
-
-<div class="floating-logo" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-    <img src="logo.png" alt="K" style="width:80%; border-radius:50%" onerror="this.style.display='none'">
 </div>
 
 <script>
 let plans = {};
-let checks = JSON.parse(localStorage.getItem("koziar_checks_v44")) || {};
-let currentPlan = localStorage.getItem("koziar_current_v44") || "";
+let checks = JSON.parse(localStorage.getItem("koziar_checks_v46")) || {};
+let currentPlan = localStorage.getItem("koziar_current_v46") || "";
 let editStates = {};
 let openDetails = {};
 
-// 1. INICJALIZACJA I MIGRACJA DANYCH
+// 1. INICJALIZACJA
 async function init() {
-    // Łączenie starych baz danych
-    const b1 = JSON.parse(localStorage.getItem("plans")) || {};
-    const b2 = JSON.parse(localStorage.getItem("koziar_plans_v4")) || {};
-    const b3 = JSON.parse(localStorage.getItem("koziar_plans_final")) || {};
-    const b4 = JSON.parse(localStorage.getItem("koziar_plans_v44")) || {};
-    plans = {...b1, ...b2, ...b3, ...b4};
+    const saved = JSON.parse(localStorage.getItem("koziar_plans_v46")) || {};
+    const legacy = JSON.parse(localStorage.getItem("koziar_plans_final")) || {};
+    plans = {...legacy, ...saved};
 
-    // Pobieranie z hostingu
     await fetchRemote("3-dniowy FBW - by Koziar", "basic1.tsv");
     await fetchRemote("4-dniowy Upper/Lower - by Koziar", "basic2.tsv");
     await fetchRemote("5-dniowy U/L/PPL - by Koziar", "basic3.tsv");
@@ -176,35 +143,44 @@ async function fetchRemote(name, file) {
         const r = await fetch(file);
         if(r.ok) {
             const data = parseTSV(await r.text());
-            data.isLocked = true;
+            data.isLocked = true; // Flaga blokady
             plans[name] = data;
         }
-    } catch(e) { console.log("Błąd wczytywania hostingu: ", name); }
+    } catch(e) {}
 }
 
-// 2. PARSER TSV - ODPORNY NA WSZYSTKO
+// 2. PANCERNY PARSER - NAPRAWIA ROZJECHANE KOLUMNY
 function parseTSV(text) {
     const lines = text.trim().split("\n");
     let days = [], day = null, pro = false, notes = "";
     
     lines.forEach(line => {
-        const l = line.trim();
+        let l = line.trim();
+        if(!l) return;
+
         if(l.startsWith("!!PRO!!")) pro = true;
         else if(l.startsWith("!!NOTES!!")) notes = l.split("\t")[1] || "";
         else if(l.startsWith("#")) {
-            const [name, status] = l.replace("#", "").split("|").map(x => x.trim());
-            day = { name: name, active: status === "AKTYWNY", rows: [] };
+            const [n, s] = l.replace("#","").split("|").map(x=>x.trim());
+            day = { name: n, active: s === "AKTYWNY", rows: [] };
             days.push(day);
-        } else if(day && l) {
-            let parts = l.split("\t").map(x => x.trim());
-            if(parts[0] === "Nr" || parts[0] === "Nazwa" || parts[0] === "S") return;
+        } else if(day) {
+            // Split tabami, ale usuwamy puste elementy z początku i końca powstałe przez błędy wklejania
+            let rawCols = line.split("\t").map(x => x.trim());
+            let cols = rawCols.filter((item, index) => !(index === 0 && item === ""));
             
-            // Mapowanie kolumn
+            if(cols[0] === "Nr" || cols[0] === "Nazwa" || cols[0] === "Ćwiczenie") return;
+
             let row = new Array(10).fill("");
-            if(parts.length <= 4) { // Stary format (Nazwa, S, P, KG)
-                row[1] = parts[0]; row[2] = parts[1]; row[3] = parts[2]; row[4] = parts[3];
+            if(cols.length <= 4) { 
+                // Format Basic: Nazwa, S, P, KG
+                row[1] = cols[0] || ""; 
+                row[2] = cols[1] || ""; 
+                row[3] = cols[2] || ""; 
+                row[4] = cols[3] || "";
             } else {
-                parts.forEach((v, i) => { if(i < 10) row[i] = v; });
+                // Format Pro (zachowujemy Nr w row[0])
+                cols.forEach((v, i) => { if(i < 10) row[i] = v; });
             }
             day.rows.push(row);
         }
@@ -212,38 +188,45 @@ function parseTSV(text) {
     return { days, notes, proMode: pro };
 }
 
-// 3. RENDEROWANIE
+// 3. RENDEROWANIE UI
 function render() {
     const p = plans[currentPlan];
     if(!p) return;
 
-    // UI State
-    document.getElementById("proBtn").classList.toggle("hidden", p.isLocked);
-    document.getElementById("proBtn").classList.toggle("active-pro", p.proMode);
-    document.getElementById("delBtn").classList.toggle("hidden", p.isLocked);
+    // Obsługa widoczności przycisków w zależności od blokady
+    const proBtn = document.getElementById("proBtn");
+    const delBtn = document.getElementById("delBtn");
+    
+    if(p.isLocked) {
+        proBtn.classList.add("hidden");
+        delBtn.classList.add("hidden");
+    } else {
+        proBtn.classList.remove("hidden");
+        proBtn.classList.toggle("pro-active", p.proMode);
+        delBtn.classList.remove("hidden");
+    }
 
     document.getElementById("app").innerHTML = p.days.map((day, di) => {
         const isEditing = editStates[di];
+        const showProCols = p.proMode || isEditing;
+
         return `
-            <div class="day ${day.active ? '' : 'inactive'} ${hasChecks(di) ? 'active-today' : ''}">
+            <div class="day ${day.active ? '' : 'inactive'}">
                 <div class="day-header">
                     <span class="day-title">${day.name}</span>
                     <button class="icon-btn" style="width:75px; font-size:10px; font-weight:900" onclick="toggleEdit(${di})">
                         ${p.isLocked ? 'KOPIUJ' : (isEditing ? 'GOTOWE' : 'EDYTUJ')}
                     </button>
                 </div>
-                <div class="table-scroll">
+                <div class="table-wrap">
                     <table>
                         <thead>
                             <tr>
                                 <th class="col-check">✔</th>
-                                <th class="col-nr ${!p.proMode && !isEditing ? 'hidden' : ''}">Nr</th>
+                                ${showProCols ? '<th class="col-nr">Nr</th>' : ''}
                                 <th class="col-name">Ćwiczenie</th>
                                 <th class="col-data">S</th><th class="col-data">P</th><th class="col-data">KG</th>
-                                <th class="col-pro ${!p.proMode && !isEditing ? 'hidden' : ''}">Rest</th>
-                                <th class="col-pro ${!p.proMode && !isEditing ? 'hidden' : ''}">RIR</th>
-                                <th class="col-pro ${!p.proMode && !isEditing ? 'hidden' : ''}">Tempo</th>
-                                <th class="col-pro ${!p.proMode && !isEditing ? 'hidden' : ''}">Prog</th>
+                                ${showProCols ? '<th class="col-pro">Rest</th><th class="col-pro">RIR</th><th class="col-pro">T</th><th class="col-pro">P</th>' : ''}
                                 ${isEditing ? '<th style="width:35px">✕</th>' : ''}
                             </tr>
                         </thead>
@@ -252,7 +235,7 @@ function render() {
                         </tbody>
                     </table>
                 </div>
-                ${isEditing ? `<button class="btn-add-row" onclick="addRow(${di})">+ DODAJ ĆWICZENIE</button>` : ''}
+                ${isEditing ? `<button class="btn-action btn-gold" style="margin:0; border-radius:0" onclick="addRow(${di})">+ DODAJ ĆWICZENIE</button>` : ''}
             </div>
         `;
     }).join('');
@@ -262,44 +245,47 @@ function render() {
 function renderRow(di, ri, row, isPro, isEditing) {
     const done = checks[currentPlan]?.[di]?.[ri];
     const open = openDetails[di+'-'+ri];
-    const hide = (idx) => !isEditing && (!isPro || !row[idx]);
+    const showProCols = isPro || isEditing;
 
     return `
         <tr class="${done ? 'done' : ''}">
             <td style="text-align:center"><input type="checkbox" ${done?'checked':''} onchange="setCheck(${di},${ri},this.checked)"></td>
-            <td class="col-nr ${!isPro && !isEditing ? 'hidden' : ''}"><input type="text" value="${row[0]||''}" oninput="upd(${di},${ri},0,this.value)"></td>
+            ${showProCols ? `<td class="col-nr"><input type="text" value="${row[0]||''}" oninput="upd(${di},${ri},0,this.value)"></td>` : ''}
             <td class="col-name">
-                <div class="name-box">
-                    <i data-lucide="info" class="info-btn ${row[9]?'has-data':''}" onclick="toggleDetails(${di},${ri})"></i>
+                <div class="name-cell">
+                    <i data-lucide="info" class="info-i ${row[9]?'active':''}" onclick="toggleDetails(${di},${ri})"></i>
                     <input type="text" value="${row[1]||''}" oninput="upd(${di},${ri},1,this.value)" ${isEditing?'':'readonly'}>
                 </div>
             </td>
             <td class="col-data"><input type="text" value="${row[2]||''}" oninput="upd(${di},${ri},2,this.value)"></td>
             <td class="col-data"><input type="text" value="${row[3]||''}" oninput="upd(${di},${ri},3,this.value)"></td>
             <td class="col-data"><input type="text" value="${row[4]||''}" oninput="upd(${di},${ri},4,this.value)"></td>
-            <td class="col-pro ${hide(5)?'hidden':''}"><input type="text" value="${row[5]||''}" oninput="upd(${di},${ri},5,this.value)"></td>
-            <td class="col-pro ${hide(6)?'hidden':''}"><input type="text" value="${row[6]||''}" oninput="upd(${di},${ri},6,this.value)"></td>
-            <td class="col-pro ${hide(7)?'hidden':''}"><input type="text" value="${row[7]||''}" oninput="upd(${di},${ri},7,this.value)"></td>
-            <td class="col-pro ${hide(8)?'hidden':''}"><input type="text" value="${row[8]||''}" oninput="upd(${di},${ri},8,this.value)"></td>
-            ${isEditing ? `<td style="text-align:center; color:var(--danger)" onclick="delRow(${di},${ri})"><i data-lucide="x" style="width:14px"></i></td>` : ''}
+            ${showProCols ? `
+                <td class="col-pro"><input type="text" value="${row[5]||''}" oninput="upd(${di},${ri},5,this.value)"></td>
+                <td class="col-pro"><input type="text" value="${row[6]||''}" oninput="upd(${di},${ri},6,this.value)"></td>
+                <td class="col-pro"><input type="text" value="${row[7]||''}" oninput="upd(${di},${ri},7,this.value)"></td>
+                <td class="col-pro"><input type="text" value="${row[8]||''}" oninput="upd(${di},${ri},8,this.value)"></td>
+            ` : ''}
+            ${isEditing ? `<td style="text-align:center; color:var(--danger)" onclick="delRow(${di},${ri})"><i data-lucide="x-circle" style="width:16px"></i></td>` : ''}
         </tr>
         <tr class="details-row ${open ? 'open' : ''}">
-            <td colspan="12"><div class="details-content"><textarea oninput="upd(${di},${ri},9,this.value)" placeholder="Notatki, technika...">${row[9]||''}</textarea></div></td>
+            <td colspan="12"><div class="details-box"><textarea oninput="upd(${di},${ri},9,this.value)" placeholder="Notatki do ćwiczenia...">${row[9]||''}</textarea></div></td>
         </tr>
     `;
 }
 
-// 4. FUNKCJE POMOCNICZE
+// 4. LOGIKA I ZAPIS
 function upd(di, ri, ci, v) { if(!plans[currentPlan].isLocked) { plans[currentPlan].days[di].rows[ri][ci] = v; save(); } }
 function setCheck(di, ri, v) { if(!checks[currentPlan]) checks[currentPlan]={}; if(!checks[currentPlan][di]) checks[currentPlan][di]={}; checks[currentPlan][di][ri]=v; save(); render(); }
 function save() {
-    localStorage.setItem("koziar_plans_v44", JSON.stringify(plans));
-    localStorage.setItem("koziar_checks_v44", JSON.stringify(checks));
-    localStorage.setItem("koziar_current_v44", currentPlan);
+    localStorage.setItem("koziar_plans_v46", JSON.stringify(plans));
+    localStorage.setItem("koziar_checks_v46", JSON.stringify(checks));
+    localStorage.setItem("koziar_current_v46", currentPlan);
 }
+
 function toggleEdit(di) {
     if(plans[currentPlan].isLocked) {
-        const n = prompt("To plan systemowy. Podaj nazwę dla swojej kopii:", currentPlan + " - Kopia");
+        const n = prompt("To plan systemowy. Podaj nazwę dla swojej edytowalnej kopii:", currentPlan + " - Moja Kopia");
         if(n) { 
             plans[n] = JSON.parse(JSON.stringify(plans[currentPlan])); 
             plans[n].isLocked = false; currentPlan = n; save(); location.reload(); 
@@ -308,64 +294,55 @@ function toggleEdit(di) {
     }
     editStates[di] = !editStates[di]; render();
 }
+
 function togglePro() { if(!plans[currentPlan].isLocked) { plans[currentPlan].proMode = !plans[currentPlan].proMode; save(); render(); } }
 function toggleDetails(di, ri) { const k=di+'-'+ri; openDetails[k]=!openDetails[k]; render(); }
-function resetWeek() { if(confirm("Zresetować wszystkie odznaczenia?")) { checks[currentPlan]={}; save(); render(); } }
-function deletePlan() { if(confirm("Usunąć ten plan na stałe?")) { delete plans[currentPlan]; currentPlan=Object.keys(plans)[0]; save(); location.reload(); } }
+function resetWeek() { if(confirm("Zresetować postępy treningowe?")) { checks[currentPlan]={}; save(); render(); } }
+function deletePlan() { if(confirm("Trwale usunąć ten plan?")) { delete plans[currentPlan]; location.reload(); } }
 function addRow(di) { plans[currentPlan].days[di].rows.push(new Array(10).fill("")); render(); }
 function delRow(di, ri) { plans[currentPlan].days[di].rows.splice(ri,1); render(); }
 
 function updateSelect() {
     const s = document.getElementById("planSelect");
     let h = `<optgroup label="PROJEKTY KOZIAR">`;
-    Object.keys(plans).forEach(k => {
-        if(plans[k].isLocked) h += `<option value="${k}" ${k===currentPlan?'selected':''}>${k}</option>`;
-    });
+    Object.keys(plans).filter(k=>plans[k].isLocked).forEach(k => h += `<option value="${k}">${k}</option>`);
     h += `</optgroup><optgroup label="TWOJE PLANY">`;
-    Object.keys(plans).forEach(k => {
-        if(!plans[k].isLocked) h += `<option value="${k}" ${k===currentPlan?'selected':''}>${k}</option>`;
-    });
+    Object.keys(plans).filter(k=>!plans[k].isLocked).forEach(k => h += `<option value="${k}">${k}</option>`);
     s.innerHTML = h + `</optgroup>`;
+    s.value = currentPlan;
 }
 function loadPlan() { currentPlan = document.getElementById("planSelect").value; render(); }
 
 function openIO(mode) {
-    const modal = document.getElementById("ioModal");
     const text = document.getElementById("ioText");
     if(mode === 'export') {
         const p = plans[currentPlan];
         let t = p.proMode ? "!!PRO!!\n" : "";
-        t += `!!NOTES!!\t${(p.notes||"").replace(/\n/g, "[BR]")}\n`;
+        t += `!!NOTES!!\t${(p.notes||"")}\n`;
         p.days.forEach(d => {
             t += `# ${d.name} | ${d.active?'AKTYWNY':'PRZERWA'}\n`;
             d.rows.forEach(r => t += r.join("\t") + "\n");
         });
         text.value = t;
         document.getElementById("importActions").style.display = "none";
-        document.getElementById("ioTitle").innerText = "Twój kod planu (TSV)";
+        document.getElementById("ioTitle").innerText = "Kod Twojego Planu";
     } else {
         text.value = "";
         document.getElementById("importActions").style.display = "block";
-        document.getElementById("ioTitle").innerText = "Wklej kod TSV";
+        document.getElementById("ioTitle").innerText = "Wklej Kod Planu";
     }
-    modal.classList.add("active");
+    document.getElementById("ioModal").classList.add("active");
 }
+
 function applyImport() {
     const t = document.getElementById("ioText").value;
     if(!t) return;
-    const n = "Import_" + new Date().toLocaleDateString();
-    plans[n] = parseTSV(t);
-    currentPlan = n; save(); location.reload();
+    const name = "Import_" + new Date().toLocaleDateString();
+    plans[name] = parseTSV(t);
+    currentPlan = name; save(); location.reload();
 }
 function closeModal() { document.getElementById("ioModal").classList.remove("active"); }
-function newPlan() {
-    const n = prompt("Nazwa planu:");
-    if(n) {
-        plans[n] = { days: [{name: "Dzień 1", active: true, rows: []}], proMode: false, isLocked: false };
-        currentPlan = n; save(); location.reload();
-    }
-}
-function hasChecks(di) { return Object.values(checks[currentPlan]?.[di] || {}).some(v => v); }
+function newPlan() { const n = prompt("Nazwa planu:"); if(n) { plans[n]={days:[{name:"Dzień 1",active:true,rows:[]}], proMode:false, isLocked:false}; currentPlan=n; save(); location.reload(); } }
 
 init();
 </script>
