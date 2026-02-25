@@ -1,5 +1,5 @@
-// --- KONFIGURACJA WERSJI I PLIKÓW ---
-const GLOBAL_PLAN_VERSION = "1.6"; // Zmień to, gdy zaktualizujesz pliki .tsv
+// --- KONFIGURACJA ---
+const GLOBAL_PLAN_VERSION = "1.7"; 
 
 const DEFAULT_PLANS_CONFIG = {
     "3-dniowy FBW - by Koziar": "basic1.tsv",
@@ -7,14 +7,13 @@ const DEFAULT_PLANS_CONFIG = {
     "5-dniowy U/L/PPL - by Koziar": "basic3.tsv"
 };
 
-// Zmienne globalne
-let plans = {};
+let plans = {};        // Tutaj będą plany użytkownika (z localStorage)
+let remotePlans = {};  // Tutaj będą plany zablokowane (z GitHub)
 let checks = {};
 let currentPlan = "";
 let editStates = {};
 let lastMovedRow = null;
 
-// Funkcja parsująca tekst TSV na format aplikacji
 function parseTSV(text) {
     const lines = text.trim().split("\n");
     const week = []; let day = null; let notes = "";
@@ -31,50 +30,77 @@ function parseTSV(text) {
             day.rows.push(row);
         }
     });
-    return { notes, days: week, version: GLOBAL_PLAN_VERSION };
+    return { notes, days: week, version: GLOBAL_PLAN_VERSION, isRemote: true };
 }
 
-// Inicjalizacja Aplikacji (Pobieranie danych)
 async function initApp() {
+    // 1. Pobierz plany użytkownika
     plans = JSON.parse(localStorage.getItem("plans")) || {};
     checks = JSON.parse(localStorage.getItem("checks")) || {};
     currentPlan = localStorage.getItem("currentPlanName");
 
-    // Pobieranie planów z plików .tsv przez fetch
+    // 2. Pobierz plany zablokowane z GitHub
     for (const [planName, fileName] of Object.entries(DEFAULT_PLANS_CONFIG)) {
         try {
-            const response = await fetch(fileName);
+            const response = await fetch(fileName + "?t=" + new Date().getTime()); // Cache-buster
             if (response.ok) {
                 const text = await response.text();
-                const parsed = parseTSV(text);
-                
-                // Aktualizuj jeśli nowa wersja lub brak planu w pamięci
-                if (!plans[planName] || plans[planName].version !== GLOBAL_PLAN_VERSION) {
-                    plans[planName] = parsed;
-                }
+                remotePlans[planName] = parseTSV(text);
             }
-        } catch (err) {
-            console.error(`Błąd fetch dla ${fileName}:`, err);
-        }
+        } catch (err) { console.error("Błąd pobierania:", fileName); }
     }
 
-    if (!currentPlan || !plans[currentPlan]) {
-        currentPlan = Object.keys(plans)[0] || "";
+    // Jeśli brak wybranego planu, pokaż pierwszy dostępny zablokowany
+    if (!currentPlan || (!plans[currentPlan] && !remotePlans[currentPlan])) {
+        currentPlan = Object.keys(remotePlans)[0] || "";
     }
 
-    // Naprawa starych struktur
-    Object.keys(plans).forEach(k => { if(Array.isArray(plans[k])) plans[k]={notes:"", days:plans[k]}; });
-
-    // Inicjalizacja selecta
-    const ps = document.getElementById("planSelect");
-    if(ps) {
-        ps.innerHTML = "";
-        Object.keys(plans).sort().forEach(p => {
-            const o = document.createElement("option"); o.value = p; o.textContent = p; ps.appendChild(o);
-        });
-        ps.value = currentPlan;
-    }
+    refreshSelect();
     render();
+}
+
+function refreshSelect() {
+    const ps = document.getElementById("planSelect");
+    if(!ps) return;
+    ps.innerHTML = "";
+    
+    // Grupa planów zablokowanych
+    const g1 = document.createElement("optgroup");
+    g1.label = "PROJEKTY KOZIAR (Zablokowane)";
+    Object.keys(remotePlans).sort().forEach(p => {
+        const o = document.createElement("option"); o.value = p; o.textContent = "⭐ " + p; g1.appendChild(o);
+    });
+    ps.appendChild(g1);
+
+    // Grupa planów użytkownika
+    const userKeys = Object.keys(plans);
+    if(userKeys.length > 0) {
+        const g2 = document.createElement("optgroup");
+        g2.label = "TWOJE KOPIE (Edytowalne)";
+        userKeys.sort().forEach(p => {
+            const o = document.createElement("option"); o.value = p; o.textContent = "👤 " + p; g2.appendChild(o);
+        });
+        ps.appendChild(g2);
+    }
+    ps.value = currentPlan;
+}
+
+// FUNKCJA AKTYWACJI (KOPIOWANIA)
+function activatePlan() {
+    if (!remotePlans[currentPlan]) return;
+    
+    const newName = prompt("Jak chcesz nazwać swoją kopię?", currentPlan + " - Kopia");
+    if (newName) {
+        // Głęboka kopia obiektu
+        const copy = JSON.parse(JSON.stringify(remotePlans[currentPlan]));
+        copy.isRemote = false; // Ta wersja jest już edytowalna
+        plans[newName] = copy;
+        currentPlan = newName;
+        save();
+        refreshSelect();
+        render();
+        alert("Plan aktywowany! Teraz możesz go edytować.");
+    }
 }
 
 function save() {
@@ -83,96 +109,94 @@ function save() {
     localStorage.setItem("currentPlanName", currentPlan);
 }
 
-function autoHeight(el) { el.style.height = "auto"; el.style.height = (el.scrollHeight) + "px"; }
-function saveNotes() { if (currentPlan) { plans[currentPlan].notes = document.getElementById("planNotes").value; save(); } }
-function updDayName(di, val) { getDays()[di].name = val; save(); }
-function getDays() { return (currentPlan && plans[currentPlan]) ? plans[currentPlan].days : []; }
-
 function render() {
     const scrollPos = window.scrollY;
     const weekEl = document.getElementById("week");
     const notesEl = document.getElementById("planNotes");
-    if(!weekEl || !currentPlan || !plans[currentPlan]) return;
+    if(!weekEl) return;
+    
+    // Sprawdzamy czy plan jest zdalny (zablokowany)
+    const activePlanObj = plans[currentPlan] || remotePlans[currentPlan];
+    if(!activePlanObj) return;
 
+    const isRemote = activePlanObj.isRemote === true;
     weekEl.innerHTML = "";
-    notesEl.value = plans[currentPlan].notes || "";
+    
+    // Przycisk aktywacji jeśli plan jest zablokowany
+    if(isRemote) {
+        const btnBox = document.createElement("div");
+        btnBox.innerHTML = `<button onclick="activatePlan()" class="btn-activate">🚀 AKTYWUJ TEN PLAN (UTWÓRZ KOPIĘ)</button>`;
+        weekEl.appendChild(btnBox);
+        weekEl.classList.add("remote-view");
+    } else {
+        weekEl.classList.remove("remote-view");
+    }
+
+    notesEl.value = activePlanObj.notes || "";
+    notesEl.readOnly = isRemote;
     autoHeight(notesEl);
 
-    getDays().forEach((day, di) => {
+    activePlanObj.days.forEach((day, di) => {
         const isEditing = editStates[di];
         const dayChecks = checks[currentPlan]?.[di] || {};
-        const activeToday = Object.values(dayChecks).some(v => v);
         const d = document.createElement("div");
-        d.className = "day " + (day.active ? '' : 'inactive ') + (isEditing ? 'editing ' : '') + (activeToday && day.active ? 'active-today' : '');
+        d.className = `day ${day.active ? '' : 'inactive'} ${isEditing ? 'editing' : ''} ${isRemote ? 'readonly-day' : ''}`;
         
-        let rowsHtml = day.rows.map((r, ri) => {
-            const isMoved = (lastMovedRow && lastMovedRow.di === di && lastMovedRow.ri === ri);
-            return `
-                <tr class="${dayChecks[ri] ? 'done' : ''} ${isMoved ? 'moved-row' : ''}">
-                    <td class="col-check"><input type="checkbox" ${dayChecks[ri] ? 'checked' : ''} onchange="toggleCheck(${di},${ri},this.checked)"></td>
-                    <td class="ex-name"><input type="text" value="${r[0]||''}" oninput="updRow(${di},${ri},0,this.value)" placeholder="..."></td>
-                    <td class="col-s"><input type="text" inputmode="decimal" value="${r[1]||''}" oninput="updRow(${di},${ri},1,this.value)"></td>
-                    <td class="col-p"><input type="text" inputmode="decimal" value="${r[2]||''}" oninput="updRow(${di},${ri},2,this.value)"></td>
-                    <td class="col-kg"><input type="text" inputmode="decimal" value="${r[3]||''}" oninput="updRow(${di},${ri},3,this.value)"></td>
-                    <td class="edit-ui"><div class="row-ops"><div class="move-up-down"><button onclick="moveRow(${di},${ri},-1)">▲</button><button onclick="moveRow(${di},${ri},1)">▼</button></div><button onclick="delRow(${di},${ri})" style="color:var(--danger); border:none; background:none; font-size:18px;">✕</button></div></td>
-                </tr>`;
-        }).join('');
+        let rowsHtml = day.rows.map((r, ri) => `
+            <tr class="${dayChecks[ri] ? 'done' : ''}">
+                <td class="col-check"><input type="checkbox" ${dayChecks[ri] ? 'checked' : ''} onchange="toggleCheck(${di},${ri},this.checked)"></td>
+                <td class="ex-name"><input type="text" value="${r[0]||''}" ${isRemote ? 'readonly' : ''} oninput="updRow(${di},${ri},0,this.value)"></td>
+                <td class="col-s"><input type="text" value="${r[1]||''}" ${isRemote ? 'readonly' : ''} oninput="updRow(${di},${ri},1,this.value)"></td>
+                <td class="col-p"><input type="text" value="${r[2]||''}" ${isRemote ? 'readonly' : ''} oninput="updRow(${di},${ri},2,this.value)"></td>
+                <td class="col-kg"><input type="text" value="${r[3]||''}" ${isRemote ? 'readonly' : ''} oninput="updRow(${di},${ri},3,this.value)"></td>
+                ${!isRemote ? `<td class="edit-ui"><div class="row-ops"><button onclick="delRow(${di},${ri})">✕</button></div></td>` : '<td class="edit-ui"></td>'}
+            </tr>`).join('');
 
         d.innerHTML = `
             <div class="day-header">
-                <input class="day-title-input" value="${day.name}" ${isEditing ? '' : 'readonly'} oninput="updDayName(${di}, this.value)">
-                <div style="display:flex; gap:6px; flex-shrink:0;">
-                    <button class="icon-btn" style="height:32px; width:32px" onclick="toggleDay(${di})"><i data-lucide="${day.active ? 'pause' : 'play'}" style="width:14px"></i></button>
-                    <button class="icon-btn ${isEditing ? 'gold' : ''}" style="height:32px; width:70px; font-size:10px; font-weight:bold" onclick="toggleEdit(${di})">${isEditing ? 'GOTOWE' : 'EDYTUJ'}</button>
-                </div>
+                <input class="day-title-input" value="${day.name}" readonly>
+                ${!isRemote ? `
+                <div style="display:flex; gap:6px;">
+                    <button class="icon-btn" onclick="toggleDay(${di})"><i data-lucide="${day.active ? 'pause' : 'play'}" style="width:14px"></i></button>
+                    <button class="icon-btn ${isEditing ? 'gold' : ''}" onclick="toggleEdit(${di})">${isEditing ? 'GOTOWE' : 'EDYTUJ'}</button>
+                </div>` : ''}
             </div>
-            <table><thead><tr><th class="col-check">✔</th><th class="ex-name">Ćwiczenie</th><th class="col-s">S</th><th class="col-p">P</th><th class="col-kg">kg</th><th class="edit-ui">Opcje</th></tr></thead><tbody>${rowsHtml}</tbody></table>
-            <button class="btn-add-row" onclick="addRow(${di})">+ DODAJ ĆWICZENIE</button>`;
+            <table><tbody>${rowsHtml}</tbody></table>
+            ${(!isRemote && isEditing) ? `<button class="btn-add-row" onclick="addRow(${di})">+ DODAJ</button>` : ''}
+        `;
         weekEl.appendChild(d);
     });
     if(window.lucide) lucide.createIcons();
     window.scrollTo(0, scrollPos);
-    lastMovedRow = null;
 }
 
+// --- RESZTA FUNKCJI POMOCNICZYCH ---
+function autoHeight(el) { el.style.height = "auto"; el.style.height = (el.scrollHeight) + "px"; }
+function saveNotes() { if (plans[currentPlan]) { plans[currentPlan].notes = document.getElementById("planNotes").value; save(); } }
 function toggleEdit(di) { editStates[di] = !editStates[di]; render(); }
-function addRow(di) { getDays()[di].rows.push(["", "", "", ""]); save(); render(); }
-function delRow(di, ri) { if(confirm("Usunąć?")) { getDays()[di].rows.splice(ri, 1); save(); render(); } }
-function moveRow(di, ri, dir) {
-    const r = getDays()[di].rows; const t = ri + dir;
-    if(t >= 0 && t < r.length) { [r[ri], r[t]] = [r[t], r[ri]]; lastMovedRow = { di, ri: t }; save(); render(); }
+function addRow(di) { if(plans[currentPlan]) { plans[currentPlan].days[di].rows.push(["","","",""]); save(); render(); } }
+function delRow(di, ri) { if(confirm("Usunąć?")) { plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); } }
+function updRow(di, ri, ci, v) { if(plans[currentPlan]) { plans[currentPlan].days[di].rows[ri][ci] = v; save(); } }
+function toggleCheck(di, ri, v) { 
+    if(!checks[currentPlan]) checks[currentPlan] = {}; 
+    if(!checks[currentPlan][di]) checks[currentPlan][di] = {}; 
+    checks[currentPlan][di][ri] = v; save(); render(); 
 }
-function updRow(di, ri, ci, v) { getDays()[di].rows[ri][ci] = v; save(); }
-function toggleCheck(di, ri, v) { if(!checks[currentPlan]) checks[currentPlan] = {}; if(!checks[currentPlan][di]) checks[currentPlan][di] = {}; checks[currentPlan][di][ri] = v; save(); render(); }
-function toggleDay(di) { getDays()[di].active = !getDays()[di].active; save(); render(); }
+function toggleDay(di) { if(plans[currentPlan]) { plans[currentPlan].days[di].active = !plans[currentPlan].days[di].active; save(); render(); } }
 function resetWeek() { if(confirm("Zresetować postępy?")) { checks[currentPlan] = {}; save(); render(); } }
-function loadPlan() { currentPlan = document.getElementById("planSelect").value; save(); render(); }
-
+function loadPlan() { currentPlan = document.getElementById("planSelect").value; render(); }
 function newPlan() {
     const n = prompt("Nazwa planu:");
-    if(n) { const dni = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]; plans[n] = { notes: "", days: dni.map(d => ({ name: d, active: true, rows: [] })) }; currentPlan = n; save(); location.reload(); }
+    if(n) { 
+        const dni = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]; 
+        plans[n] = { notes: "", days: dni.map(d => ({ name: d, active: true, rows: [] })), isRemote: false }; 
+        currentPlan = n; save(); location.reload(); 
+    }
 }
-function deletePlan() { if(confirm(`Usuń plan ${currentPlan}?`)) { delete plans[currentPlan]; currentPlan = Object.keys(plans)[0] || null; save(); location.reload(); } }
+function deletePlan() { 
+    if(plans[currentPlan] && confirm(`Usuń plan ${currentPlan}?`)) { 
+        delete plans[currentPlan]; currentPlan = Object.keys(remotePlans)[0]; save(); location.reload(); 
+    } 
+}
 
-function openExport() {
-    const out = []; const p = plans[currentPlan]; const notes = p.notes || "";
-    out.push(`!!NOTES!!\t${notes.replace(/\n/g, "[BR]")}`);
-    getDays().forEach(d => { out.push(`# ${d.name} | ${d.active ? "AKTYWNY" : "PRZERWA"}`); d.rows.forEach(r => out.push(r.join("\t"))); });
-    document.getElementById("exportText").value = out.join("\n");
-    document.getElementById("exportModal").classList.add("active");
-}
-function downloadTSV() {
-    const t = document.getElementById("exportText").value; const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([t], {type:"text/tab-separated-values"}));
-    a.download = currentPlan.replace(/\s/g, '_') + ".tsv"; a.click();
-}
-function openImport() { document.getElementById("importModal").classList.add("active"); }
-function handleFileSelect(e) { const r = new FileReader(); r.onload = (e) => { document.getElementById("importText").value = e.target.result; }; r.readAsText(e.target.files[0]); }
-function applyImport() {
-    const data = parseTSV(document.getElementById("importText").value);
-    if(data.days.length > 0) { plans[currentPlan] = data; save(); location.reload(); }
-}
-function closeModals() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
-
-// Start
 initApp();
