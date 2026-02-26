@@ -26,7 +26,6 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding-bottom:100px}
 
-/* --- NAGŁÓWEK --- */
 header {
     position: sticky; top: 0; z-index: 100;
     background: rgba(10, 10, 10, 0.95);
@@ -40,7 +39,6 @@ header {
     appearance: none; text-align: center;
 }
 
-/* --- LOGO W ROGU --- */
 .floating-logo {
     position: fixed; bottom: 85px; right: 20px;
     width: 50px; height: 50px; z-index: 999;
@@ -50,7 +48,6 @@ header {
 .floating-logo:active { transform: scale(0.9); }
 .floating-logo img { width: 100%; height: 100%; object-fit: contain; }
 
-/* --- DOLNY NAV BAR --- */
 .bottom-nav {
     position: fixed; bottom: 0; left: 0; right: 0;
     background: rgba(22, 22, 22, 0.98);
@@ -68,7 +65,6 @@ header {
 .nav-btn i { width: 22px; height: 22px; }
 .nav-btn.pro-btn.active-pro { color: var(--pro); }
 
-/* --- MAIN --- */
 main { padding: 12px; max-width: 600px; margin: 0 auto; }
 
 .notes-area {
@@ -78,7 +74,6 @@ main { padding: 12px; max-width: 600px; margin: 0 auto; }
 .notes-area label { display: block; color: var(--gold); font-size: 9px; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; opacity: 0.6; letter-spacing: 1px; }
 .notes-area textarea { width: 100%; background: transparent; border: none; color: #bbb; font-size: 13px; resize: none; outline: none; min-height: 40px; }
 
-/* --- KARTA DNIA --- */
 .day { background: var(--card); margin-bottom: 20px; border-radius: 18px; border: 1px solid var(--border); overflow: hidden; }
 .day.inactive { opacity: 0.25; filter: grayscale(1); }
 .day.active-today { border-color: var(--gold); box-shadow: 0 4px 25px var(--gold-glow); }
@@ -89,7 +84,6 @@ main { padding: 12px; max-width: 600px; margin: 0 auto; }
 }
 .day-title-input { background: transparent; border: none; color: var(--gold); font-size: 15px; font-weight: 800; text-transform: uppercase; }
 
-/* --- TABELA --- */
 .table-wrapper { width: 100%; overflow-x: hidden; }
 .pro-mode .table-wrapper { overflow-x: auto; }
 
@@ -117,12 +111,10 @@ input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--gold); c
 
 .btn-add-row { width: 100%; padding: 15px; background: transparent; color: var(--gold); border: none; border-top: 1px solid var(--border); font-weight: 700; font-size: 11px; cursor: pointer; }
 
-/* MODALE */
 .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 25px; }
 .modal.active { display: flex; }
 .modal-box { background: var(--card); width: 100%; max-width: 360px; padding: 25px; border-radius: 24px; border: 1px solid var(--border); text-align: center; }
 
-/* IKONY W TABELI */
 .row-icon-btn {
     background: #222; border: 1px solid #333; color: #eee;
     width: 30px; height: 30px; border-radius: 8px;
@@ -130,7 +122,9 @@ input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--gold); c
 }
 .row-icon-btn.active { background: var(--gold); color: #000; border: none; }
 
+/* KLUCZOWE: Ukrywanie przycisków edycji przy zablokowanych planach */
 .locked-mode .edit-only { display: none !important; }
+.locked-mode .day-header .row-icon-btn:last-child { display: none; } /* ukrycie przycisku edycji w nagłówku dnia */
 </style>
 </head>
 
@@ -168,7 +162,7 @@ input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--gold); c
     <button class="nav-btn" onclick="openImport()">
         <i data-lucide="download"></i><span>IMPORT</span>
     </button>
-    <button class="nav-btn edit-only" style="color:var(--danger)" onclick="deletePlan()">
+    <button class="nav-btn edit-only" id="delBtn" style="color:var(--danger)" onclick="deletePlan()">
         <i data-lucide="trash-2"></i><span>USUŃ</span>
     </button>
 </nav>
@@ -203,11 +197,8 @@ function save(){
     localStorage.setItem("currentPlanName", currentPlan);
 }
 
-// --- LOGO & UI ---
 function handleLogoClick() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    // Tutaj możesz dodać dodatkowe info:
-    // alert("Aplikacja Koziar Plany v2.0\nKontakt: ...");
 }
 
 function showInfo(title, content) {
@@ -232,7 +223,7 @@ function newPlan() {
 }
 
 function deletePlan(){
-    if(plans[currentPlan]?.isLocked) return;
+    if(!plans[currentPlan] || plans[currentPlan].isLocked) return;
     if(confirm("Usunąć plan?")){ delete plans[currentPlan]; currentPlan=Object.keys(plans)[0]||""; save(); location.reload(); }
 }
 
@@ -240,13 +231,13 @@ function resetWeek(){
     if(confirm("Wyczyścić wszystkie postępy?")){ checks[currentPlan]={}; save(); render(); }
 }
 
-// --- RENDER ---
 function render() {
     const p = plans[currentPlan];
     if(!p) return;
 
     const isLocked = p.isLocked;
     document.getElementById("bodyTag").className = isLocked ? "locked-mode" : "";
+    document.getElementById("proBtn").style.display = isLocked ? "none" : "flex";
     document.getElementById("proBtn").classList.toggle("active-pro", p.proMode);
     
     const notesEl = document.getElementById("planNotes");
@@ -267,10 +258,10 @@ function render() {
             <div class="day-header">
                 <input class="day-title-input" value="${day.name}" ${isEditing && !isLocked ? '' : 'readonly'} oninput="plans[currentPlan].days[${di}].name=this.value;save()">
                 <div style="display:flex;gap:8px">
+                    <button class="row-icon-btn ${day.active?'active':''}" onclick="toggleDay(${di})">
+                        <i data-lucide="${day.active?'pause':'play'}" style="width:14px"></i>
+                    </button>
                     ${!isLocked ? `
-                        <button class="row-icon-btn ${day.active?'active':''}" onclick="toggleDay(${di})">
-                            <i data-lucide="${day.active?'pause':'play'}" style="width:14px"></i>
-                        </button>
                         <button class="row-icon-btn ${isEditing?'active':''}" onclick="toggleEdit(${di})">
                             <i data-lucide="edit-3" style="width:14px"></i>
                         </button>
@@ -299,14 +290,14 @@ function render() {
                                 <td class="col-name">
                                     <input type="text" value="${r[0]||''}" oninput="updRow(${di},${ri},0,this.value)" placeholder="..." 
                                     onclick="${!isEditing ? `showInfo('${r[0]}', '${(r[7]||"").replace(/'/g, "\\'")}')` : ''}"
-                                    style="${!isEditing && r[7] && r[7] !== '...' ? 'text-decoration: underline dotted var(--gold);' : ''}">
+                                    style="${!isEditing && r[7] && r[7] !== '...' ? 'text-decoration: underline dotted var(--gold);' : ''}" ${isLocked && !isEditing ? 'readonly' : ''}>
                                 </td>
-                                <td class="col-val"><input type="text" value="${r[1]||''}" oninput="updRow(${di},${ri},1,this.value)"></td>
-                                <td class="col-val"><input type="text" value="${r[2]||''}" oninput="updRow(${di},${ri},2,this.value)"></td>
-                                <td class="col-val"><input type="text" value="${r[3]||''}" oninput="updRow(${di},${ri},3,this.value)"></td>
-                                <td class="col-pro"><input type="text" value="${r[4]||''}" oninput="updRow(${di},${ri},4,this.value)"></td>
-                                <td class="col-pro"><input type="text" value="${r[5]||''}" oninput="updRow(${di},${ri},5,this.value)"></td>
-                                <td class="col-pro"><input type="text" value="${r[6]||''}" oninput="updRow(${di},${ri},6,this.value)"></td>
+                                <td class="col-val"><input type="text" value="${r[1]||''}" oninput="updRow(${di},${ri},1,this.value)" ${isLocked && !isEditing ? 'readonly' : ''}></td>
+                                <td class="col-val"><input type="text" value="${r[2]||''}" oninput="updRow(${di},${ri},2,this.value)" ${isLocked && !isEditing ? 'readonly' : ''}></td>
+                                <td class="col-val"><input type="text" value="${r[3]||''}" oninput="updRow(${di},${ri},3,this.value)" ${isLocked && !isEditing ? 'readonly' : ''}></td>
+                                <td class="col-pro"><input type="text" value="${r[4]||''}" oninput="updRow(${di},${ri},4,this.value)" ${isLocked && !isEditing ? 'readonly' : ''}></td>
+                                <td class="col-pro"><input type="text" value="${r[5]||''}" oninput="updRow(${di},${ri},5,this.value)" ${isLocked && !isEditing ? 'readonly' : ''}></td>
+                                <td class="col-pro"><input type="text" value="${r[6]||''}" oninput="updRow(${di},${ri},6,this.value)" ${isLocked && !isEditing ? 'readonly' : ''}></td>
                                 ${isEditing ? `
                                     <td style="display:flex; gap:4px; align-items:center; padding-top:6px">
                                         <button onclick="promptInfo(${di},${ri})" style="background:none; border:none; color:var(--gold)"><i data-lucide="info" style="width:14px"></i></button>
@@ -324,8 +315,7 @@ function render() {
     lucide.createIcons();
 }
 
-// --- LOGIKA POMOCNICZA ---
-function updRow(di,ri,ci,v){ plans[currentPlan].days[di].rows[ri][ci]=v; save(); }
+function updRow(di,ri,ci,v){ if(plans[currentPlan].isLocked && !editStates[di]) return; plans[currentPlan].days[di].rows[ri][ci]=v; save(); }
 function addRow(di){ plans[currentPlan].days[di].rows.push(["","","","","","","","..."]); save(); render(); }
 function delRow(di,ri){ plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); }
 function promptInfo(di,ri){
@@ -385,7 +375,12 @@ function applyImport() {
     if(!txt) return;
     const imported = parseTSV(txt);
     const name = prompt("Podaj nazwę dla importowanego planu:", "Nowy Plan");
-    if(name) { plans[name] = imported; currentPlan = name; save(); location.reload(); }
+    if(name) { 
+        imported.isLocked = false; // Importowane plany nigdy nie są zablokowane
+        plans[name] = imported; 
+        currentPlan = name; 
+        save(); location.reload(); 
+    }
 }
 
 function closeModals() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
@@ -413,10 +408,11 @@ async function fetchRemotePlans() {
             const r = await fetch(file);
             if(r.ok) {
                 const text = await r.text();
-                plans[name] = parseTSV(text);
-                plans[name].isLocked = true;
+                const parsed = parseTSV(text);
+                parsed.isLocked = true; // TU JEST KLUCZ: Blokada planów z serwera
+                plans[name] = parsed;
             }
-        } catch(e) {}
+        } catch(e) { console.error("Error fetching " + file); }
     }
     if(!currentPlan || !plans[currentPlan]) currentPlan = Object.keys(plans)[0] || "";
     initSelect(); render();
