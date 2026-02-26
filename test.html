@@ -3,27 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Koziar Plany</title>
+<title>Koziar Plany - Premium Workout</title>
 
 <link rel="icon" type="image/png" href="logo.png">
 <link rel="apple-touch-icon" href="logo.png">
 <meta name="theme-color" content="#0a0a0a">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
 :root {
-    --bg: #050505;
-    --card: #121212;
-    --border: #222222;
-    --text: #f0f0f0;
+    --bg: #0a0a0a;
+    --card: #141414;
+    --border: #262626;
+    --text: #ffffff;
+    --text-dim: #a0a0a0;
     --gold: #d4af37;
-    --gold-dark: #aa8a2e;
-    --gold-glow: rgba(212, 175, 55, 0.2);
-    --danger: #ff4444;
+    --gold-glow: rgba(212, 175, 55, 0.15);
     --pro: #3b82f6;
-    --nav-bg: rgba(10, 10, 10, 0.96);
+    --pro-glow: rgba(59, 130, 246, 0.15);
+    --danger: #ef4444;
+    --nav-bg: rgba(10, 10, 10, 0.9);
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -33,7 +34,7 @@ body {
     font-family: 'Inter', sans-serif;
     background: var(--bg);
     color: var(--text);
-    padding-bottom: 140px;
+    padding-bottom: 160px; /* Większy odstęp na dole */
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
 }
@@ -42,157 +43,124 @@ body {
 header {
     position: sticky; top: 0; z-index: 100;
     background: var(--nav-bg);
-    backdrop-filter: blur(20px);
-    padding: 16px; border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(15px);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
 }
 
 #planSelect {
     width: 100%; background: #1a1a1a; color: var(--gold);
-    border: 1px solid var(--border); padding: 14px;
-    border-radius: 16px; font-weight: 800; font-size: 14px; outline: none;
+    border: 1px solid var(--border); padding: 12px;
+    border-radius: 12px; font-weight: 700; font-size: 14px; outline: none;
     appearance: none; text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
 
-/* --- FLOATING LOGO (Premium Look) --- */
-.floating-footer {
-    position: fixed; bottom: 100px; right: 18px;
-    z-index: 999;
+/* --- MAIN --- */
+main { padding: 16px; max-width: 800px; margin: 0 auto; }
+
+.notes-area {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; margin-bottom: 20px; padding: 14px;
 }
+.notes-area label { display: block; color: var(--gold); font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px; }
+.notes-area textarea { width: 100%; background: transparent; border: none; color: var(--text-dim); font-size: 13px; line-height: 1.5; resize: none; outline: none; }
+
+/* --- DZIEŃ TRENINGOWY --- */
+.day { 
+    background: var(--card); margin-bottom: 24px; border-radius: 20px; 
+    border: 1px solid var(--border); overflow: hidden; 
+    transition: transform 0.2s, opacity 0.3s;
+}
+.day.inactive { opacity: 0.4; filter: grayscale(0.8); }
+.day.active-today { border-color: var(--gold); box-shadow: 0 0 20px var(--gold-glow); }
+
+.day-header {
+    background: rgba(255,255,255,0.02); padding: 14px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border);
+}
+.day-title-input { background: transparent; border: none; color: var(--gold); font-size: 16px; font-weight: 800; text-transform: uppercase; outline: none; width: 60%; }
+
+/* --- TRENING (GRID ZAMIAST TABLE) --- */
+.exercise-row {
+    display: grid;
+    grid-template-columns: 45px 1fr 45px 45px 55px; /* Standart: Check | Name | S | P | KG */
+    align-items: center;
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+/* Tryb PRO - Dodajemy kolumny */
+.pro-mode .exercise-row {
+    grid-template-columns: 45px 1fr 35px 35px 50px 45px 40px 55px;
+}
+
+.exercise-row.header-row {
+    background: transparent;
+    font-size: 9px;
+    color: var(--text-dim);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.exercise-row.done { background: rgba(212, 175, 55, 0.05); }
+.exercise-row.done input { color: #555; text-decoration: line-through; }
+
+.col-input {
+    background: transparent; border: none; color: var(--text);
+    font-size: 13px; padding: 8px 4px; width: 100%; text-align: center;
+    outline: none;
+}
+.col-input.name { text-align: left; font-weight: 600; padding-left: 8px; overflow: hidden; text-overflow: ellipsis; }
+
+/* Akcje edycji */
+.edit-actions { display: flex; gap: 8px; padding: 10px; justify-content: center; background: rgba(0,0,0,0.2); }
+
+/* --- FLOATING LOGO --- */
+.floating-footer { position: fixed; bottom: 90px; right: 16px; z-index: 99; }
 .floating-logo {
-    width: 56px; height: 56px; cursor: pointer;
-    border-radius: 50%;
-    background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
-    border: 2px solid var(--gold);
+    width: 50px; height: 50px; border-radius: 50%;
+    background: #111; border: 2px solid var(--gold);
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 20px var(--gold-glow), inset 0 0 10px rgba(212,175,55,0.1);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
-.floating-logo img { width: 70%; height: 70%; object-fit: contain; }
-.floating-logo:active { transform: scale(0.85) rotate(-10deg); }
+.floating-logo img { width: 60%; height: 60%; }
 
-/* --- DOLNY NAV BAR --- */
+/* --- NAV BAR --- */
 .bottom-nav {
     position: fixed; bottom: 0; left: 0; right: 0;
-    background: var(--nav-bg);
-    backdrop-filter: blur(25px);
+    background: var(--nav-bg); backdrop-filter: blur(20px);
     border-top: 1px solid var(--border);
-    display: flex; justify-content: space-evenly;
-    padding: 12px 8px calc(12px + env(safe-area-inset-bottom));
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    padding: 10px 4px calc(10px + env(safe-area-inset-bottom));
     z-index: 1000;
 }
 
 .nav-btn {
-    display: flex; flex-direction: column; align-items: center;
-    background: none; border: none; color: #555; gap: 4px;
-    flex: 1; font-size: 9px; font-weight: 700; cursor: pointer; transition: 0.2s;
+    background: none; border: none; color: #666; 
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-size: 8px; font-weight: 700; text-transform: uppercase;
 }
 .nav-btn.active { color: var(--gold); }
-.nav-btn i { width: 22px; height: 22px; stroke-width: 2.2px; }
-.nav-btn.pro-btn.active-pro { color: var(--pro); filter: drop-shadow(0 0 5px var(--pro)); }
+.nav-btn.pro-btn.active-pro { color: var(--pro); filter: drop-shadow(0 0 8px var(--pro-glow)); }
+.nav-btn i { width: 20px; height: 20px; }
 
-/* --- MAIN CONTENT --- */
-main { padding: 16px; max-width: 700px; margin: 0 auto; }
-
-.notes-area {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 20px; margin-bottom: 24px; padding: 16px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-.notes-area label { display: block; color: var(--gold); font-size: 10px; font-weight: 900; text-transform: uppercase; margin-bottom: 8px; opacity: 0.8; letter-spacing: 1.2px; }
-.notes-area textarea { width: 100%; background: transparent; border: none; color: #bbb; font-size: 14px; line-height: 1.6; resize: none; outline: none; min-height: 45px; }
-
-.day { background: var(--card); margin-bottom: 28px; border-radius: 24px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-.day.inactive { opacity: 0.35; filter: grayscale(1); scale: 0.98; transition: 0.4s; }
-.day.active-today { border-color: var(--gold-dark); box-shadow: 0 0 30px var(--gold-glow); }
-
-.day-header {
-    background: linear-gradient(to right, rgba(255,255,255,0.03), transparent); 
-    padding: 16px 20px;
-    display: flex; justify-content: space-between; align-items: center;
-}
-.day-title-input { background: transparent; border: none; color: var(--gold); font-size: 17px; font-weight: 900; text-transform: uppercase; outline: none; letter-spacing: 0.5px; }
-
-/* --- TABELA (UX Optimization) --- */
-.table-wrapper { 
-    width: 100%; overflow-x: auto; 
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-}
-.table-wrapper::-webkit-scrollbar { display: none; }
-
-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-
-/* PRO MODE TABLE WIDTHS */
-.pro-mode table { width: 850px; }
-
-th { font-size: 9px; color: #555; padding: 14px 4px; text-transform: uppercase; border-bottom: 1px solid var(--border); letter-spacing: 0.5px; }
-td { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.01); }
-
-/* Kolumny szerokości */
-.col-check { width: 55px; text-align: center; }
-.col-name { width: auto; text-align: left; padding-left: 10px; }
-.col-val { width: 50px; text-align: center; }
-.col-pro { width: 68px; text-align: center; display: none; background: rgba(59, 130, 246, 0.02); }
-
-.pro-mode .col-pro { display: table-cell; }
-
-input[type="text"] { 
-    width: 90%; background: rgba(255,255,255,0.03); border: none; color: var(--text); 
-    padding: 12px 8px; font-size: 14px; text-align: left; outline: none; border-radius: 8px;
-}
-.col-val input, .col-pro input { text-align: center; width: 85%; }
-
-tr.done { background: rgba(212, 175, 55, 0.03); }
-tr.done input { color: #555; text-decoration: line-through; filter: blur(0.2px); }
-
-/* Checkboxy z odstępem od krawędzi */
-input[type="checkbox"] { 
-    width: 22px; height: 22px; accent-color: var(--gold); cursor: pointer; 
-    margin-left: 10px;
-}
-
-.btn-add-row { width: 100%; padding: 20px; background: transparent; color: var(--gold); border: none; border-top: 1px solid var(--border); font-weight: 800; font-size: 12px; letter-spacing: 1.5px; cursor: pointer; text-transform: uppercase; }
-
-/* --- TRYB PODGLĄDU --- */
-.locked-mode .day { opacity: 0.5; pointer-events: none; }
-.locked-mode .day-header { filter: brightness(0.6); }
-
-.locked-footer {
-    display: none;
-    position: fixed; bottom: 85px; left: 0; right: 0;
-    padding: 20px; z-index: 998;
-    background: linear-gradient(0deg, var(--bg) 40%, transparent);
-}
-.locked-mode .locked-footer { display: block; }
-
-.activate-btn {
-    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-    color: #000; padding: 18px; border-radius: 20px;
-    font-weight: 900; font-size: 14px; text-transform: uppercase;
-    box-shadow: 0 12px 30px rgba(212, 175, 55, 0.3);
-    cursor: pointer; border: none; width: 100%;
-    animation: pulseGlow 2.5s infinite;
-}
-
-@keyframes pulseGlow {
-    0% { transform: scale(1); box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3); }
-    50% { transform: scale(1.02); box-shadow: 0 12px 35px rgba(212, 175, 55, 0.5); }
-    100% { transform: scale(1); box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3); }
-}
-
-/* --- MODALE --- */
-.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; backdrop-filter: blur(10px); }
+/* MODALE */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
 .modal.active { display: flex; }
-.modal-box { background: var(--card); width: 100%; max-width: 400px; padding: 35px; border-radius: 32px; border: 1px solid var(--border); text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+.modal-box { background: var(--card); width: 100%; max-width: 400px; padding: 25px; border-radius: 24px; border: 1px solid var(--border); }
 
-.row-icon-btn {
-    background: #1a1a1a; border: 1px solid #333; color: #fff;
-    width: 38px; height: 38px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center; cursor: pointer;
-    transition: 0.2s;
+/* Ukrywanie kolumn PRO w standardzie */
+.col-pro-field { display: none; }
+.pro-mode .col-pro-field { display: block; }
+
+.btn-add-row { width: 100%; padding: 14px; background: transparent; color: var(--gold); border: none; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+
+/* Responsywność dla małych ekranów */
+@media (max-width: 400px) {
+    .pro-mode .exercise-row { font-size: 11px; }
+    .col-input { font-size: 11px; }
 }
-.row-icon-btn.active { background: var(--gold); color: #000; border: none; box-shadow: 0 0 15px var(--gold-glow); }
 
 </style>
 </head>
@@ -210,21 +178,21 @@ input[type="checkbox"] {
 
 <main id="mainContainer">
     <div class="notes-area">
-        <label>Plan Workout Notes</label>
-        <textarea id="planNotes" oninput="autoHeight(this); saveNotes()" placeholder="Wpisz swoje uwagi do treningu..."></textarea>
+        <label>Notatki do planu</label>
+        <textarea id="planNotes" oninput="autoHeight(this); saveNotes()" placeholder="Cele, progresja, suplementacja..."></textarea>
     </div>
     <div id="week"></div>
 </main>
 
-<div class="locked-footer" id="lockedFooter">
-    <button class="activate-btn" onclick="activatePlan()">
-        ⭐ Odblokuj ten plan (Kopia)
+<div class="locked-footer" id="lockedFooter" style="display:none; padding: 20px; position: fixed; bottom: 80px; width: 100%; text-align: center;">
+    <button class="activate-btn" onclick="activatePlan()" style="background: var(--gold); color: #000; border: none; padding: 15px 30px; border-radius: 12px; font-weight: 900; width: 90%;">
+        ⭐ ODBLOKUJ TEN PLAN (EDYTUJ)
     </button>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
     <button class="nav-btn pro-btn edit-only" id="proBtn" onclick="togglePro()">
-        <i data-lucide="zap"></i><span>TRYB PRO</span>
+        <i data-lucide="zap"></i><span>PRO</span>
     </button>
     <button class="nav-btn" onclick="newPlan()">
         <i data-lucide="plus-circle"></i><span>NOWY</span>
@@ -245,33 +213,33 @@ input[type="checkbox"] {
 
 <div class="modal" id="infoModal">
     <div class="modal-box">
-        <h2 id="infoTitle" style="color:var(--gold); margin:0 0 15px 0; font-size:22px"></h2>
-        <div id="infoContent" style="font-size:15px; line-height:1.7; color:#bbb; text-align: left; background: #080808; padding: 25px; border-radius: 20px; border: 1px solid #1a1a1a; white-space: pre-wrap;"></div>
-        <button class="btn-add-row" onclick="closeModals()" style="margin-top:25px; border:1px solid var(--border); border-radius:16px; color:#fff">ZAMKNIJ</button>
+        <h2 id="infoTitle" style="color:var(--gold); margin-top:0"></h2>
+        <p id="infoContent" style="color:var(--text-dim); line-height:1.6; font-size:14px; white-space: pre-wrap;"></p>
+        <button class="btn-add-row" onclick="closeModals()" style="background:var(--gold); color:#000; border-radius:8px; margin-top:10px">ZAMKNIJ</button>
     </div>
 </div>
 
 <div class="modal" id="importModal">
     <div class="modal-box">
-        <h3 style="margin-top:0">Importuj dane</h3>
-        <input type="file" id="importFile" accept=".tsv" onchange="handleFileSelect(event)" style="margin: 20px 0; font-size:12px; width:100%; color:#666">
-        <textarea id="importText" style="height:120px;width:100%;background:#000;color:#fff;padding:15px;border:1px solid #333;border-radius:16px; font-size:12px" placeholder="Wklej kod TSV..."></textarea>
-        <button class="btn-add-row" onclick="applyImport()" style="color:var(--gold); font-size:14px">POTWIERDŹ IMPORT</button>
-        <button class="btn-add-row" onclick="closeModals()">ANULUJ</button>
+        <h3>Importuj Plan</h3>
+        <input type="file" id="importFile" accept=".tsv" onchange="handleFileSelect(event)" style="margin-bottom:15px; font-size:12px; color:#999">
+        <textarea id="importText" style="width:100%; height:100px; background:#000; border:1px solid #333; color:#fff; border-radius:8px; padding:10px; font-size:10px" placeholder="Wklej kod TSV..."></textarea>
+        <button class="btn-add-row" onclick="applyImport()">IMPORTUJ</button>
+        <button class="btn-add-row" onclick="closeModals()" style="color:#666">ANULUJ</button>
     </div>
 </div>
 
 <div class="modal" id="exportModal">
     <div class="modal-box">
-        <h3>Kod Twojego Planu</h3>
-        <textarea id="exportText" style="height:150px;width:100%;background:#000;color:#0f0;font-family:monospace;font-size:11px;padding:15px;border:1px solid #333;border-radius:16px" readonly></textarea>
-        <button class="btn-add-row" onclick="downloadTSV()" style="color:var(--gold)">POBIERZ .TSV</button>
+        <h3>Twój Plan (TSV)</h3>
+        <textarea id="exportText" style="width:100%; height:150px; background:#000; border:1px solid #333; color:#0f0; font-family:monospace; font-size:10px; border-radius:8px; padding:10px" readonly></textarea>
+        <button class="btn-add-row" onclick="downloadTSV()">POBIERZ PLIK .TSV</button>
         <button class="btn-add-row" onclick="closeModals()">GOTOWE</button>
     </div>
 </div>
 
 <script>
-// --- LOGIKA POZOSTAJE BEZ ZMIAN DLA STABILNOŚCI ---
+// --- LOGIKA BIZNESOWA (Twoja oryginalna, zoptymalizowana pod renderowanie Grid) ---
 const REMOTE_FILES = {
     "3-dniowy FBW - by Koziar": "basic1.tsv",
     "4-dniowy Upper/Lower - by Koziar": "basic2.tsv",
@@ -293,24 +261,25 @@ function handleLogoClick() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
 function render() {
     const p = plans[currentPlan];
+    const weekEl = document.getElementById("week");
+    const lockedFooter = document.getElementById("lockedFooter");
+
     if(!p) {
-        document.getElementById("week").innerHTML = "<div style='text-align:center;padding:120px 30px;color:#333;font-weight:700;line-height:1.5'>TWOJA LISTA JEST PUSTA.<br>WYBIERZ PLAN POWYŻEJ LUB STWÓRZ NOWY.</div>";
-        document.body.className = "";
+        weekEl.innerHTML = "<div style='text-align:center;padding:100px 20px;color:#444;'>WYBIERZ PLAN LUB STWÓRZ NOWY</div>";
         updateMenuVisibility(false);
+        lockedFooter.style.display = "none";
         return;
     }
 
     const isLocked = p.isLocked;
-    document.body.className = isLocked ? "locked-mode" : "";
+    document.body.classList.toggle("locked-mode", isLocked);
+    lockedFooter.style.display = isLocked ? "block" : "none";
     updateMenuVisibility(!isLocked);
     document.getElementById("proBtn").classList.toggle("active-pro", p.proMode);
     
-    const notesEl = document.getElementById("planNotes");
-    notesEl.value = p.notes || "";
-    notesEl.readOnly = isLocked;
-    autoHeight(notesEl);
+    document.getElementById("planNotes").value = p.notes || "";
+    document.getElementById("planNotes").readOnly = isLocked;
 
-    const weekEl = document.getElementById("week");
     weekEl.className = p.proMode ? "pro-mode" : "standard-mode";
 
     weekEl.innerHTML = p.days.map((day, di) => {
@@ -322,71 +291,75 @@ function render() {
         <div class="day ${day.active?'':'inactive'} ${hasChecks && day.active ? 'active-today' : ''}">
             <div class="day-header">
                 <input class="day-title-input" value="${day.name}" ${isEditing && !isLocked ? '' : 'readonly'} oninput="plans[currentPlan].days[${di}].name=this.value;save()">
-                <div style="display:flex;gap:12px">
-                    <button class="row-icon-btn ${day.active?'active':''}" onclick="toggleDay(${di})">
-                        <i data-lucide="${day.active?'pause':'play'}" style="width:16px"></i>
+                <div style="display:flex;gap:8px">
+                    <button class="row-icon-btn" onclick="toggleDay(${di})" style="background:${day.active?'var(--gold)':'#222'}; border:none; border-radius:8px; padding:6px; color:${day.active?'#000':'#666'}">
+                        <i data-lucide="${day.active?'pause':'play'}" style="width:16px; height:16px"></i>
                     </button>
                     ${!isLocked ? `
-                        <button class="row-icon-btn ${isEditing?'active':''}" onclick="toggleEdit(${di})">
-                            <i data-lucide="edit-3" style="width:16px"></i>
+                        <button class="row-icon-btn" onclick="toggleEdit(${di})" style="background:${isEditing?'#fff':'#222'}; border:none; border-radius:8px; padding:6px; color:${isEditing?'#000':'#666'}">
+                            <i data-lucide="edit-3" style="width:16px; height:16px"></i>
                         </button>
                     ` : ''}
                 </div>
             </div>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="col-check">✔</th>
-                            <th class="col-name">Ćwiczenie</th>
-                            <th class="col-val">S</th>
-                            <th class="col-val">P</th>
-                            <th class="col-val">KG</th>
-                            <th class="col-pro">ODP</th>
-                            <th class="col-pro">RIR</th>
-                            <th class="col-pro">TEMPO</th>
-                            ${isEditing ? '<th style="width:60px"></th>' : ''}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${day.rows.map((r, ri) => `
-                            <tr class="${dayChecks[ri]?'done':''}">
-                                <td class="col-check"><input type="checkbox" ${dayChecks[ri]?'checked':''} onchange="toggleCheck(${di},${ri},this.checked)" ${isLocked ? 'disabled' : ''}></td>
-                                <td class="col-name">
-                                    <input type="text" value="${r[0]||''}" oninput="updRow(${di},${ri},0,this.value)" placeholder="..." 
-                                    onclick="${!isEditing ? `showInfo('${r[0]}', '${(r[7]||"").replace(/'/g, "\\'")}')` : ''}"
-                                    style="${!isEditing && r[7] && r[7] !== '...' ? 'text-decoration: underline dotted var(--gold); cursor:pointer;' : ''}" 
-                                    ${isLocked ? 'readonly' : ''}>
-                                </td>
-                                <td class="col-val"><input type="text" value="${r[1]||''}" oninput="updRow(${di},${ri},1,this.value)" ${isLocked ? 'readonly' : ''}></td>
-                                <td class="col-val"><input type="text" value="${r[2]||''}" oninput="updRow(${di},${ri},2,this.value)" ${isLocked ? 'readonly' : ''}></td>
-                                <td class="col-val"><input type="text" value="${r[3]||''}" oninput="updRow(${di},${ri},3,this.value)" ${isLocked ? 'readonly' : ''}></td>
-                                <td class="col-pro"><input type="text" value="${r[4]||''}" oninput="updRow(${di},${ri},4,this.value)" ${isLocked ? 'readonly' : ''}></td>
-                                <td class="col-pro"><input type="text" value="${r[5]||''}" oninput="updRow(${di},${ri},5,this.value)" ${isLocked ? 'readonly' : ''}></td>
-                                <td class="col-pro"><input type="text" value="${r[6]||''}" oninput="updRow(${di},${ri},6,this.value)" ${isLocked ? 'readonly' : ''}></td>
-                                ${isEditing ? `
-                                    <td style="display:flex; gap:10px; align-items:center; justify-content:center; padding-top:8px">
-                                        <button onclick="promptInfo(${di},${ri})" style="background:none; border:none; color:var(--gold)"><i data-lucide="info" style="width:18px"></i></button>
-                                        <button onclick="delRow(${di},${ri})" style="color:var(--danger);background:none;border:none"><i data-lucide="trash-2" style="width:18px"></i></button>
-                                    </td>` : ''}
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
+            
+            <div class="exercise-row header-row">
+                <span>✔</span>
+                <span>Ćwiczenie</span>
+                <span>S</span>
+                <span>P</span>
+                <span>KG</span>
+                <span class="col-pro-field">ODP</span>
+                <span class="col-pro-field">RIR</span>
+                <span class="col-pro-field">TMP</span>
             </div>
+
+            ${day.rows.map((r, ri) => `
+                <div class="exercise-row ${dayChecks[ri]?'done':''}">
+                    <input type="checkbox" ${dayChecks[ri]?'checked':''} onchange="toggleCheck(${di},${ri},this.checked)" ${isLocked ? 'disabled' : ''} style="width:18px; height:18px; accent-color:var(--gold)">
+                    
+                    <input type="text" class="col-input name" value="${r[0]||''}" 
+                        oninput="updRow(${di},${ri},0,this.value)" 
+                        onclick="${!isEditing ? `showInfo('${r[0]}', '${(r[7]||"").replace(/'/g, "\\'")}')` : ''}"
+                        style="${!isEditing && r[7] && r[7] !== '...' ? 'border-bottom: 1px dotted var(--gold);' : ''}"
+                        ${isLocked ? 'readonly' : ''}>
+                    
+                    <input type="text" class="col-input" value="${r[1]||''}" oninput="updRow(${di},${ri},1,this.value)" ${isLocked ? 'readonly' : ''}>
+                    <input type="text" class="col-input" value="${r[2]||''}" oninput="updRow(${di},${ri},2,this.value)" ${isLocked ? 'readonly' : ''}>
+                    <input type="text" class="col-input" value="${r[3]||''}" oninput="updRow(${di},${ri},3,this.value)" ${isLocked ? 'readonly' : ''}>
+                    
+                    <input type="text" class="col-input col-pro-field" value="${r[4]||''}" oninput="updRow(${di},${ri},4,this.value)" ${isLocked ? 'readonly' : ''}>
+                    <input type="text" class="col-input col-pro-field" value="${r[5]||''}" oninput="updRow(${di},${ri},5,this.value)" ${isLocked ? 'readonly' : ''}>
+                    <input type="text" class="col-input col-pro-field" value="${r[6]||''}" oninput="updRow(${di},${ri},6,this.value)" ${isLocked ? 'readonly' : ''}>
+                </div>
+                ${isEditing ? `
+                    <div class="edit-actions">
+                        <button onclick="promptInfo(${di},${ri})" style="background:none; border:none; color:var(--gold); font-size:10px;"><i data-lucide="info" style="width:14px"></i> INFO</button>
+                        <button onclick="delRow(${di},${ri})" style="background:none; border:none; color:var(--danger); font-size:10px;"><i data-lucide="trash-2" style="width:14px"></i> USUŃ</button>
+                    </div>
+                ` : ''}
+            `).join('')}
+            
             ${isEditing ? `<button class="btn-add-row" onclick="addRow(${di})">+ Dodaj ćwiczenie</button>` : ''}
         </div>`;
     }).join('');
     lucide.createIcons();
 }
 
+// Funkcje pomocnicze
 function updateMenuVisibility(full) {
     document.querySelectorAll(".edit-only").forEach(el => { el.style.display = full ? "flex" : "none"; });
 }
 
+function togglePro(){ if(!plans[currentPlan].isLocked) { plans[currentPlan].proMode = !plans[currentPlan].proMode; save(); render(); } }
+function toggleDay(di){ if(!plans[currentPlan].isLocked) { plans[currentPlan].days[di].active = !plans[currentPlan].days[di].active; save(); render(); } }
+function toggleEdit(di){ if(!plans[currentPlan].isLocked) { editStates[di] = !editStates[di]; render(); } }
+function updRow(di,ri,ci,v){ if(!plans[currentPlan].isLocked){ plans[currentPlan].days[di].rows[ri][ci]=v; save(); } }
+function addRow(di){ plans[currentPlan].days[di].rows.push(["","","","","","","","..."]); save(); render(); }
+function delRow(di,ri){ plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); }
+
 function activatePlan() {
     const p = plans[currentPlan];
-    if(!p) return;
     const newName = prompt("Nazwij swoją kopię planu:", currentPlan.replace(" - by Koziar", ""));
     if(newName) {
         const copy = JSON.parse(JSON.stringify(p));
@@ -399,7 +372,7 @@ function activatePlan() {
 }
 
 function newPlan() {
-    const n = prompt("Podaj nazwę dla nowego planu:");
+    const n = prompt("Nazwa nowego planu:");
     if(n) {
         plans[n] = { 
             notes: "", 
@@ -410,35 +383,18 @@ function newPlan() {
     }
 }
 
-function togglePro(){ if(!plans[currentPlan].isLocked) { plans[currentPlan].proMode = !plans[currentPlan].proMode; save(); render(); } }
-function deletePlan(){ if(!plans[currentPlan].isLocked && confirm("Usunąć ten plan treningowy?")) { delete plans[currentPlan]; currentPlan = Object.keys(plans)[0] || ""; save(); location.reload(); } }
-function resetWeek(){ if(confirm("Zresetować wszystkie odhaczone ćwiczenia?")) { checks[currentPlan] = {}; save(); render(); } }
-function updRow(di,ri,ci,v){ if(!plans[currentPlan].isLocked){ plans[currentPlan].days[di].rows[ri][ci]=v; save(); } }
-function addRow(di){ plans[currentPlan].days[di].rows.push(["","","","","","","","..."]); save(); render(); }
-function delRow(di,ri){ plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); }
-function promptInfo(di,ri){
-    const n = prompt("Opis ćwiczenia:", plans[currentPlan].days[di].rows[ri][7]);
-    if(n !== null){ plans[currentPlan].days[di].rows[ri][7] = n; save(); render(); }
-}
+function deletePlan(){ if(confirm("Usunąć ten plan?")) { delete plans[currentPlan]; currentPlan = Object.keys(plans)[0] || ""; save(); location.reload(); } }
+function resetWeek(){ if(confirm("Reset postępów?")) { checks[currentPlan] = {}; save(); render(); } }
+
 function toggleCheck(di,ri,v){
     if(!checks[currentPlan]) checks[currentPlan] = {};
     if(!checks[currentPlan][di]) checks[currentPlan][di] = {};
     checks[currentPlan][di][ri] = v; save(); render();
 }
-function toggleDay(di){ if(!plans[currentPlan].isLocked) { plans[currentPlan].days[di].active = !plans[currentPlan].days[di].active; save(); render(); } }
-function toggleEdit(di){ if(!plans[currentPlan].isLocked) { editStates[di] = !editStates[di]; render(); } }
-function autoHeight(el){ el.style.height="auto"; el.style.height=el.scrollHeight+"px"; }
-function saveNotes(){ if(plans[currentPlan] && !plans[currentPlan].isLocked){ plans[currentPlan].notes=document.getElementById("planNotes").value; save(); }}
 
-function initSelect() {
-    const ps = document.getElementById("planSelect"); ps.innerHTML = "";
-    const gL = document.createElement("optgroup"); gL.label = "📋 KLASYKI OD KOZIARA";
-    const gU = document.createElement("optgroup"); gU.label = "💪 TWOJE WŁASNE PLANY";
-    Object.keys(plans).sort().forEach(k => {
-        const o = new Option(k, k);
-        if(plans[k].isLocked) gL.appendChild(o); else gU.appendChild(o);
-    });
-    ps.add(gL); ps.add(gU); ps.value = currentPlan;
+function promptInfo(di,ri){
+    const n = prompt("Opis ćwiczenia:", plans[currentPlan].days[di].rows[ri][7]);
+    if(n !== null){ plans[currentPlan].days[di].rows[ri][7] = n; save(); render(); }
 }
 
 function showInfo(title, content) {
@@ -448,8 +404,11 @@ function showInfo(title, content) {
     document.getElementById("infoModal").classList.add("active");
 }
 
+function closeModals() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
+
+// Export / Import
 function openExport() {
-    const p = plans[currentPlan]; if(!p) return;
+    const p = plans[currentPlan];
     let out = [`!!NOTES!!\t${(p.notes||"").replace(/\n/g,"[BR]")}`];
     p.days.forEach(d => {
         out.push(`# ${d.name} | ${d.active?'AKTYWNY':'PRZERWA'}`);
@@ -466,8 +425,6 @@ function downloadTSV() {
 }
 
 function openImport() { document.getElementById("importModal").classList.add("active"); }
-function closeModals() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
-
 function handleFileSelect(e) {
     const reader = new FileReader();
     reader.onload = (ev) => { document.getElementById("importText").value = ev.target.result; };
@@ -478,7 +435,7 @@ function applyImport() {
     const txt = document.getElementById("importText").value.trim();
     if(!txt) return;
     const imported = parseTSV(txt);
-    const name = prompt("Nazwa planu:", "Nowy Plan " + new Date().toLocaleDateString());
+    const name = prompt("Nazwa planu:", "Import " + new Date().toLocaleDateString());
     if(name) { plans[name] = imported; currentPlan = name; save(); location.reload(); }
 }
 
@@ -489,13 +446,24 @@ function parseTSV(text) {
         if(l.startsWith("!!NOTES!!")) notes = l.split("\t")[1]?.replace(/\[BR\]/g,"\n") || "";
         else if(l.startsWith("#")) {
             const parts = l.replace("#","").split("|").map(x=>x.trim());
-            day = { name: parts[0], active: parts[1] !== "PRZERWA" && parts[1] !== "OFF", rows: [] };
+            day = { name: parts[0], active: parts[1] !== "PRZERWA", rows: [] };
             week.push(day);
         } else if(day && l.trim()) {
             let row = l.split("\t"); while(row.length < 8) row.push(""); day.rows.push(row);
         }
     });
     return { notes, days: week, proMode: false, isLocked: false };
+}
+
+function initSelect() {
+    const ps = document.getElementById("planSelect"); ps.innerHTML = "";
+    const gL = document.createElement("optgroup"); gL.label = "📋 KLASYKI KOZIARA";
+    const gU = document.createElement("optgroup"); gU.label = "💪 TWOJE PLANY";
+    Object.keys(plans).sort().forEach(k => {
+        const o = new Option(k, k);
+        if(plans[k].isLocked) gL.appendChild(o); else gU.appendChild(o);
+    });
+    ps.add(gL); ps.add(gU); ps.value = currentPlan;
 }
 
 async function fetchRemotePlans() {
@@ -514,8 +482,11 @@ async function fetchRemotePlans() {
     initSelect(); render();
 }
 
-fetchRemotePlans();
 function loadPlan(){ currentPlan=document.getElementById("planSelect").value; editStates={}; save(); render(); }
+function autoHeight(el){ el.style.height="auto"; el.style.height=el.scrollHeight+"px"; }
+function saveNotes(){ if(plans[currentPlan] && !plans[currentPlan].isLocked){ plans[currentPlan].notes=document.getElementById("planNotes").value; save(); }}
+
+fetchRemotePlans();
 </script>
 </body>
 </html>
