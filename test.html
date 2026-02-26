@@ -24,7 +24,7 @@
 --pro:#3b82f6;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding-bottom:100px;overflow-x:hidden;}
+body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding-bottom:120px;overflow-x:hidden;}
 
 /* --- NAGŁÓWEK --- */
 header {
@@ -118,6 +118,26 @@ input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--gold); c
 
 .btn-add-row { width: 100%; padding: 15px; background: transparent; color: var(--gold); border: none; border-top: 1px solid var(--border); font-weight: 700; font-size: 11px; cursor: pointer; }
 
+/* --- TRYB PODGLĄDU (LOCKED) --- */
+.locked-overlay {
+    display: none;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, var(--bg));
+    padding: 40px 20px 20px; text-align: center; z-index: 1001;
+}
+.locked-mode .locked-overlay { display: block; }
+.locked-mode .day { opacity: 0.6; pointer-events: none; }
+.locked-mode .day-header button, .locked-mode .bottom-nav .edit-only { display: none !important; }
+.locked-mode .col-check { opacity: 0.2; }
+.locked-mode input[type="checkbox"] { pointer-events: none; }
+
+.activate-banner {
+    background: var(--gold); color: #000; padding: 16px; border-radius: 16px;
+    font-weight: 900; font-size: 14px; text-transform: uppercase;
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+    cursor: pointer; border: none; width: 100%; max-width: 400px;
+}
+
 /* --- MODALE --- */
 .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 25px; }
 .modal.active { display: flex; }
@@ -130,8 +150,6 @@ input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--gold); c
 }
 .row-icon-btn.active { background: var(--gold); color: #000; border: none; }
 
-/* MODYFIKATORY STANU */
-.locked-mode .edit-only { display: none !important; }
 </style>
 </head>
 
@@ -147,13 +165,19 @@ input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--gold); c
     </div>
 </div>
 
-<main>
+<main id="mainContainer">
     <div class="notes-area">
         <label>Notatki i Wskazówki</label>
         <textarea id="planNotes" oninput="autoHeight(this); saveNotes()" placeholder="Wpisz uwagi do planu..."></textarea>
     </div>
     <div id="week"></div>
 </main>
+
+<div class="locked-overlay">
+    <button class="activate-banner" onclick="activatePlan()">
+        🚀 AKTYWUJ TEN PLAN (UTWÓRZ KOPIĘ)
+    </button>
+</div>
 
 <nav class="bottom-nav">
     <button class="nav-btn pro-btn" id="proBtn" onclick="togglePro()">
@@ -223,6 +247,24 @@ function togglePro(){
     save(); render();
 }
 
+function activatePlan() {
+    const p = plans[currentPlan];
+    if(!p) return;
+    
+    const newName = prompt("Jak chcesz nazwać swoją kopię planu?", currentPlan + " (Kopia)");
+    if(newName) {
+        // Głęboka kopia obiektu planu
+        const copy = JSON.parse(JSON.stringify(p));
+        copy.isLocked = false;
+        plans[newName] = copy;
+        currentPlan = newName;
+        save();
+        initSelect();
+        render();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
 function newPlan() {
     const n = prompt("Podaj nazwę dla Twojego planu:");
     if(n) {
@@ -257,7 +299,7 @@ function render() {
     if(!p) { document.getElementById("week").innerHTML = "<p style='text-align:center;color:#444;margin-top:50px'>Wybierz plan z listy powyżej</p>"; return; }
 
     const isLocked = p.isLocked;
-    document.getElementById("bodyTag").className = isLocked ? "locked-mode" : "";
+    document.body.className = isLocked ? "locked-mode" : "";
     document.getElementById("proBtn").classList.toggle("active-pro", p.proMode);
     
     const notesEl = document.getElementById("planNotes");
@@ -306,11 +348,11 @@ function render() {
                     <tbody>
                         ${day.rows.map((r, ri) => `
                             <tr class="${dayChecks[ri]?'done':''}">
-                                <td class="col-check"><input type="checkbox" ${dayChecks[ri]?'checked':''} onchange="toggleCheck(${di},${ri},this.checked)"></td>
+                                <td class="col-check"><input type="checkbox" ${dayChecks[ri]?'checked':''} onchange="toggleCheck(${di},${ri},this.checked)" ${isLocked ? 'disabled' : ''}></td>
                                 <td class="col-name">
                                     <input type="text" value="${r[0]||''}" oninput="updRow(${di},${ri},0,this.value)" placeholder="..." 
                                     onclick="${!isEditing ? `showInfo('${r[0]}', '${(r[7]||"").replace(/'/g, "\\'")}')` : ''}"
-                                    style="${!isEditing && r[7] && r[7] !== '...' ? 'text-decoration: underline dotted var(--gold);' : ''}" 
+                                    style="${!isEditing && r[7] && r[7] !== '...' ? 'text-decoration: underline dotted var(--gold); cursor:pointer;' : ''}" 
                                     ${isLocked && !isEditing ? 'readonly' : ''}>
                                 </td>
                                 <td class="col-val"><input type="text" value="${r[1]||''}" oninput="updRow(${di},${ri},1,this.value)" ${isLocked ? 'readonly' : ''}></td>
@@ -337,27 +379,29 @@ function render() {
 }
 
 // --- LOGIKA DANYCH ---
-function updRow(di,ri,ci,v){ plans[currentPlan].days[di].rows[ri][ci]=v; save(); }
-function addRow(di){ plans[currentPlan].days[di].rows.push(["","","","","","","","..."]); save(); render(); }
-function delRow(di,ri){ plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); }
+function updRow(di,ri,ci,v){ if(plans[currentPlan].isLocked) return; plans[currentPlan].days[di].rows[ri][ci]=v; save(); }
+function addRow(di){ if(plans[currentPlan].isLocked) return; plans[currentPlan].days[di].rows.push(["","","","","","","","..."]); save(); render(); }
+function delRow(di,ri){ if(plans[currentPlan].isLocked) return; plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); }
 function promptInfo(di,ri){
+    if(plans[currentPlan].isLocked) return;
     const current = plans[currentPlan].days[di].rows[ri][7] || "";
     const n = prompt("Instrukcja/Opis ćwiczenia:", current);
     if(n !== null){ updRow(di,ri,7,n); render(); }
 }
 function toggleCheck(di,ri,v){
+    if(plans[currentPlan].isLocked) return;
     if(!checks[currentPlan]) checks[currentPlan] = {};
     if(!checks[currentPlan][di]) checks[currentPlan][di] = {};
     checks[currentPlan][di][ri] = v; save(); render();
 }
-function toggleDay(di){ plans[currentPlan].days[di].active = !plans[currentPlan].days[di].active; save(); render(); }
-function toggleEdit(di){ editStates[di] = !editStates[di]; render(); }
+function toggleDay(di){ if(plans[currentPlan].isLocked) return; plans[currentPlan].days[di].active = !plans[currentPlan].days[di].active; save(); render(); }
+function toggleEdit(di){ if(plans[currentPlan].isLocked) return; editStates[di] = !editStates[di]; render(); }
 function autoHeight(el){ el.style.height="auto"; el.style.height=el.scrollHeight+"px"; }
 function saveNotes(){ if(plans[currentPlan] && !plans[currentPlan].isLocked){ plans[currentPlan].notes=document.getElementById("planNotes").value; save(); }}
 
 function initSelect() {
     const ps = document.getElementById("planSelect"); ps.innerHTML = "";
-    const gL = document.createElement("optgroup"); gL.label = "📋 PLANY KOZIAR (Zablokowane)";
+    const gL = document.createElement("optgroup"); gL.label = "📋 PLANY KOZIAR (Podgląd)";
     const gU = document.createElement("optgroup"); gU.label = "💪 TWOJE PLANY (Edytowalne)";
     
     Object.keys(plans).sort().forEach(k => {
@@ -422,7 +466,7 @@ function parseTSV(text) {
             week.push(day);
         } else if(day && l.trim()) {
             let row = l.split("\t");
-            while(row.length < 8) row.push(""); // Zapewnia 8 kolumn (ostatnia to info)
+            while(row.length < 8) row.push(""); 
             day.rows.push(row);
         }
     });
@@ -437,7 +481,7 @@ async function fetchRemotePlans() {
             if(r.ok) {
                 const text = await r.text();
                 const parsed = parseTSV(text);
-                parsed.isLocked = true; // Blokada dla planów z GitHuba
+                parsed.isLocked = true; 
                 plans[name] = parsed;
             }
         } catch(e) { console.warn("Błąd ładowania planu bazowego: " + name); }
@@ -447,7 +491,12 @@ async function fetchRemotePlans() {
 }
 
 fetchRemotePlans();
-function loadPlan(){ currentPlan=document.getElementById("planSelect").value; save(); render(); }
+function loadPlan(){ 
+    currentPlan=document.getElementById("planSelect").value; 
+    editStates = {}; // Reset stanów edycji przy zmianie planu
+    save(); 
+    render(); 
+}
 </script>
 </body>
 </html>
