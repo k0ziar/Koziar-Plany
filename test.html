@@ -24,7 +24,7 @@
 --pro:#3b82f6;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding-bottom:120px;overflow-x:hidden;}
+body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding-bottom:140px;overflow-x:hidden;}
 
 /* --- NAGŁÓWEK --- */
 header {
@@ -42,7 +42,7 @@ header {
 
 /* --- LOGO I POWRÓT NA GÓRĘ --- */
 .floating-footer {
-    position: fixed; bottom: 85px; right: 20px;
+    position: fixed; bottom: 120px; right: 20px;
     display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 999;
 }
 .floating-logo {
@@ -119,23 +119,23 @@ input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--gold); c
 .btn-add-row { width: 100%; padding: 15px; background: transparent; color: var(--gold); border: none; border-top: 1px solid var(--border); font-weight: 700; font-size: 11px; cursor: pointer; }
 
 /* --- TRYB PODGLĄDU (LOCKED) --- */
-.locked-overlay {
+.locked-banner-container {
     display: none;
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: linear-gradient(transparent, var(--bg));
-    padding: 40px 20px 20px; text-align: center; z-index: 1001;
+    position: fixed; bottom: 70px; left: 0; right: 0;
+    padding: 10px 15px; z-index: 998;
+    background: linear-gradient(0deg, var(--bg) 0%, transparent 100%);
 }
-.locked-mode .locked-overlay { display: block; }
-.locked-mode .day { opacity: 0.6; pointer-events: none; }
-.locked-mode .day-header button, .locked-mode .bottom-nav .edit-only { display: none !important; }
-.locked-mode .col-check { opacity: 0.2; }
-.locked-mode input[type="checkbox"] { pointer-events: none; }
+.locked-mode .locked-banner-container { display: block; }
+.locked-mode .day { opacity: 0.5; }
+.locked-mode .day-header button:not(.info-trigger) { display: none !important; }
+.locked-mode input[type="checkbox"] { pointer-events: none; opacity: 0.3; }
+.locked-mode input:not(.day-title-input) { pointer-events: none; }
 
-.activate-banner {
-    background: var(--gold); color: #000; padding: 16px; border-radius: 16px;
-    font-weight: 900; font-size: 14px; text-transform: uppercase;
-    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
-    cursor: pointer; border: none; width: 100%; max-width: 400px;
+.activate-btn {
+    background: var(--gold); color: #000; padding: 14px; border-radius: 12px;
+    font-weight: 900; font-size: 13px; text-transform: uppercase;
+    box-shadow: 0 4px 15px var(--gold-glow);
+    cursor: pointer; border: none; width: 100%;
 }
 
 /* --- MODALE --- */
@@ -149,7 +149,6 @@ input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--gold); c
     display: flex; align-items: center; justify-content: center; cursor: pointer;
 }
 .row-icon-btn.active { background: var(--gold); color: #000; border: none; }
-
 </style>
 </head>
 
@@ -173,8 +172,8 @@ input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--gold); c
     <div id="week"></div>
 </main>
 
-<div class="locked-overlay">
-    <button class="activate-banner" onclick="activatePlan()">
+<div class="locked-banner-container">
+    <button class="activate-btn" onclick="activatePlan()">
         🚀 AKTYWUJ TEN PLAN (UTWÓRZ KOPIĘ)
     </button>
 </div>
@@ -183,7 +182,7 @@ input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--gold); c
     <button class="nav-btn pro-btn" id="proBtn" onclick="togglePro()">
         <i data-lucide="zap"></i><span>TRYB PRO</span>
     </button>
-    <button class="nav-btn edit-only" onclick="newPlan()">
+    <button class="nav-btn" onclick="newPlan()">
         <i data-lucide="plus-circle"></i><span>NOWY</span>
     </button>
     <button class="nav-btn" onclick="resetWeek()">
@@ -195,7 +194,7 @@ input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--gold); c
     <button class="nav-btn" onclick="openImport()">
         <i data-lucide="download"></i><span>IMPORT</span>
     </button>
-    <button class="nav-btn edit-only" style="color:var(--danger)" onclick="deletePlan()">
+    <button class="nav-btn plan-specific-delete" style="color:var(--danger)" onclick="deletePlan()">
         <i data-lucide="trash-2"></i><span>USUŃ</span>
     </button>
 </nav>
@@ -250,23 +249,19 @@ function togglePro(){
 function activatePlan() {
     const p = plans[currentPlan];
     if(!p) return;
-    
-    const newName = prompt("Jak chcesz nazwać swoją kopię planu?", currentPlan + " (Kopia)");
+    const newName = prompt("Jak chcesz nazwać swoją kopię?", currentPlan + " (Kopia)");
     if(newName) {
-        // Głęboka kopia obiektu planu
         const copy = JSON.parse(JSON.stringify(p));
         copy.isLocked = false;
         plans[newName] = copy;
         currentPlan = newName;
-        save();
-        initSelect();
-        render();
+        save(); initSelect(); render();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
 
 function newPlan() {
-    const n = prompt("Podaj nazwę dla Twojego planu:");
+    const n = prompt("Podaj nazwę dla nowego planu:");
     if(n) {
         plans[n] = { 
             notes: "", 
@@ -280,7 +275,7 @@ function newPlan() {
 
 function deletePlan(){
     if(!plans[currentPlan] || plans[currentPlan].isLocked) return;
-    if(confirm(`Czy na pewno chcesz trwale usunąć plan "${currentPlan}"?`)){ 
+    if(confirm(`Usunąć plan "${currentPlan}"?`)){ 
         delete plans[currentPlan]; 
         currentPlan = Object.keys(plans)[0] || ""; 
         save(); location.reload(); 
@@ -288,7 +283,7 @@ function deletePlan(){
 }
 
 function resetWeek(){
-    if(confirm("Zresetować wszystkie odznaczone ćwiczenia w tym tygodniu?")){ 
+    if(confirm("Zresetować postęp w tym tygodniu?")){ 
         checks[currentPlan] = {}; 
         save(); render(); 
     }
@@ -296,11 +291,16 @@ function resetWeek(){
 
 function render() {
     const p = plans[currentPlan];
-    if(!p) { document.getElementById("week").innerHTML = "<p style='text-align:center;color:#444;margin-top:50px'>Wybierz plan z listy powyżej</p>"; return; }
+    if(!p) { 
+        document.getElementById("week").innerHTML = "<p style='text-align:center;color:#444;margin-top:50px'>Wybierz plan lub stwórz nowy</p>"; 
+        document.body.className = "";
+        return; 
+    }
 
     const isLocked = p.isLocked;
     document.body.className = isLocked ? "locked-mode" : "";
     document.getElementById("proBtn").classList.toggle("active-pro", p.proMode);
+    document.querySelector(".plan-specific-delete").style.display = isLocked ? "none" : "flex";
     
     const notesEl = document.getElementById("planNotes");
     notesEl.value = p.notes || "";
@@ -324,7 +324,7 @@ function render() {
                         <i data-lucide="${day.active?'pause':'play'}" style="width:14px"></i>
                     </button>
                     ${!isLocked ? `
-                        <button class="row-icon-btn ${isEditing?'active':''}" onclick="toggleEdit(${di})" title="Edytuj ćwiczenia">
+                        <button class="row-icon-btn ${isEditing?'active':''}" onclick="toggleEdit(${di})" title="Edytuj">
                             <i data-lucide="edit-3" style="width:14px"></i>
                         </button>
                     ` : ''}
@@ -355,12 +355,12 @@ function render() {
                                     style="${!isEditing && r[7] && r[7] !== '...' ? 'text-decoration: underline dotted var(--gold); cursor:pointer;' : ''}" 
                                     ${isLocked && !isEditing ? 'readonly' : ''}>
                                 </td>
-                                <td class="col-val"><input type="text" value="${r[1]||''}" oninput="updRow(${di},${ri},1,this.value)" ${isLocked ? 'readonly' : ''}></td>
-                                <td class="col-val"><input type="text" value="${r[2]||''}" oninput="updRow(${di},${ri},2,this.value)" ${isLocked ? 'readonly' : ''}></td>
-                                <td class="col-val"><input type="text" value="${r[3]||''}" oninput="updRow(${di},${ri},3,this.value)" ${isLocked ? 'readonly' : ''}></td>
-                                <td class="col-pro"><input type="text" value="${r[4]||''}" oninput="updRow(${di},${ri},4,this.value)" ${isLocked ? 'readonly' : ''}></td>
-                                <td class="col-pro"><input type="text" value="${r[5]||''}" oninput="updRow(${di},${ri},5,this.value)" ${isLocked ? 'readonly' : ''}></td>
-                                <td class="col-pro"><input type="text" value="${r[6]||''}" oninput="updRow(${di},${ri},6,this.value)" ${isLocked ? 'readonly' : ''}></td>
+                                <td class="col-val"><input type="text" value="${r[1]||''}" oninput="updRow(${di},${ri},1,this.value)"></td>
+                                <td class="col-val"><input type="text" value="${r[2]||''}" oninput="updRow(${di},${ri},2,this.value)"></td>
+                                <td class="col-val"><input type="text" value="${r[3]||''}" oninput="updRow(${di},${ri},3,this.value)"></td>
+                                <td class="col-pro"><input type="text" value="${r[4]||''}" oninput="updRow(${di},${ri},4,this.value)"></td>
+                                <td class="col-pro"><input type="text" value="${r[5]||''}" oninput="updRow(${di},${ri},5,this.value)"></td>
+                                <td class="col-pro"><input type="text" value="${r[6]||''}" oninput="updRow(${di},${ri},6,this.value)"></td>
                                 ${isEditing ? `
                                     <td style="display:flex; gap:6px; align-items:center; justify-content:center; padding-top:8px">
                                         <button onclick="promptInfo(${di},${ri})" style="background:none; border:none; color:var(--gold); padding:0"><i data-lucide="info" style="width:16px"></i></button>
@@ -374,16 +374,13 @@ function render() {
             ${isEditing ? `<button class="btn-add-row" onclick="addRow(${di})">+ DODAJ NOWE ĆWICZENIE</button>` : ''}
         </div>`;
     }).join('');
-
     lucide.createIcons();
 }
 
-// --- LOGIKA DANYCH ---
-function updRow(di,ri,ci,v){ if(plans[currentPlan].isLocked) return; plans[currentPlan].days[di].rows[ri][ci]=v; save(); }
-function addRow(di){ if(plans[currentPlan].isLocked) return; plans[currentPlan].days[di].rows.push(["","","","","","","","..."]); save(); render(); }
-function delRow(di,ri){ if(plans[currentPlan].isLocked) return; plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); }
+function updRow(di,ri,ci,v){ if(!plans[currentPlan].isLocked) { plans[currentPlan].days[di].rows[ri][ci]=v; save(); } }
+function addRow(di){ if(!plans[currentPlan].isLocked) { plans[currentPlan].days[di].rows.push(["","","","","","","","..."]); save(); render(); } }
+function delRow(di,ri){ if(!plans[currentPlan].isLocked) { plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); } }
 function promptInfo(di,ri){
-    if(plans[currentPlan].isLocked) return;
     const current = plans[currentPlan].days[di].rows[ri][7] || "";
     const n = prompt("Instrukcja/Opis ćwiczenia:", current);
     if(n !== null){ updRow(di,ri,7,n); render(); }
@@ -394,8 +391,8 @@ function toggleCheck(di,ri,v){
     if(!checks[currentPlan][di]) checks[currentPlan][di] = {};
     checks[currentPlan][di][ri] = v; save(); render();
 }
-function toggleDay(di){ if(plans[currentPlan].isLocked) return; plans[currentPlan].days[di].active = !plans[currentPlan].days[di].active; save(); render(); }
-function toggleEdit(di){ if(plans[currentPlan].isLocked) return; editStates[di] = !editStates[di]; render(); }
+function toggleDay(di){ if(!plans[currentPlan].isLocked) { plans[currentPlan].days[di].active = !plans[currentPlan].days[di].active; save(); render(); } }
+function toggleEdit(di){ if(!plans[currentPlan].isLocked) { editStates[di] = !editStates[di]; render(); } }
 function autoHeight(el){ el.style.height="auto"; el.style.height=el.scrollHeight+"px"; }
 function saveNotes(){ if(plans[currentPlan] && !plans[currentPlan].isLocked){ plans[currentPlan].notes=document.getElementById("planNotes").value; save(); }}
 
@@ -411,7 +408,6 @@ function initSelect() {
     ps.add(gL); ps.add(gU); ps.value = currentPlan;
 }
 
-// --- EKSPORT / IMPORT ---
 function openExport() {
     const p = plans[currentPlan]; if(!p) return;
     let out = [`!!NOTES!!\t${(p.notes||"").replace(/\n/g,"[BR]")}`];
@@ -442,7 +438,7 @@ function applyImport() {
     const txt = document.getElementById("importText").value.trim();
     if(!txt) return;
     const imported = parseTSV(txt);
-    const name = prompt("Podaj nazwę dla importowanego planu:", "Plan z dnia " + new Date().toLocaleDateString());
+    const name = prompt("Podaj nazwę dla importowanego planu:", "Plan " + new Date().toLocaleDateString());
     if(name) { 
         imported.isLocked = false; 
         plans[name] = imported; 
@@ -453,7 +449,6 @@ function applyImport() {
 
 function closeModals() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
 
-// --- PARSOWANIE ---
 function parseTSV(text) {
     const lines = text.trim().split("\n");
     let week = [], day = null, notes = "";
@@ -473,7 +468,6 @@ function parseTSV(text) {
     return { notes, days: week, proMode: false, isLocked: false };
 }
 
-// --- INIT ---
 async function fetchRemotePlans() {
     for(const [name, file] of Object.entries(REMOTE_FILES)) {
         try {
@@ -484,19 +478,14 @@ async function fetchRemotePlans() {
                 parsed.isLocked = true; 
                 plans[name] = parsed;
             }
-        } catch(e) { console.warn("Błąd ładowania planu bazowego: " + name); }
+        } catch(e) { console.warn("Błąd ładowania: " + name); }
     }
     if(!currentPlan || !plans[currentPlan]) currentPlan = Object.keys(plans)[0] || "";
     initSelect(); render();
 }
 
 fetchRemotePlans();
-function loadPlan(){ 
-    currentPlan=document.getElementById("planSelect").value; 
-    editStates = {}; // Reset stanów edycji przy zmianie planu
-    save(); 
-    render(); 
-}
+function loadPlan(){ currentPlan=document.getElementById("planSelect").value; editStates = {}; save(); render(); }
 </script>
 </body>
 </html>
