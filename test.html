@@ -24,8 +24,9 @@
 --pro:#3b82f6;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding-bottom:100px}
+body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding-bottom:100px;overflow-x:hidden;}
 
+/* --- NAGŁÓWEK --- */
 header {
     position: sticky; top: 0; z-index: 100;
     background: rgba(10, 10, 10, 0.95);
@@ -39,15 +40,19 @@ header {
     appearance: none; text-align: center;
 }
 
-.floating-logo {
+/* --- LOGO I POWRÓT NA GÓRĘ --- */
+.floating-footer {
     position: fixed; bottom: 85px; right: 20px;
-    width: 50px; height: 50px; z-index: 999;
-    cursor: pointer; transition: 0.3s;
+    display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 999;
+}
+.floating-logo {
+    width: 50px; height: 50px; cursor: pointer; transition: 0.3s;
     filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
 }
 .floating-logo:active { transform: scale(0.9); }
 .floating-logo img { width: 100%; height: 100%; object-fit: contain; }
 
+/* --- DOLNY NAV BAR --- */
 .bottom-nav {
     position: fixed; bottom: 0; left: 0; right: 0;
     background: rgba(22, 22, 22, 0.98);
@@ -65,6 +70,7 @@ header {
 .nav-btn i { width: 22px; height: 22px; }
 .nav-btn.pro-btn.active-pro { color: var(--pro); }
 
+/* --- MAIN CONTENT --- */
 main { padding: 12px; max-width: 600px; margin: 0 auto; }
 
 .notes-area {
@@ -74,7 +80,7 @@ main { padding: 12px; max-width: 600px; margin: 0 auto; }
 .notes-area label { display: block; color: var(--gold); font-size: 9px; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; opacity: 0.6; letter-spacing: 1px; }
 .notes-area textarea { width: 100%; background: transparent; border: none; color: #bbb; font-size: 13px; resize: none; outline: none; min-height: 40px; }
 
-.day { background: var(--card); margin-bottom: 20px; border-radius: 18px; border: 1px solid var(--border); overflow: hidden; }
+.day { background: var(--card); margin-bottom: 20px; border-radius: 18px; border: 1px solid var(--border); overflow: hidden; transition: 0.3s; }
 .day.inactive { opacity: 0.25; filter: grayscale(1); }
 .day.active-today { border-color: var(--gold); box-shadow: 0 4px 25px var(--gold-glow); }
 
@@ -82,18 +88,19 @@ main { padding: 12px; max-width: 600px; margin: 0 auto; }
     background: rgba(255, 255, 255, 0.03); padding: 12px 15px;
     display: flex; justify-content: space-between; align-items: center;
 }
-.day-title-input { background: transparent; border: none; color: var(--gold); font-size: 15px; font-weight: 800; text-transform: uppercase; }
+.day-title-input { background: transparent; border: none; color: var(--gold); font-size: 15px; font-weight: 800; text-transform: uppercase; outline: none; }
 
+/* --- TABELA I SCROLL --- */
 .table-wrapper { width: 100%; overflow-x: hidden; }
-.pro-mode .table-wrapper { overflow-x: auto; }
+.pro-mode .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-.pro-mode table { width: 700px; } 
+.pro-mode table { width: 750px; } 
 
-th { font-size: 8px; color: #555; padding: 10px 2px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+th { font-size: 8px; color: #555; padding: 10px 2px; text-transform: uppercase; border-bottom: 1px solid var(--border); text-align: center; }
 td { padding: 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
 
-input[type="text"] { 
+input[type="text"], input[type="number"] { 
     width: 100%; background: transparent; border: none; color: var(--text); 
     padding: 14px 2px; font-size: 13px; text-align: center; outline: none; 
 }
@@ -111,20 +118,20 @@ input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--gold); c
 
 .btn-add-row { width: 100%; padding: 15px; background: transparent; color: var(--gold); border: none; border-top: 1px solid var(--border); font-weight: 700; font-size: 11px; cursor: pointer; }
 
+/* --- MODALE --- */
 .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 25px; }
 .modal.active { display: flex; }
 .modal-box { background: var(--card); width: 100%; max-width: 360px; padding: 25px; border-radius: 24px; border: 1px solid var(--border); text-align: center; }
 
 .row-icon-btn {
     background: #222; border: 1px solid #333; color: #eee;
-    width: 30px; height: 30px; border-radius: 8px;
+    width: 32px; height: 32px; border-radius: 8px;
     display: flex; align-items: center; justify-content: center; cursor: pointer;
 }
 .row-icon-btn.active { background: var(--gold); color: #000; border: none; }
 
-/* KLUCZOWE: Ukrywanie przycisków edycji przy zablokowanych planach */
+/* MODYFIKATORY STANU */
 .locked-mode .edit-only { display: none !important; }
-.locked-mode .day-header .row-icon-btn:last-child { display: none; } /* ukrycie przycisku edycji w nagłówku dnia */
 </style>
 </head>
 
@@ -134,24 +141,26 @@ input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--gold); c
     <select id="planSelect" onchange="loadPlan()"></select>
 </header>
 
-<div class="floating-logo" onclick="handleLogoClick()">
-    <img src="logo.png" alt="Logo">
+<div class="floating-footer">
+    <div class="floating-logo" onclick="handleLogoClick()">
+        <img src="logo.png" alt="Logo">
+    </div>
 </div>
 
 <main>
     <div class="notes-area">
-        <label>Notatki do planu</label>
-        <textarea id="planNotes" oninput="autoHeight(this); saveNotes()" placeholder="Wpisz swoje uwagi..."></textarea>
+        <label>Notatki i Wskazówki</label>
+        <textarea id="planNotes" oninput="autoHeight(this); saveNotes()" placeholder="Wpisz uwagi do planu..."></textarea>
     </div>
     <div id="week"></div>
 </main>
 
 <nav class="bottom-nav">
     <button class="nav-btn pro-btn" id="proBtn" onclick="togglePro()">
-        <i data-lucide="zap"></i><span>PRO</span>
+        <i data-lucide="zap"></i><span>TRYB PRO</span>
     </button>
     <button class="nav-btn edit-only" onclick="newPlan()">
-        <i data-lucide="plus-square"></i><span>NOWY</span>
+        <i data-lucide="plus-circle"></i><span>NOWY</span>
     </button>
     <button class="nav-btn" onclick="resetWeek()">
         <i data-lucide="rotate-ccw"></i><span>RESET</span>
@@ -162,7 +171,7 @@ input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--gold); c
     <button class="nav-btn" onclick="openImport()">
         <i data-lucide="download"></i><span>IMPORT</span>
     </button>
-    <button class="nav-btn edit-only" id="delBtn" style="color:var(--danger)" onclick="deletePlan()">
+    <button class="nav-btn edit-only" style="color:var(--danger)" onclick="deletePlan()">
         <i data-lucide="trash-2"></i><span>USUŃ</span>
     </button>
 </nav>
@@ -170,14 +179,14 @@ input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--gold); c
 <div class="modal" id="infoModal">
     <div class="modal-box">
         <h2 id="infoTitle" style="color:var(--gold); margin-top:0; font-size:18px"></h2>
-        <div id="infoContent" style="font-size:14px; line-height:1.6; color:#bbb; margin: 20px 0; text-align: left; background: #000; padding: 15px; border-radius: 12px; border: 1px solid #222;"></div>
+        <div id="infoContent" style="font-size:14px; line-height:1.6; color:#bbb; margin: 20px 0; text-align: left; background: #000; padding: 15px; border-radius: 12px; border: 1px solid #222; white-space: pre-wrap;"></div>
         <button class="btn-add-row" onclick="closeModals()" style="border:1px solid var(--border); border-radius:12px">ZAMKNIJ</button>
     </div>
 </div>
 
-<div class="modal" id="exportModal"><div class="modal-box"><h3>Eksport TSV</h3><textarea id="exportText" style="height:150px;width:100%;background:#000;color:#0f0;font-family:monospace;font-size:10px;padding:10px;border:1px solid #333;border-radius:12px" readonly></textarea><button class="btn-add-row" onclick="downloadTSV()" style="color:var(--gold)">POBIERZ .TSV</button><button class="btn-add-row" onclick="closeModals()">ZAMKNIJ</button></div></div>
+<div class="modal" id="exportModal"><div class="modal-box"><h3>Dane TSV</h3><textarea id="exportText" style="height:150px;width:100%;background:#000;color:#0f0;font-family:monospace;font-size:10px;padding:10px;border:1px solid #333;border-radius:12px" readonly></textarea><button class="btn-add-row" onclick="downloadTSV()" style="color:var(--gold)">POBIERZ PLIK</button><button class="btn-add-row" onclick="closeModals()">ZAMKNIJ</button></div></div>
 
-<div class="modal" id="importModal"><div class="modal-box"><h3>Importuj Plan</h3><input type="file" id="importFile" accept=".tsv" onchange="handleFileSelect(event)" style="margin-bottom:15px; font-size:12px; color:#fff"><textarea id="importText" style="height:120px;width:100%;background:#000;color:#fff;padding:10px;border:1px solid #333;border-radius:12px"></textarea><button class="btn-add-row" onclick="applyImport()" style="color:var(--gold)">IMPORTUJ</button><button class="btn-add-row" onclick="closeModals()">ANULUJ</button></div></div>
+<div class="modal" id="importModal"><div class="modal-box"><h3>Import Planu</h3><input type="file" id="importFile" accept=".tsv" onchange="handleFileSelect(event)" style="margin-bottom:15px; font-size:12px; color:#fff"><textarea id="importText" style="height:120px;width:100%;background:#000;color:#fff;padding:10px;border:1px solid #333;border-radius:12px" placeholder="Wklej treść TSV..."></textarea><button class="btn-add-row" onclick="applyImport()" style="color:var(--gold)">ZATWIERDŹ</button><button class="btn-add-row" onclick="closeModals()">ANULUJ</button></div></div>
 
 <script>
 const REMOTE_FILES = {
@@ -215,29 +224,40 @@ function togglePro(){
 }
 
 function newPlan() {
-    const n = prompt("Nazwa planu:");
+    const n = prompt("Podaj nazwę dla Twojego planu:");
     if(n) {
-        plans[n] = { notes:"", days:["Poniedziałek","Wtorek","Środa","Czwartek","Piątek","Sobota","Niedziela"].map(d=>({name:d,active:true,rows:[]})), isLocked:false, proMode:false };
-        currentPlan=n; save(); initSelect(); render();
+        plans[n] = { 
+            notes: "", 
+            days: ["Poniedziałek","Wtorek","Środa","Czwartek","Piątek","Sobota","Niedziela"].map(d=>({name:d,active:true,rows:[]})), 
+            isLocked: false, 
+            proMode: false 
+        };
+        currentPlan = n; save(); initSelect(); render();
     }
 }
 
 function deletePlan(){
     if(!plans[currentPlan] || plans[currentPlan].isLocked) return;
-    if(confirm("Usunąć plan?")){ delete plans[currentPlan]; currentPlan=Object.keys(plans)[0]||""; save(); location.reload(); }
+    if(confirm(`Czy na pewno chcesz trwale usunąć plan "${currentPlan}"?`)){ 
+        delete plans[currentPlan]; 
+        currentPlan = Object.keys(plans)[0] || ""; 
+        save(); location.reload(); 
+    }
 }
 
 function resetWeek(){
-    if(confirm("Wyczyścić wszystkie postępy?")){ checks[currentPlan]={}; save(); render(); }
+    if(confirm("Zresetować wszystkie odznaczone ćwiczenia w tym tygodniu?")){ 
+        checks[currentPlan] = {}; 
+        save(); render(); 
+    }
 }
 
 function render() {
     const p = plans[currentPlan];
-    if(!p) return;
+    if(!p) { document.getElementById("week").innerHTML = "<p style='text-align:center;color:#444;margin-top:50px'>Wybierz plan z listy powyżej</p>"; return; }
 
     const isLocked = p.isLocked;
     document.getElementById("bodyTag").className = isLocked ? "locked-mode" : "";
-    document.getElementById("proBtn").style.display = isLocked ? "none" : "flex";
     document.getElementById("proBtn").classList.toggle("active-pro", p.proMode);
     
     const notesEl = document.getElementById("planNotes");
@@ -258,11 +278,11 @@ function render() {
             <div class="day-header">
                 <input class="day-title-input" value="${day.name}" ${isEditing && !isLocked ? '' : 'readonly'} oninput="plans[currentPlan].days[${di}].name=this.value;save()">
                 <div style="display:flex;gap:8px">
-                    <button class="row-icon-btn ${day.active?'active':''}" onclick="toggleDay(${di})">
+                    <button class="row-icon-btn ${day.active?'active':''}" onclick="toggleDay(${di})" title="Przerwa/Trening">
                         <i data-lucide="${day.active?'pause':'play'}" style="width:14px"></i>
                     </button>
                     ${!isLocked ? `
-                        <button class="row-icon-btn ${isEditing?'active':''}" onclick="toggleEdit(${di})">
+                        <button class="row-icon-btn ${isEditing?'active':''}" onclick="toggleEdit(${di})" title="Edytuj ćwiczenia">
                             <i data-lucide="edit-3" style="width:14px"></i>
                         </button>
                     ` : ''}
@@ -280,7 +300,7 @@ function render() {
                             <th class="col-pro">Odp.</th>
                             <th class="col-pro">RIR</th>
                             <th class="col-pro">Tempo</th>
-                            ${isEditing ? '<th style="width:40px"></th>' : ''}
+                            ${isEditing ? '<th style="width:50px"></th>' : ''}
                         </tr>
                     </thead>
                     <tbody>
@@ -290,37 +310,39 @@ function render() {
                                 <td class="col-name">
                                     <input type="text" value="${r[0]||''}" oninput="updRow(${di},${ri},0,this.value)" placeholder="..." 
                                     onclick="${!isEditing ? `showInfo('${r[0]}', '${(r[7]||"").replace(/'/g, "\\'")}')` : ''}"
-                                    style="${!isEditing && r[7] && r[7] !== '...' ? 'text-decoration: underline dotted var(--gold);' : ''}" ${isLocked && !isEditing ? 'readonly' : ''}>
+                                    style="${!isEditing && r[7] && r[7] !== '...' ? 'text-decoration: underline dotted var(--gold);' : ''}" 
+                                    ${isLocked && !isEditing ? 'readonly' : ''}>
                                 </td>
-                                <td class="col-val"><input type="text" value="${r[1]||''}" oninput="updRow(${di},${ri},1,this.value)" ${isLocked && !isEditing ? 'readonly' : ''}></td>
-                                <td class="col-val"><input type="text" value="${r[2]||''}" oninput="updRow(${di},${ri},2,this.value)" ${isLocked && !isEditing ? 'readonly' : ''}></td>
-                                <td class="col-val"><input type="text" value="${r[3]||''}" oninput="updRow(${di},${ri},3,this.value)" ${isLocked && !isEditing ? 'readonly' : ''}></td>
-                                <td class="col-pro"><input type="text" value="${r[4]||''}" oninput="updRow(${di},${ri},4,this.value)" ${isLocked && !isEditing ? 'readonly' : ''}></td>
-                                <td class="col-pro"><input type="text" value="${r[5]||''}" oninput="updRow(${di},${ri},5,this.value)" ${isLocked && !isEditing ? 'readonly' : ''}></td>
-                                <td class="col-pro"><input type="text" value="${r[6]||''}" oninput="updRow(${di},${ri},6,this.value)" ${isLocked && !isEditing ? 'readonly' : ''}></td>
+                                <td class="col-val"><input type="text" value="${r[1]||''}" oninput="updRow(${di},${ri},1,this.value)" ${isLocked ? 'readonly' : ''}></td>
+                                <td class="col-val"><input type="text" value="${r[2]||''}" oninput="updRow(${di},${ri},2,this.value)" ${isLocked ? 'readonly' : ''}></td>
+                                <td class="col-val"><input type="text" value="${r[3]||''}" oninput="updRow(${di},${ri},3,this.value)" ${isLocked ? 'readonly' : ''}></td>
+                                <td class="col-pro"><input type="text" value="${r[4]||''}" oninput="updRow(${di},${ri},4,this.value)" ${isLocked ? 'readonly' : ''}></td>
+                                <td class="col-pro"><input type="text" value="${r[5]||''}" oninput="updRow(${di},${ri},5,this.value)" ${isLocked ? 'readonly' : ''}></td>
+                                <td class="col-pro"><input type="text" value="${r[6]||''}" oninput="updRow(${di},${ri},6,this.value)" ${isLocked ? 'readonly' : ''}></td>
                                 ${isEditing ? `
-                                    <td style="display:flex; gap:4px; align-items:center; padding-top:6px">
-                                        <button onclick="promptInfo(${di},${ri})" style="background:none; border:none; color:var(--gold)"><i data-lucide="info" style="width:14px"></i></button>
-                                        <button onclick="delRow(${di},${ri})" style="color:var(--danger);background:none;border:none"><i data-lucide="x" style="width:14px"></i></button>
+                                    <td style="display:flex; gap:6px; align-items:center; justify-content:center; padding-top:8px">
+                                        <button onclick="promptInfo(${di},${ri})" style="background:none; border:none; color:var(--gold); padding:0"><i data-lucide="info" style="width:16px"></i></button>
+                                        <button onclick="delRow(${di},${ri})" style="color:var(--danger);background:none;border:none; padding:0"><i data-lucide="x" style="width:16px"></i></button>
                                     </td>` : ''}
                             </tr>
                         `).join('')}
                     </tbody>
                 </table>
             </div>
-            ${isEditing ? `<button class="btn-add-row" onclick="addRow(${di})">+ DODAJ ĆWICZENIE</button>` : ''}
+            ${isEditing ? `<button class="btn-add-row" onclick="addRow(${di})">+ DODAJ NOWE ĆWICZENIE</button>` : ''}
         </div>`;
     }).join('');
 
     lucide.createIcons();
 }
 
-function updRow(di,ri,ci,v){ if(plans[currentPlan].isLocked && !editStates[di]) return; plans[currentPlan].days[di].rows[ri][ci]=v; save(); }
+// --- LOGIKA DANYCH ---
+function updRow(di,ri,ci,v){ plans[currentPlan].days[di].rows[ri][ci]=v; save(); }
 function addRow(di){ plans[currentPlan].days[di].rows.push(["","","","","","","","..."]); save(); render(); }
 function delRow(di,ri){ plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); }
 function promptInfo(di,ri){
     const current = plans[currentPlan].days[di].rows[ri][7] || "";
-    const n = prompt("Dodatkowe informacje / opis ćwiczenia:", current);
+    const n = prompt("Instrukcja/Opis ćwiczenia:", current);
     if(n !== null){ updRow(di,ri,7,n); render(); }
 }
 function toggleCheck(di,ri,v){
@@ -335,8 +357,9 @@ function saveNotes(){ if(plans[currentPlan] && !plans[currentPlan].isLocked){ pl
 
 function initSelect() {
     const ps = document.getElementById("planSelect"); ps.innerHTML = "";
-    const gL = document.createElement("optgroup"); gL.label = "📋 PLANY KOZIAR";
-    const gU = document.createElement("optgroup"); gU.label = "💪 TWOJE PLANY";
+    const gL = document.createElement("optgroup"); gL.label = "📋 PLANY KOZIAR (Zablokowane)";
+    const gU = document.createElement("optgroup"); gU.label = "💪 TWOJE PLANY (Edytowalne)";
+    
     Object.keys(plans).sort().forEach(k => {
         const o = new Option(k, k);
         if(plans[k].isLocked) gL.appendChild(o); else gU.appendChild(o);
@@ -344,6 +367,7 @@ function initSelect() {
     ps.add(gL); ps.add(gU); ps.value = currentPlan;
 }
 
+// --- EKSPORT / IMPORT ---
 function openExport() {
     const p = plans[currentPlan]; if(!p) return;
     let out = [`!!NOTES!!\t${(p.notes||"").replace(/\n/g,"[BR]")}`];
@@ -374,9 +398,9 @@ function applyImport() {
     const txt = document.getElementById("importText").value.trim();
     if(!txt) return;
     const imported = parseTSV(txt);
-    const name = prompt("Podaj nazwę dla importowanego planu:", "Nowy Plan");
+    const name = prompt("Podaj nazwę dla importowanego planu:", "Plan z dnia " + new Date().toLocaleDateString());
     if(name) { 
-        imported.isLocked = false; // Importowane plany nigdy nie są zablokowane
+        imported.isLocked = false; 
         plans[name] = imported; 
         currentPlan = name; 
         save(); location.reload(); 
@@ -385,23 +409,27 @@ function applyImport() {
 
 function closeModals() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
 
+// --- PARSOWANIE ---
 function parseTSV(text) {
     const lines = text.trim().split("\n");
     let week = [], day = null, notes = "";
     lines.forEach(l => {
-        if(l.startsWith("!!NOTES!!")) notes = l.split("\t")[1]?.replace(/\[BR\]/g,"\n")||"";
-        else if(l.startsWith("#")) {
-            const p = l.replace("#","").split("|").map(x=>x.trim());
-            day = { name: p[0], active: p[1]==="AKTYWNY", rows: [] };
+        if(l.startsWith("!!NOTES!!")) {
+            notes = l.split("\t")[1]?.replace(/\[BR\]/g,"\n") || "";
+        } else if(l.startsWith("#")) {
+            const parts = l.replace("#","").split("|").map(x=>x.trim());
+            day = { name: parts[0], active: parts[1] !== "PRZERWA" && parts[1] !== "OFF", rows: [] };
             week.push(day);
         } else if(day && l.trim()) {
-            let row = l.split("\t"); while(row.length<8) row.push("");
+            let row = l.split("\t");
+            while(row.length < 8) row.push(""); // Zapewnia 8 kolumn (ostatnia to info)
             day.rows.push(row);
         }
     });
     return { notes, days: week, proMode: false, isLocked: false };
 }
 
+// --- INIT ---
 async function fetchRemotePlans() {
     for(const [name, file] of Object.entries(REMOTE_FILES)) {
         try {
@@ -409,10 +437,10 @@ async function fetchRemotePlans() {
             if(r.ok) {
                 const text = await r.text();
                 const parsed = parseTSV(text);
-                parsed.isLocked = true; // TU JEST KLUCZ: Blokada planów z serwera
+                parsed.isLocked = true; // Blokada dla planów z GitHuba
                 plans[name] = parsed;
             }
-        } catch(e) { console.error("Error fetching " + file); }
+        } catch(e) { console.warn("Błąd ładowania planu bazowego: " + name); }
     }
     if(!currentPlan || !plans[currentPlan]) currentPlan = Object.keys(plans)[0] || "";
     initSelect(); render();
