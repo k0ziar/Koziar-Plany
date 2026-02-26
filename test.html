@@ -1,168 +1,194 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Koziar Plany - Premium Workout</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Koziar Plany - Premium Workout</title>
 
-<link rel="icon" type="image/png" href="logo.png">
-<link rel="apple-touch-icon" href="logo.png">
-<meta name="theme-color" content="#0a0a0a">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="theme-color" content="#0a0a0a">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-<style>
-:root {
-    --bg: #0a0a0a;
-    --card: #141414;
-    --border: #262626;
-    --text: #ffffff;
-    --text-dim: #a0a0a0;
-    --gold: #d4af37;
-    --gold-glow: rgba(212, 175, 55, 0.15);
-    --pro: #3b82f6;
-    --pro-glow: rgba(59, 130, 246, 0.15);
-    --danger: #ef4444;
-    --nav-bg: rgba(10, 10, 10, 0.9);
-}
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --card: #141414;
+            --border: #262626;
+            --text: #ffffff;
+            --text-dim: #a0a0a0;
+            --gold: #d4af37;
+            --gold-glow: rgba(212, 175, 55, 0.2);
+            --pro: #3b82f6;
+            --danger: #ef4444;
+            --nav-bg: rgba(10, 10, 10, 0.95);
+        }
 
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    padding-bottom: 160px; /* Większy odstęp na dole */
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-}
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding-bottom: 180px;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
 
-/* --- NAGŁÓWEK --- */
-header {
-    position: sticky; top: 0; z-index: 100;
-    background: var(--nav-bg);
-    backdrop-filter: blur(15px);
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
-}
+        /* --- NAGŁÓWEK --- */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--nav-bg);
+            backdrop-filter: blur(15px);
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+        }
 
-#planSelect {
-    width: 100%; background: #1a1a1a; color: var(--gold);
-    border: 1px solid var(--border); padding: 12px;
-    border-radius: 12px; font-weight: 700; font-size: 14px; outline: none;
-    appearance: none; text-align: center;
-}
+        #planSelect {
+            width: 100%; background: #1a1a1a; color: var(--gold);
+            border: 1px solid var(--border); padding: 14px;
+            border-radius: 12px; font-weight: 700; font-size: 15px; outline: none;
+            appearance: none; text-align: center;
+        }
 
-/* --- MAIN --- */
-main { padding: 16px; max-width: 800px; margin: 0 auto; }
+        /* --- MAIN --- */
+        main { padding: 12px; max-width: 800px; margin: 0 auto; }
 
-.notes-area {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 16px; margin-bottom: 20px; padding: 14px;
-}
-.notes-area label { display: block; color: var(--gold); font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px; }
-.notes-area textarea { width: 100%; background: transparent; border: none; color: var(--text-dim); font-size: 13px; line-height: 1.5; resize: none; outline: none; }
+        .notes-area {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 16px; margin-bottom: 20px; padding: 16px;
+        }
+        .notes-area label { display: block; color: var(--gold); font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+        .notes-area textarea { width: 100%; background: transparent; border: none; color: var(--text-dim); font-size: 14px; line-height: 1.5; resize: none; outline: none; min-height: 50px; }
 
-/* --- DZIEŃ TRENINGOWY --- */
-.day { 
-    background: var(--card); margin-bottom: 24px; border-radius: 20px; 
-    border: 1px solid var(--border); overflow: hidden; 
-    transition: transform 0.2s, opacity 0.3s;
-}
-.day.inactive { opacity: 0.4; filter: grayscale(0.8); }
-.day.active-today { border-color: var(--gold); box-shadow: 0 0 20px var(--gold-glow); }
+        /* --- DZIEŃ TRENINGOWY --- */
+        .day { 
+            background: var(--card); margin-bottom: 24px; border-radius: 20px; 
+            border: 1px solid var(--border); overflow: hidden; 
+            transition: 0.3s;
+        }
+        .day.inactive { opacity: 0.3; filter: grayscale(1); }
+        .day.active-today { border-color: var(--gold); box-shadow: 0 0 25px var(--gold-glow); }
 
-.day-header {
-    background: rgba(255,255,255,0.02); padding: 14px 16px;
-    display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 1px solid var(--border);
-}
-.day-title-input { background: transparent; border: none; color: var(--gold); font-size: 16px; font-weight: 800; text-transform: uppercase; outline: none; width: 60%; }
+        .day-header {
+            background: rgba(255,255,255,0.03); padding: 16px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .day-title-input { background: transparent; border: none; color: var(--gold); font-size: 17px; font-weight: 800; text-transform: uppercase; outline: none; width: 65%; }
 
-/* --- TRENING (GRID ZAMIAST TABLE) --- */
-.exercise-row {
-    display: grid;
-    grid-template-columns: 45px 1fr 45px 45px 55px; /* Standart: Check | Name | S | P | KG */
-    align-items: center;
-    padding: 10px 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
-}
+        /* --- TABELA / GRID --- */
+        .exercise-row {
+            display: grid;
+            grid-template-columns: 40px 1fr 45px 45px 55px;
+            align-items: center;
+            padding: 12px 8px;
+            border-bottom: 1px solid var(--border);
+        }
 
-/* Tryb PRO - Dodajemy kolumny */
-.pro-mode .exercise-row {
-    grid-template-columns: 45px 1fr 35px 35px 50px 45px 40px 55px;
-}
+        /* Tryb PRO - więcej kolumn, mniejszy tekst żeby weszło */
+        .pro-mode .exercise-row {
+            grid-template-columns: 35px 1fr 35px 35px 45px 40px 35px 45px;
+            font-size: 12px;
+            padding: 8px 4px;
+        }
 
-.exercise-row.header-row {
-    background: transparent;
-    font-size: 9px;
-    color: var(--text-dim);
-    font-weight: 700;
-    text-transform: uppercase;
-}
+        .header-row {
+            background: rgba(0,0,0,0.2);
+            font-size: 10px;
+            color: var(--text-dim);
+            font-weight: 800;
+            text-transform: uppercase;
+        }
 
-.exercise-row.done { background: rgba(212, 175, 55, 0.05); }
-.exercise-row.done input { color: #555; text-decoration: line-through; }
+        .exercise-row.done { background: rgba(212, 175, 55, 0.08); }
+        .exercise-row.done input { color: #666; text-decoration: line-through; }
 
-.col-input {
-    background: transparent; border: none; color: var(--text);
-    font-size: 13px; padding: 8px 4px; width: 100%; text-align: center;
-    outline: none;
-}
-.col-input.name { text-align: left; font-weight: 600; padding-left: 8px; overflow: hidden; text-overflow: ellipsis; }
+        .col-input {
+            background: transparent; border: none; color: var(--text);
+            font-size: 14px; padding: 10px 2px; width: 100%; text-align: center;
+            outline: none; font-weight: 600;
+        }
+        
+        /* Nazwa ćwiczenia - kluczowa zmiana */
+        .col-input.name { 
+            text-align: left; 
+            padding-left: 8px; 
+            white-space: normal; 
+            line-height: 1.2;
+            word-break: break-word;
+        }
 
-/* Akcje edycji */
-.edit-actions { display: flex; gap: 8px; padding: 10px; justify-content: center; background: rgba(0,0,0,0.2); }
+        .pro-mode .col-input { font-size: 12px; padding: 8px 1px; }
 
-/* --- FLOATING LOGO --- */
-.floating-footer { position: fixed; bottom: 90px; right: 16px; z-index: 99; }
-.floating-logo {
-    width: 50px; height: 50px; border-radius: 50%;
-    background: #111; border: 2px solid var(--gold);
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-}
-.floating-logo img { width: 60%; height: 60%; }
+        /* CHECKBOX CUSTOM */
+        input[type="checkbox"] {
+            width: 22px; height: 22px; 
+            accent-color: var(--gold);
+            cursor: pointer;
+        }
 
-/* --- NAV BAR --- */
-.bottom-nav {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: var(--nav-bg); backdrop-filter: blur(20px);
-    border-top: 1px solid var(--border);
-    display: grid; grid-template-columns: repeat(6, 1fr);
-    padding: 10px 4px calc(10px + env(safe-area-inset-bottom));
-    z-index: 1000;
-}
+        /* Akcje edycji */
+        .edit-actions { display: flex; gap: 12px; padding: 12px; justify-content: center; background: rgba(0,0,0,0.3); border-bottom: 1px solid var(--border); }
+        .edit-actions button { background: none; border: 1px solid #333; border-radius: 8px; padding: 6px 12px; }
 
-.nav-btn {
-    background: none; border: none; color: #666; 
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
-    font-size: 8px; font-weight: 700; text-transform: uppercase;
-}
-.nav-btn.active { color: var(--gold); }
-.nav-btn.pro-btn.active-pro { color: var(--pro); filter: drop-shadow(0 0 8px var(--pro-glow)); }
-.nav-btn i { width: 20px; height: 20px; }
+        /* --- FLOATING LOGO --- */
+        .floating-footer { position: fixed; bottom: 100px; right: 20px; z-index: 99; }
+        .floating-logo {
+            width: 55px; height: 55px; border-radius: 50%;
+            background: #000; border: 2px solid var(--gold);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.8);
+        }
+        .floating-logo img { width: 65%; height: 65%; }
 
-/* MODALE */
-.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
-.modal.active { display: flex; }
-.modal-box { background: var(--card); width: 100%; max-width: 400px; padding: 25px; border-radius: 24px; border: 1px solid var(--border); }
+        /* --- NAV BAR --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--nav-bg); backdrop-filter: blur(25px);
+            border-top: 1px solid var(--border);
+            display: grid; grid-template-columns: repeat(6, 1fr);
+            padding: 12px 6px calc(15px + env(safe-area-inset-bottom));
+            z-index: 1000;
+        }
 
-/* Ukrywanie kolumn PRO w standardzie */
-.col-pro-field { display: none; }
-.pro-mode .col-pro-field { display: block; }
+        .nav-btn {
+            background: none; border: none; color: #777; 
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            font-size: 9px; font-weight: 700; text-transform: uppercase;
+        }
+        .nav-btn.active { color: var(--gold); }
+        .nav-btn.pro-btn.active-pro { color: var(--pro); filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4)); }
+        .nav-btn i { width: 22px; height: 22px; }
 
-.btn-add-row { width: 100%; padding: 14px; background: transparent; color: var(--gold); border: none; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+        /* MODALE */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-box { background: var(--card); width: 100%; max-width: 450px; padding: 25px; border-radius: 24px; border: 1px solid var(--border); }
+        .modal-box h3 { color: var(--gold); margin-top: 0; }
 
-/* Responsywność dla małych ekranów */
-@media (max-width: 400px) {
-    .pro-mode .exercise-row { font-size: 11px; }
-    .col-input { font-size: 11px; }
-}
+        /* Ukrywanie kolumn PRO w standardzie */
+        .col-pro-field { display: none; }
+        .pro-mode .col-pro-field { display: block; }
 
-</style>
+        .btn-add-row { width: 100%; padding: 16px; background: transparent; color: var(--gold); border: none; font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; }
+
+        .activate-btn {
+            background: var(--gold); color: #000; border: none; padding: 18px; 
+            border-radius: 16px; font-weight: 900; width: 100%; font-size: 14px;
+            box-shadow: 0 10px 20px var(--gold-glow);
+        }
+
+        /* Naprawa dla bardzo małych ekranów */
+        @media (max-width: 370px) {
+            .day-title-input { font-size: 14px; }
+            .nav-btn span { font-size: 7px; }
+            .pro-mode .exercise-row { font-size: 10px; }
+        }
+    </style>
 </head>
 <body id="bodyTag">
 
@@ -184,9 +210,9 @@ main { padding: 16px; max-width: 800px; margin: 0 auto; }
     <div id="week"></div>
 </main>
 
-<div class="locked-footer" id="lockedFooter" style="display:none; padding: 20px; position: fixed; bottom: 80px; width: 100%; text-align: center;">
-    <button class="activate-btn" onclick="activatePlan()" style="background: var(--gold); color: #000; border: none; padding: 15px 30px; border-radius: 12px; font-weight: 900; width: 90%;">
-        ⭐ ODBLOKUJ TEN PLAN (EDYTUJ)
+<div class="locked-footer" id="lockedFooter" style="display:none; padding: 20px; position: fixed; bottom: 90px; width: 100%; z-index: 90;">
+    <button class="activate-btn" onclick="activatePlan()">
+        ⭐ ODBLOKUJ TEN PLAN DO EDYCJI
     </button>
 </div>
 
@@ -214,8 +240,8 @@ main { padding: 16px; max-width: 800px; margin: 0 auto; }
 <div class="modal" id="infoModal">
     <div class="modal-box">
         <h2 id="infoTitle" style="color:var(--gold); margin-top:0"></h2>
-        <p id="infoContent" style="color:var(--text-dim); line-height:1.6; font-size:14px; white-space: pre-wrap;"></p>
-        <button class="btn-add-row" onclick="closeModals()" style="background:var(--gold); color:#000; border-radius:8px; margin-top:10px">ZAMKNIJ</button>
+        <p id="infoContent" style="color:var(--text-dim); line-height:1.6; font-size:15px; white-space: pre-wrap;"></p>
+        <button class="activate-btn" onclick="closeModals()">ZAMKNIJ</button>
     </div>
 </div>
 
@@ -223,8 +249,8 @@ main { padding: 16px; max-width: 800px; margin: 0 auto; }
     <div class="modal-box">
         <h3>Importuj Plan</h3>
         <input type="file" id="importFile" accept=".tsv" onchange="handleFileSelect(event)" style="margin-bottom:15px; font-size:12px; color:#999">
-        <textarea id="importText" style="width:100%; height:100px; background:#000; border:1px solid #333; color:#fff; border-radius:8px; padding:10px; font-size:10px" placeholder="Wklej kod TSV..."></textarea>
-        <button class="btn-add-row" onclick="applyImport()">IMPORTUJ</button>
+        <textarea id="importText" style="width:100%; height:120px; background:#000; border:1px solid #333; color:#fff; border-radius:12px; padding:12px; font-size:11px" placeholder="Wklej kod TSV..."></textarea>
+        <button class="activate-btn" style="margin-top:10px" onclick="applyImport()">IMPORTUJ TERAZ</button>
         <button class="btn-add-row" onclick="closeModals()" style="color:#666">ANULUJ</button>
     </div>
 </div>
@@ -232,14 +258,13 @@ main { padding: 16px; max-width: 800px; margin: 0 auto; }
 <div class="modal" id="exportModal">
     <div class="modal-box">
         <h3>Twój Plan (TSV)</h3>
-        <textarea id="exportText" style="width:100%; height:150px; background:#000; border:1px solid #333; color:#0f0; font-family:monospace; font-size:10px; border-radius:8px; padding:10px" readonly></textarea>
-        <button class="btn-add-row" onclick="downloadTSV()">POBIERZ PLIK .TSV</button>
+        <textarea id="exportText" style="width:100%; height:180px; background:#000; border:1px solid #333; color:#0f0; font-family:monospace; font-size:11px; border-radius:12px; padding:12px" readonly></textarea>
+        <button class="activate-btn" style="margin-top:10px" onclick="downloadTSV()">POBIERZ PLIK .TSV</button>
         <button class="btn-add-row" onclick="closeModals()">GOTOWE</button>
     </div>
 </div>
 
 <script>
-// --- LOGIKA BIZNESOWA (Twoja oryginalna, zoptymalizowana pod renderowanie Grid) ---
 const REMOTE_FILES = {
     "3-dniowy FBW - by Koziar": "basic1.tsv",
     "4-dniowy Upper/Lower - by Koziar": "basic2.tsv",
@@ -265,7 +290,7 @@ function render() {
     const lockedFooter = document.getElementById("lockedFooter");
 
     if(!p) {
-        weekEl.innerHTML = "<div style='text-align:center;padding:100px 20px;color:#444;'>WYBIERZ PLAN LUB STWÓRZ NOWY</div>";
+        weekEl.innerHTML = "<div style='text-align:center;padding:100px 20px;color:#444;font-weight:700;'>STWÓRZ SWÓJ PIERWSZY PLAN LUB IMPORTUJ</div>";
         updateMenuVisibility(false);
         lockedFooter.style.display = "none";
         return;
@@ -291,13 +316,13 @@ function render() {
         <div class="day ${day.active?'':'inactive'} ${hasChecks && day.active ? 'active-today' : ''}">
             <div class="day-header">
                 <input class="day-title-input" value="${day.name}" ${isEditing && !isLocked ? '' : 'readonly'} oninput="plans[currentPlan].days[${di}].name=this.value;save()">
-                <div style="display:flex;gap:8px">
-                    <button class="row-icon-btn" onclick="toggleDay(${di})" style="background:${day.active?'var(--gold)':'#222'}; border:none; border-radius:8px; padding:6px; color:${day.active?'#000':'#666'}">
-                        <i data-lucide="${day.active?'pause':'play'}" style="width:16px; height:16px"></i>
+                <div style="display:flex;gap:10px">
+                    <button class="row-icon-btn" onclick="toggleDay(${di})" style="background:${day.active?'var(--gold)':'#222'}; border:none; border-radius:10px; width:38px; height:38px; display:flex; align-items:center; justify-content:center; color:${day.active?'#000':'#666'}">
+                        <i data-lucide="${day.active?'pause':'play'}" style="width:18px; height:18px"></i>
                     </button>
                     ${!isLocked ? `
-                        <button class="row-icon-btn" onclick="toggleEdit(${di})" style="background:${isEditing?'#fff':'#222'}; border:none; border-radius:8px; padding:6px; color:${isEditing?'#000':'#666'}">
-                            <i data-lucide="edit-3" style="width:16px; height:16px"></i>
+                        <button class="row-icon-btn" onclick="toggleEdit(${di})" style="background:${isEditing?'#fff':'#222'}; border:none; border-radius:10px; width:38px; height:38px; display:flex; align-items:center; justify-content:center; color:${isEditing?'#000':'#666'}">
+                            <i data-lucide="edit-3" style="width:18px; height:18px"></i>
                         </button>
                     ` : ''}
                 </div>
@@ -316,17 +341,19 @@ function render() {
 
             ${day.rows.map((r, ri) => `
                 <div class="exercise-row ${dayChecks[ri]?'done':''}">
-                    <input type="checkbox" ${dayChecks[ri]?'checked':''} onchange="toggleCheck(${di},${ri},this.checked)" ${isLocked ? 'disabled' : ''} style="width:18px; height:18px; accent-color:var(--gold)">
+                    <div style="display:flex; justify-content:center;">
+                        <input type="checkbox" ${dayChecks[ri]?'checked':''} onchange="toggleCheck(${di},${ri},this.checked)" ${isLocked ? 'disabled' : ''}>
+                    </div>
                     
                     <input type="text" class="col-input name" value="${r[0]||''}" 
                         oninput="updRow(${di},${ri},0,this.value)" 
                         onclick="${!isEditing ? `showInfo('${r[0]}', '${(r[7]||"").replace(/'/g, "\\'")}')` : ''}"
-                        style="${!isEditing && r[7] && r[7] !== '...' ? 'border-bottom: 1px dotted var(--gold);' : ''}"
+                        style="${!isEditing && r[7] && r[7] !== '...' ? 'border-bottom: 2px solid var(--gold); color:var(--gold);' : ''}"
                         ${isLocked ? 'readonly' : ''}>
                     
-                    <input type="text" class="col-input" value="${r[1]||''}" oninput="updRow(${di},${ri},1,this.value)" ${isLocked ? 'readonly' : ''}>
-                    <input type="text" class="col-input" value="${r[2]||''}" oninput="updRow(${di},${ri},2,this.value)" ${isLocked ? 'readonly' : ''}>
-                    <input type="text" class="col-input" value="${r[3]||''}" oninput="updRow(${di},${ri},3,this.value)" ${isLocked ? 'readonly' : ''}>
+                    <input type="text" class="col-input" inputmode="decimal" value="${r[1]||''}" oninput="updRow(${di},${ri},1,this.value)" ${isLocked ? 'readonly' : ''}>
+                    <input type="text" class="col-input" inputmode="decimal" value="${r[2]||''}" oninput="updRow(${di},${ri},2,this.value)" ${isLocked ? 'readonly' : ''}>
+                    <input type="text" class="col-input" inputmode="decimal" value="${r[3]||''}" oninput="updRow(${di},${ri},3,this.value)" ${isLocked ? 'readonly' : ''}>
                     
                     <input type="text" class="col-input col-pro-field" value="${r[4]||''}" oninput="updRow(${di},${ri},4,this.value)" ${isLocked ? 'readonly' : ''}>
                     <input type="text" class="col-input col-pro-field" value="${r[5]||''}" oninput="updRow(${di},${ri},5,this.value)" ${isLocked ? 'readonly' : ''}>
@@ -334,19 +361,20 @@ function render() {
                 </div>
                 ${isEditing ? `
                     <div class="edit-actions">
-                        <button onclick="promptInfo(${di},${ri})" style="background:none; border:none; color:var(--gold); font-size:10px;"><i data-lucide="info" style="width:14px"></i> INFO</button>
-                        <button onclick="delRow(${di},${ri})" style="background:none; border:none; color:var(--danger); font-size:10px;"><i data-lucide="trash-2" style="width:14px"></i> USUŃ</button>
+                        <button onclick="promptInfo(${di},${ri})" style="color:var(--gold); font-size:11px; font-weight:700;"><i data-lucide="info" style="width:14px; vertical-align:middle"></i> OPIS</button>
+                        <button onclick="moveRow(${di},${ri},-1)" style="color:#fff;"><i data-lucide="arrow-up" style="width:14px"></i></button>
+                        <button onclick="moveRow(${di},${ri},1)" style="color:#fff;"><i data-lucide="arrow-down" style="width:14px"></i></button>
+                        <button onclick="delRow(${di},${ri})" style="color:var(--danger); border-color:var(--danger); font-size:11px; font-weight:700;"><i data-lucide="trash-2" style="width:14px; vertical-align:middle"></i> USUŃ</button>
                     </div>
                 ` : ''}
             `).join('')}
             
-            ${isEditing ? `<button class="btn-add-row" onclick="addRow(${di})">+ Dodaj ćwiczenie</button>` : ''}
+            ${isEditing ? `<button class="btn-add-row" onclick="addRow(${di})">+ DODAJ NOWE ĆWICZENIE</button>` : ''}
         </div>`;
     }).join('');
     lucide.createIcons();
 }
 
-// Funkcje pomocnicze
 function updateMenuVisibility(full) {
     document.querySelectorAll(".edit-only").forEach(el => { el.style.display = full ? "flex" : "none"; });
 }
@@ -356,7 +384,16 @@ function toggleDay(di){ if(!plans[currentPlan].isLocked) { plans[currentPlan].da
 function toggleEdit(di){ if(!plans[currentPlan].isLocked) { editStates[di] = !editStates[di]; render(); } }
 function updRow(di,ri,ci,v){ if(!plans[currentPlan].isLocked){ plans[currentPlan].days[di].rows[ri][ci]=v; save(); } }
 function addRow(di){ plans[currentPlan].days[di].rows.push(["","","","","","","","..."]); save(); render(); }
-function delRow(di,ri){ plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); }
+function delRow(di,ri){ if(confirm("Usunąć ćwiczenie?")){ plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); } }
+
+function moveRow(di, ri, dir) {
+    const rows = plans[currentPlan].days[di].rows;
+    const target = ri + dir;
+    if(target >= 0 && target < rows.length) {
+        [rows[ri], rows[target]] = [rows[target], rows[ri]];
+        save(); render();
+    }
+}
 
 function activatePlan() {
     const p = plans[currentPlan];
@@ -383,8 +420,8 @@ function newPlan() {
     }
 }
 
-function deletePlan(){ if(confirm("Usunąć ten plan?")) { delete plans[currentPlan]; currentPlan = Object.keys(plans)[0] || ""; save(); location.reload(); } }
-function resetWeek(){ if(confirm("Reset postępów?")) { checks[currentPlan] = {}; save(); render(); } }
+function deletePlan(){ if(confirm("Usunąć bezpowrotnie ten plan?")) { delete plans[currentPlan]; currentPlan = Object.keys(plans)[0] || ""; save(); location.reload(); } }
+function resetWeek(){ if(confirm("Zresetować wszystkie odznaczenia (ptaszki)?")) { checks[currentPlan] = {}; save(); render(); } }
 
 function toggleCheck(di,ri,v){
     if(!checks[currentPlan]) checks[currentPlan] = {};
@@ -393,8 +430,9 @@ function toggleCheck(di,ri,v){
 }
 
 function promptInfo(di,ri){
-    const n = prompt("Opis ćwiczenia:", plans[currentPlan].days[di].rows[ri][7]);
-    if(n !== null){ plans[currentPlan].days[di].rows[ri][7] = n; save(); render(); }
+    const currentInfo = plans[currentPlan].days[di].rows[ri][7] === "..." ? "" : plans[currentPlan].days[di].rows[ri][7];
+    const n = prompt("Opis / Wskazówki do ćwiczenia:", currentInfo);
+    if(n !== null){ plans[currentPlan].days[di].rows[ri][7] = n || "..."; save(); render(); }
 }
 
 function showInfo(title, content) {
@@ -406,7 +444,6 @@ function showInfo(title, content) {
 
 function closeModals() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
 
-// Export / Import
 function openExport() {
     const p = plans[currentPlan];
     let out = [`!!NOTES!!\t${(p.notes||"").replace(/\n/g,"[BR]")}`];
