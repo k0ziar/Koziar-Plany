@@ -318,3 +318,5 @@ function autoHeight(el){ el.style.height="auto"; el.style.height=el.scrollHeight
 function saveNotes(){ if(plans[currentPlan] && !plans[currentPlan].isLocked){ plans[currentPlan].notes=document.getElementById("planNotes").value; save(); }}
 
 fetchRemotePlans();
+
+// zamykanichujchuj
