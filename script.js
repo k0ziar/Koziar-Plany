@@ -222,6 +222,13 @@ function showInfo(title, content) {
 
 function closeModals() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
 
+// zamykanie modali po kliknięciu w tło
+document.querySelectorAll('.modal').forEach(m => {
+    m.addEventListener('click', e => {
+        if(e.target === m) closeModals();
+    });
+});
+
 function openExport() {
     const p = plans[currentPlan];
     let out = [`!!NOTES!!\t${(p.notes||"").replace(/\n/g,"[BR]")}`];
