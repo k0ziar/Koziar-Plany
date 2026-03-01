@@ -37,6 +37,9 @@ function render() {
     const isLocked = p.isLocked;
     // ukrywamy logo tylko dla oficjalnych, zablokowanych planów "- by Koziar"
     const hideLogoForRemote = isLocked && currentPlan && currentPlan.includes('by Koziar');
+    // sterujemy widocznością logo bezpośrednio (bardziej odporne niż klasa)
+    const floatingEl = document.querySelector('.floating-footer');
+    if(floatingEl) floatingEl.style.display = hideLogoForRemote ? 'none' : '';
     document.body.classList.toggle("locked-mode", hideLogoForRemote);
     lockedFooter.style.display = isLocked ? "block" : "none";
     updateMenuVisibility(!isLocked);
