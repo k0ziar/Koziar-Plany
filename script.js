@@ -325,3 +325,4 @@ function saveNotes(){ if(plans[currentPlan] && !plans[currentPlan].isLocked){ pl
 fetchRemotePlans();
 
 // zamykanichujchuj
+// ukrywamy logo tylko dla ofi
