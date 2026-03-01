@@ -26,21 +26,27 @@ function render() {
     const lockedFooter = document.getElementById("lockedFooter");
     const proBtnEl = document.getElementById("proBtn");
     const planNotesEl = document.getElementById("planNotes");
+    const floatingEl = document.querySelector('.floating-footer');
 
     if(!p) {
         weekEl.innerHTML = "<div style='text-align:center;padding:100px 20px;color:#444;font-weight:700;'>STWÓRZ SWÓJ PIERWSZY PLAN LUB IMPORTUJ</div>";
         updateMenuVisibility(false);
         lockedFooter.style.display = "none";
+        if(floatingEl) floatingEl.style.display = '';
         return;
     }
 
     const isLocked = p.isLocked;
-    // ukrywamy logo tylko dla oficjalnych, zablokowanych planów "- by Koziar"
-    const hideLogoForRemote = isLocked && currentPlan && currentPlan.includes('by Koziar');
-    // sterujemy widocznością logo bezpośrednio (bardziej odporne niż klasa)
-    const floatingEl = document.querySelector('.floating-footer');
-    if(floatingEl) floatingEl.style.display = hideLogoForRemote ? 'none' : '';
-    document.body.classList.toggle("locked-mode", hideLogoForRemote);
+    
+    // LOGIKA LOGO: Ukrywamy TYLKO jeśli plan jest zablokowany I zawiera dopisek "- by Koziar"
+    const isOfficialPlan = isLocked && currentPlan && currentPlan.includes('- by Koziar');
+    
+    if(floatingEl) {
+        floatingEl.style.display = isOfficialPlan ? 'none' : 'block';
+    }
+    document.body.classList.toggle("locked-mode", isOfficialPlan);
+    
+    // Reszta UI
     lockedFooter.style.display = isLocked ? "block" : "none";
     updateMenuVisibility(!isLocked);
     proBtnEl.classList.toggle("active-pro", p.proMode);
@@ -139,7 +145,6 @@ function moveRow(di, ri, dir) {
         save();
         render();
         
-        // Podświetlenie przesuwanego wiersza
         setTimeout(() => {
             const dayElements = document.querySelectorAll(`.day`);
             if(dayElements[di]) {
@@ -191,8 +196,6 @@ function toggleCheck(di,ri,v){
     checks[currentPlan][di][ri] = v; save(); render();
 }
 
-
-
 function openExerciseInfo(di,ri){
     currentEditingExercise = {di, ri};
     const row = plans[currentPlan].days[di].rows[ri];
@@ -218,16 +221,8 @@ function saveExerciseInfo(){
     closeModals();
 }
 
-function showInfo(title, content) {
-    if(!content || content === "...") return;
-    document.getElementById("infoTitle").innerText = title;
-    document.getElementById("infoContent").innerText = content;
-    document.getElementById("infoModal").classList.add("active");
-}
-
 function closeModals() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
 
-// zamykanie modali po kliknięciu w tło
 document.querySelectorAll('.modal').forEach(m => {
     m.addEventListener('click', e => {
         if(e.target === m) closeModals();
@@ -256,7 +251,6 @@ function handleFileSelect(e) {
     const file = e.target.files[0];
     if(!file) return;
     const reader = new FileReader();
-    reader.onerror = () => alert("Błąd wczytywania pliku!");
     reader.onload = (ev) => { document.getElementById("importText").value = ev.target.result; };
     reader.readAsText(file);
 }
@@ -323,6 +317,3 @@ function autoHeight(el){ el.style.height="auto"; el.style.height=el.scrollHeight
 function saveNotes(){ if(plans[currentPlan] && !plans[currentPlan].isLocked){ plans[currentPlan].notes=document.getElementById("planNotes").value; save(); }}
 
 fetchRemotePlans();
-
-// zamykanichujchuj
-// ukrywamy logo tylko dla ofi
