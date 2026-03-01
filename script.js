@@ -35,7 +35,9 @@ function render() {
     }
 
     const isLocked = p.isLocked;
-    document.body.classList.toggle("locked-mode", isLocked);
+    // ukrywamy logo tylko dla oficjalnych, zablokowanych planów "- by Koziar"
+    const hideLogoForRemote = isLocked && currentPlan && currentPlan.includes('by Koziar');
+    document.body.classList.toggle("locked-mode", hideLogoForRemote);
     lockedFooter.style.display = isLocked ? "block" : "none";
     updateMenuVisibility(!isLocked);
     proBtnEl.classList.toggle("active-pro", p.proMode);
