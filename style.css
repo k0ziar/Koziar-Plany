@@ -233,10 +233,10 @@ input[type="checkbox"]:hover {
 }
 
 /* --- FLOATING LOGO --- */
-.floating-footer { position: fixed; bottom: 200px; right: 20px; z-index: 50; }
+.floating-footer { position: fixed; bottom: 100px; right: 20px; z-index: 50; }
 
-/* gdy plan jest zablokowany, przesuwamy logo niżej aby nie nachodziło na przyciski */
-body.locked-mode .floating-footer { bottom: 130px; }
+/* ukrywamy logo całkowicie gdy plan jest zablokowany */
+body.locked-mode .floating-footer { display: none; }
 
 /* umożliwienie scrollowania zawartości długich modali na urządzeniach mobilnych */
 .modal-box { max-height: 90vh; overflow-y: auto; }
