@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Koziar Plany - Premium Workout</title>
+    <title>Koziar Coaching - Premium Workout Tracker</title>
 
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
@@ -91,9 +91,9 @@
 
         /* Tryb PRO - więcej kolumn, mniejszy tekst żeby weszło */
         .pro-mode .exercise-row {
-            grid-template-columns: 35px 1fr 35px 35px 45px 40px 35px 45px;
-            font-size: 12px;
-            padding: 8px 4px;
+            grid-template-columns: 32px 1fr 26px 26px 35px 32px 26px 35px 36px;
+            font-size: 11px;
+            padding: 6px 2px;
         }
 
         .header-row {
@@ -138,12 +138,22 @@
         /* --- FLOATING LOGO --- */
         .floating-footer { position: fixed; bottom: 100px; right: 20px; z-index: 99; }
         .floating-logo {
-            width: 55px; height: 55px; border-radius: 50%;
-            background: #000; border: 2px solid var(--gold);
+            width: 75px; height: 75px; border-radius: 50%;
+            background: #0a0a0a; border: 3px solid var(--gold);
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.8);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5), inset 0 0 15px rgba(212, 175, 55, 0.1);
+            cursor: pointer; transition: all 0.3s ease;
+            animation: floatingBounce 3s ease-in-out infinite;
         }
-        .floating-logo img { width: 65%; height: 65%; }
+        .floating-logo:hover { 
+            transform: scale(1.15);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.8), inset 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+        @keyframes floatingBounce { 
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .floating-logo img { width: 55%; height: 55%; filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.6)); }
 
         /* --- NAV BAR --- */
         .bottom-nav {
@@ -166,7 +176,8 @@
 
         /* MODALE */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
-        .modal.active { display: flex; }
+        .modal.active { display: flex; animation: modalSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes modalSlideIn { from { opacity: 0; transform: scale(0.85) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         .modal-box { background: var(--card); width: 100%; max-width: 450px; padding: 25px; border-radius: 24px; border: 1px solid var(--border); }
         .modal-box h3 { color: var(--gold); margin-top: 0; }
 
@@ -210,10 +221,15 @@
     <div id="week"></div>
 </main>
 
-<div class="locked-footer" id="lockedFooter" style="display:none; padding: 20px; position: fixed; bottom: 90px; width: 100%; z-index: 90;">
-    <button class="activate-btn" onclick="activatePlan()">
-        ⭐ ODBLOKUJ TEN PLAN DO EDYCJI
-    </button>
+<div class="locked-footer" id="lockedFooter" style="display:none; padding: 15px; position: fixed; bottom: 90px; width: 100%; z-index: 90;">
+    <div style="display:flex; gap:10px; flex-direction:column;">
+        <button class="activate-btn" onclick="activatePlan()" style="margin:0; padding:16px;">
+            ⭐ ODBLOKUJ PLAN DO EDYCJI
+        </button>
+        <button onclick="showPlansInfo()" style="background:transparent; color:var(--gold); border:1px solid var(--gold); padding:12px; border-radius:12px; font-weight:700; font-size:12px; cursor:pointer; text-transform:uppercase; transition:0.3s;" onmouseover="this.style.background='rgba(212,175,55,0.1)'" onmouseout="this.style.background='transparent'">
+            ℹ️ DOWIEDZ SIĘ WIĘCEJ
+        </button>
+    </div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -264,6 +280,105 @@
     </div>
 </div>
 
+<div class="modal" id="plansInfoModal">
+    <div class="modal-box" style="max-width: 520px;">
+        <h2 style="color:var(--gold); margin:0 0 5px 0;">GOTOWE PLANY TRENINGOWE</h2>
+        <p style="color:#888; margin:0 0 16px 0; font-size:12px;">Klasyki Koziara • Demonstracyjne</p>
+        
+        <div style="background:rgba(0,0,0,0.3); padding:16px; border-radius:12px; margin-bottom:16px; border-left:3px solid var(--gold);">
+            <p style="color:var(--text-dim); margin:0; font-size:13px; line-height:1.7;">
+                📋 <strong style="color:var(--text);">Plany ogólne i przykładowe</strong> — opracowane na bazie testowanych schematów treningowych, idealne do rozpoczęcia przygody z treningiem.<br><br>
+                ⚠️ Każdy organizm jest inny! Aby osiągnąć <strong style="color:var(--gold);">maksymalne rezultaty</strong>, potrzebujesz 
+                <strong style="color:var(--gold);">personalizowanego planu</strong> dostosowanego do Twoich celów, poziomu, odżywiania i stylu życia.
+            </p>
+        </div>
+        
+        <div style="background:rgba(212,175,55,0.1); padding:16px; border-radius:12px; margin-bottom:16px; border:1px solid rgba(212,175,55,0.2);">
+            <p style="color:var(--gold); font-weight:800; margin:0 0 12px 0; font-size:13px; text-transform:uppercase;">🎯 Czego oferuję</p>
+            <ul style="color:var(--text-dim); margin:0; padding-left:20px; font-size:12px; line-height:1.8;">
+                <li>Spersonalizowany plan treningowy dostosowany do Twoich celów</li>
+                <li>Coaching i mentoring przez cały proces transformacji</li>
+                <li>Regularne monitorowanie postępu i edytowanie planu</li>
+                <li>Wsparcie nutritionistyczne i poradnictwo</li>
+                <li>Dostęp do materiałów i wiedzy fitness'owej</li>
+            </ul>
+        </div>
+        
+        <div style="background:rgba(212,175,55,0.1); padding:16px; border-radius:12px; margin-bottom:16px; border:1px solid rgba(212,175,55,0.2);">
+            <p style="color:var(--gold); font-weight:800; margin:0 0 12px 0; font-size:13px; text-transform:uppercase;">💪 Zapraszam do Współpracy</p>
+            <p style="color:var(--text-dim); margin:0 0 12px 0; font-size:12px; line-height:1.6;">Jestem gotów pomóc Ci osiągnąć Twoje cele fitness'owe! Skontaktuj się ze mną, aby omówić Twoją indywidualną propozycję.</p>
+            
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <a href="https://www.instagram.com/_koziar/" target="_blank" rel="noopener" style="flex:1; min-width:120px; padding:10px; background:linear-gradient(135deg,#405de6 0%,#5b51d8 50%,#833ab4 100%); color:#fff; text-align:center; border-radius:10px; text-decoration:none; font-weight:700; font-size:11px; text-transform:uppercase; border:none; cursor:pointer; transition:0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(64,93,230,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                    📷 Instagram
+                </a>
+                <a href="mailto:j.koziarski05@wp.pl" style="flex:1; min-width:120px; padding:10px; background:linear-gradient(135deg,#ff6b6b 0%,#ff5252 100%); color:#fff; text-align:center; border-radius:10px; text-decoration:none; font-weight:700; font-size:11px; text-transform:uppercase; border:none; cursor:pointer; transition:0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(255,107,107,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                    📧 Email
+                </a>
+            </div>
+        </div>
+        
+        <button class="activate-btn" onclick="closeModals()" style="margin:0; font-size:12px;">ZAMKNIJ</button>
+    </div>
+</div>
+
+<div class="modal" id="aboutModal">
+    <div class="modal-box" style="max-width: 500px;">
+        <div style="text-align:center; margin-bottom:20px;">
+            <div style="width:80px; height:80px; margin:0 auto 15px; border-radius:50%; background:#0a0a0a; border:3px solid var(--gold); display:flex; align-items:center; justify-content:center; box-shadow:0 0 15px rgba(212,175,55,0.4), inset 0 0 10px rgba(212,175,55,0.1);">
+                <img src="logo.png" alt="Logo" style="width:80%; filter:drop-shadow(0 0 3px rgba(212,175,55,0.6));">
+            </div>
+            <h2 style="color:var(--gold); margin:0 0 5px 0; font-size:24px;">KOZIAR COACHING</h2>
+            <p style="color:#888; margin:0; font-size:12px; letter-spacing:1px; text-transform:uppercase;">Premium Workout Tracker</p>
+        </div>
+        
+        <div style="background:rgba(0,0,0,0.3); padding:16px; border-radius:12px; margin-bottom:16px;">
+            <div style="margin-bottom:12px;">
+                <p style="color:var(--gold); font-weight:800; margin:0 0 8px 0; font-size:13px; text-transform:uppercase;">O aplikacji</p>
+                <p style="color:var(--text-dim); margin:0; font-size:13px; line-height:1.6;">Inteligentny dzienniczek treningowy stworzony do śledzenia Twoich postępów. Planuj treningi, monitoruj metryki i osiągaj swoje cele fitness'owe z profesjonalnym narzędziem.</p>
+            </div>
+        </div>
+        
+        <div style="background:rgba(212,175,55,0.1); padding:16px; border-radius:12px; margin-bottom:16px; border:1px solid rgba(212,175,55,0.2);">
+            <p style="color:var(--gold); font-weight:800; margin:0 0 12px 0; font-size:13px; text-transform:uppercase;">Autor & Współpraca</p>
+            <p style="color:var(--text-dim); margin:0 0 12px 0; font-size:13px;"><strong style="color:var(--text);">Jakub Koziarski</strong> | Coach & Fitness Enthusiast</p>
+            <p style="color:var(--text-dim); margin:0 0 12px 0; font-size:12px; line-height:1.6;">Interesuje Cię spersonalizowany plan treningowy, prowadzenie nutrition-coaching, czy coś innego? <strong style="color:var(--gold);">Zapraszam do kontaktu!</strong></p>
+            
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <a href="https://www.instagram.com/_koziar/" target="_blank" rel="noopener" style="flex:1; min-width:140px; padding:12px; background:linear-gradient(135deg,#405de6 0%,#5b51d8 50%,#833ab4 100%); color:#fff; text-align:center; border-radius:10px; text-decoration:none; font-weight:700; font-size:12px; text-transform:uppercase; border:none; cursor:pointer; transition:0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(64,93,230,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                    <i data-lucide="instagram" style="width:14px; height:14px; vertical-align:middle; margin-right:6px;"></i>Instagram
+                </a>
+                <a href="mailto:j.koziarski05@wp.pl" style="flex:1; min-width:140px; padding:12px; background:linear-gradient(135deg,#ff6b6b 0%,#ff5252 100%); color:#fff; text-align:center; border-radius:10px; text-decoration:none; font-weight:700; font-size:12px; text-transform:uppercase; border:none; cursor:pointer; transition:0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(255,107,107,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                    <i data-lucide="mail" style="width:14px; height:14px; vertical-align:middle; margin-right:6px;"></i>Email
+                </a>
+            </div>
+        </div>
+        
+        <button class="activate-btn" onclick="closeModals()" style="margin:0; font-size:13px;">ZAMKNIJ</button>
+    </div>
+</div>
+
+<div class="modal" id="editExerciseModal">
+    <div class="modal-box">
+        <h3 style="margin-top:0; margin-bottom:0; color:var(--gold)">EDYTUJ ĆWICZENIE</h3>
+        <p style="color:var(--text-dim); font-size:12px; margin:0 0 15px 0">Zmień nazwę i dodaj szczegółowy opis</p>
+        
+        <div style="margin-bottom:15px">
+            <label style="color:var(--text-dim); font-size:11px; font-weight:800; text-transform:uppercase; display:block; margin-bottom:8px; letter-spacing:0.5px">Pełna nazwa ćwiczenia</label>
+            <input type="text" id="editExerciseName" style="width:100%; background:#000; border:1px solid var(--border); color:var(--text); padding:12px; border-radius:8px; font-size:14px; outline:none">
+        </div>
+        
+        <div style="margin-bottom:15px">
+            <label style="color:var(--text-dim); font-size:11px; font-weight:800; text-transform:uppercase; display:block; margin-bottom:8px; letter-spacing:0.5px">Opis / Wskazówki (opcjonalnie)</label>
+            <textarea id="editExerciseDesc" style="width:100%; background:#000; border:1px solid var(--border); color:var(--text); padding:12px; border-radius:8px; font-size:14px; outline:none; min-height:100px; resize:none; line-height:1.5"></textarea>
+            <p style="color:#666; font-size:11px; margin:6px 0 0 0">Możesz wpisać instrukcje, uwagi, warianty...</p>
+        </div>
+        
+        <button class="activate-btn" onclick="saveExerciseInfo()" style="background:var(--gold); color:#000; font-weight:900">ZAPISZ ZMIANY</button>
+        <button class="btn-add-row" onclick="closeModals()" style="color:#666; margin-top:5px">ANULUJ</button>
+    </div>
+</div>
+
 <script>
 const REMOTE_FILES = {
     "3-dniowy FBW - by Koziar": "basic1.tsv",
@@ -275,6 +390,7 @@ let plans = JSON.parse(localStorage.getItem("plans")) || {};
 let checks = JSON.parse(localStorage.getItem("checks")) || {};
 let currentPlan = localStorage.getItem("currentPlanName") || "";
 let editStates = {};
+let currentEditingExercise = null; // { di, ri }
 
 function save(){
     localStorage.setItem("plans", JSON.stringify(plans));
@@ -282,7 +398,9 @@ function save(){
     localStorage.setItem("currentPlanName", currentPlan);
 }
 
-function handleLogoClick() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function handleLogoClick() { document.getElementById("aboutModal").classList.add("active"); }
+
+function showPlansInfo() { document.getElementById("plansInfoModal").classList.add("active"); }
 
 function render() {
     const p = plans[currentPlan];
@@ -337,6 +455,7 @@ function render() {
                 <span class="col-pro-field">ODP</span>
                 <span class="col-pro-field">RIR</span>
                 <span class="col-pro-field">TMP</span>
+                <span class="col-pro-field">PRG</span>
             </div>
 
             ${day.rows.map((r, ri) => `
@@ -347,7 +466,7 @@ function render() {
                     
                     <input type="text" class="col-input name" value="${r[0]||''}" 
                         oninput="updRow(${di},${ri},0,this.value)" 
-                        onclick="${!isEditing ? `showInfo('${r[0]}', '${(r[7]||"").replace(/'/g, "\\'")}')` : ''}"
+                        onclick="${!isEditing && !isLocked ? `openExerciseInfo(${di},${ri})` : ''}"
                         style="${!isEditing && r[7] && r[7] !== '...' ? 'border-bottom: 2px solid var(--gold); color:var(--gold);' : ''}"
                         ${isLocked ? 'readonly' : ''}>
                     
@@ -358,10 +477,10 @@ function render() {
                     <input type="text" class="col-input col-pro-field" value="${r[4]||''}" oninput="updRow(${di},${ri},4,this.value)" ${isLocked ? 'readonly' : ''}>
                     <input type="text" class="col-input col-pro-field" value="${r[5]||''}" oninput="updRow(${di},${ri},5,this.value)" ${isLocked ? 'readonly' : ''}>
                     <input type="text" class="col-input col-pro-field" value="${r[6]||''}" oninput="updRow(${di},${ri},6,this.value)" ${isLocked ? 'readonly' : ''}>
+                    <input type="text" class="col-input col-pro-field" value="${r[8]||''}" oninput="updRow(${di},${ri},8,this.value)" ${isLocked ? 'readonly' : ''}>
                 </div>
                 ${isEditing ? `
                     <div class="edit-actions">
-                        <button onclick="promptInfo(${di},${ri})" style="color:var(--gold); font-size:11px; font-weight:700;"><i data-lucide="info" style="width:14px; vertical-align:middle"></i> OPIS</button>
                         <button onclick="moveRow(${di},${ri},-1)" style="color:#fff;"><i data-lucide="arrow-up" style="width:14px"></i></button>
                         <button onclick="moveRow(${di},${ri},1)" style="color:#fff;"><i data-lucide="arrow-down" style="width:14px"></i></button>
                         <button onclick="delRow(${di},${ri})" style="color:var(--danger); border-color:var(--danger); font-size:11px; font-weight:700;"><i data-lucide="trash-2" style="width:14px; vertical-align:middle"></i> USUŃ</button>
@@ -383,7 +502,7 @@ function togglePro(){ if(!plans[currentPlan].isLocked) { plans[currentPlan].proM
 function toggleDay(di){ if(!plans[currentPlan].isLocked) { plans[currentPlan].days[di].active = !plans[currentPlan].days[di].active; save(); render(); } }
 function toggleEdit(di){ if(!plans[currentPlan].isLocked) { editStates[di] = !editStates[di]; render(); } }
 function updRow(di,ri,ci,v){ if(!plans[currentPlan].isLocked){ plans[currentPlan].days[di].rows[ri][ci]=v; save(); } }
-function addRow(di){ plans[currentPlan].days[di].rows.push(["","","","","","","","..."]); save(); render(); }
+function addRow(di){ plans[currentPlan].days[di].rows.push(["","","","","","","","...",""]); save(); render(); }
 function delRow(di,ri){ if(confirm("Usunąć ćwiczenie?")){ plans[currentPlan].days[di].rows.splice(ri,1); save(); render(); } }
 
 function moveRow(di, ri, dir) {
@@ -433,6 +552,31 @@ function promptInfo(di,ri){
     const currentInfo = plans[currentPlan].days[di].rows[ri][7] === "..." ? "" : plans[currentPlan].days[di].rows[ri][7];
     const n = prompt("Opis / Wskazówki do ćwiczenia:", currentInfo);
     if(n !== null){ plans[currentPlan].days[di].rows[ri][7] = n || "..."; save(); render(); }
+}
+
+function openExerciseInfo(di,ri){
+    currentEditingExercise = {di, ri};
+    const row = plans[currentPlan].days[di].rows[ri];
+    document.getElementById("editExerciseName").value = row[0] || "";
+    const desc = row[7] === "..." ? "" : (row[7] || "");
+    document.getElementById("editExerciseDesc").value = desc;
+    document.getElementById("editExerciseDesc").focus();
+    document.getElementById("editExerciseModal").classList.add("active");
+}
+
+function saveExerciseInfo(){
+    if(!currentEditingExercise) return;
+    const {di, ri} = currentEditingExercise;
+    const newName = document.getElementById("editExerciseName").value.trim() || plans[currentPlan].days[di].rows[ri][0];
+    const newDesc = document.getElementById("editExerciseDesc").value.trim();
+    
+    plans[currentPlan].days[di].rows[ri][0] = newName;
+    plans[currentPlan].days[di].rows[ri][7] = newDesc || "...";
+    
+    currentEditingExercise = null;
+    save();
+    render();
+    closeModals();
 }
 
 function showInfo(title, content) {
@@ -486,7 +630,7 @@ function parseTSV(text) {
             day = { name: parts[0], active: parts[1] !== "PRZERWA", rows: [] };
             week.push(day);
         } else if(day && l.trim()) {
-            let row = l.split("\t"); while(row.length < 8) row.push(""); day.rows.push(row);
+            let row = l.split("\t"); while(row.length < 9) row.push(""); day.rows.push(row);
         }
     });
     return { notes, days: week, proMode: false, isLocked: false };
