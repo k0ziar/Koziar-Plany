@@ -233,7 +233,7 @@ input[type="checkbox"]:hover {
 }
 
 /* --- FLOATING LOGO --- */
-.floating-footer { position: fixed; bottom: 80px; right: 20px; z-index: 50; }
+.floating-footer { position: fixed; bottom: 100px; right: 18px; z-index: 50; }
 
 /* ukrywamy logo całkowicie gdy plan jest zablokowany */
 body.locked-mode .floating-footer { display: none; }
